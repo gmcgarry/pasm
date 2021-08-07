@@ -1,0 +1,113 @@
+/*
+ * Copyright (c) 1987, 1990, 1993, 2005 Vrije Universiteit, Amsterdam, The Netherlands.
+ * All rights reserved.
+ * 
+ * Redistribution and use of the Amsterdam Compiler Kit in source and
+ * binary forms, with or without modification, are permitted provided
+ * that the following conditions are met:
+ * 
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ * 
+ *    * Redistributions in binary form must reproduce the above
+ *      copyright notice, this list of conditions and the following
+ *      disclaimer in the documentation and/or other materials provided
+ *      with the distribution.
+ * 
+ *    * Neither the name of Vrije Universiteit nor the names of the
+ *      software authors or contributors may be used to endorse or
+ *      promote products derived from this software without specific
+ *      prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, AUTHORS, AND
+ * CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL VRIJE UNIVERSITEIT OR ANY AUTHORS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ * storage allocation for variables
+ */
+
+#include "as.h"
+#include "out.h"
+#include "elf.h"
+
+#include "y.tab.h"
+
+item_t	keytab[] = {
+#if 0
+	{ 0,	DIRECTIVE_EXTERN,	0,		".define" },
+	{ 0,	DIRECTIVE_EXTERN,	0,		".extern" },
+#endif
+	{ 0,	DOT,			0,		"." },
+
+	{ 0,	DIRECTIVE_DATA,		RELO1,		".byte" },
+	{ 0,	DIRECTIVE_DATA,		RELO2,		".word" },
+	{ 0,	DIRECTIVE_DATA,		RELO4,		".dword" },
+	{ 0,	DIRECTIVE_DATA,		RELO4,		".long" },
+	{ 0,	DIRECTIVE_DATA8,	0,		".quad" },
+
+#if 0
+	{ 0,	DIRECTIVE_DATA,		RELO1,		".data1" },
+	{ 0,	DIRECTIVE_DATA,		RELO2,		".data2" },
+	{ 0,	DIRECTIVE_DATA,		RELO4,		".data4" },
+
+	{ 0,	DIRECTIVE_DATA8,	0,		".data8" },
+	{ 0,	DIRECTIVE_DATAF,	4,		".dataf4" },
+	{ 0,	DIRECTIVE_DATAF,	8,		".dataf8" },
+#endif
+	{ 0,	DIRECTIVE_ASCII,	0,		".ascii" },
+	{ 0,	DIRECTIVE_ASCII,	1,		".asciz" },
+	{ 0,	DIRECTIVE_ASCII,	1,		".string" },
+	{ 0,	DIRECTIVE_ALIGN,	0,		".align" },
+	{ 0,	DIRECTIVE_ASSERT,	0,		".assert" },
+	{ 0,	DIRECTIVE_SPACE,	0,		".space" },
+	{ 0,	DIRECTIVE_SEEK,		0,		".seek" },
+	{ 0,	DIRECTIVE_COMMON,	0,		".comm" },
+	{ 0,	DIRECTIVE_BASE,		0,		".base"},
+	{ 0,	DIRECTIVE_ORG,		0,		".org" },
+	{ 0,	DIRECTIVE_SECTION,	0,		".section" },
+	{ 0,	DIRECTIVE_END,		0,		".end" },
+	{ 0,	DIRECTIVE_GLOBAL,	0,		".globl" },
+	{ 0,	DIRECTIVE_GLOBAL,	0,		".global" },
+	{ 0,	DIRECTIVE_LOCAL,	0,		".local" },
+	{ 0,	DIRECTIVE_EQU,		0,		".equ" },
+	{ 0,	DIRECTIVE_SET,		0,		".set" },
+	{ 0,	DIRECTIVE_LINE,		0,		".line" },
+	{ 0,	DIRECTIVE_FILE,		0,		".file" },
+	{ 0,	DIRECTIVE_TYPE,		0,		".type" },
+	{ 0,	DIRECTIVE_SIZE,		0,		".size" },
+	{ 0,	DIRECTIVE_IDENT,	0,		".ident" },
+
+#ifdef LISTING
+	{ 0,	DIRECTIVE_LIST,		0,		".nolist" },
+	{ 0,	DIRECTIVE_LIST,		1,		".list" },
+#endif
+	{ 0,	DIRECTIVE_MESSAGE,	1,		".message" },
+	{ 0,	PLT,			0,		"@PLT" },
+	{ 0,	ELF_SYMTYPE,		S_FUNC,		"@function" },
+	{ 0,	ELF_SYMTYPE,		S_OBJECT,	"@object" },
+	{ 0,	ELF_SHTYPE,		SHT_PROGBITS,	"@progbits" },
+	{ 0,	ELF_SHTYPE,		SHT_NOBITS,	"@nobits" },
+	{ 0,	ELF_SHTYPE,		SHT_NOTE,	"@note" },
+
+	{ 0,	DIRECTIVE_CFI_IGNORE,	0,		".cfi_def_cfa" },
+       	{ 0,	DIRECTIVE_CFI_IGNORE,	0,		".cfi_def_cfa_offset" },
+       	{ 0,	DIRECTIVE_CFI_IGNORE,	0,		".cfi_def_cfa_register" },
+ 	{ 0,	DIRECTIVE_CFI_IGNORE,	0,		".cfi_endproc" },
+ 	{ 0,	DIRECTIVE_CFI_IGNORE,	0,		".cfi_offset" },
+ 	{ 0,	DIRECTIVE_CFI_IGNORE,	0,		".cfi_startproc" },
+
+#include	"keywords.inc"
+
+	 { 0,	0,		0,		0 },
+};
