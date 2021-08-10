@@ -354,6 +354,10 @@ void machfinish(int pass);
 
 #include "elf.h"
 
+#ifndef ELFM
+#define ELFM	"@"
+#endif
+
 #ifdef ELF64
 typedef Elf64_Ehdr Elf_Ehdr;
 typedef Elf64_Shdr Elf_Shdr;

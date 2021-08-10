@@ -33,23 +33,11 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "elf.h"
+
 int wr_open(const char *filename, int n);
 void wr_close(void);
 
 void wr_seek(int sectno, long offset);
 void wr_write(int sectno, const void *buf, long len);
 void wr_putc(int sectno, int ch);
-
-#include "elf.h"
-
-#ifdef ELF64
-typedef Elf64_Ehdr Elf_Ehdr;
-typedef Elf64_Shdr Elf_Shdr;
-typedef Elf64_Rela Elf_Rel;
-typedef Elf64_Sym Elf_Sym;
-#else
-typedef Elf32_Ehdr Elf_Ehdr;
-typedef Elf32_Shdr Elf_Shdr;
-typedef Elf32_Rel Elf_Rel;
-typedef Elf32_Sym Elf_Sym;
-#endif

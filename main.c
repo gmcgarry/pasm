@@ -42,18 +42,24 @@
  */
 
 #include <assert.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <signal.h>
 
+#include "error.h"
+#include "out.h"
+
+/* this is _very_ dangerous and breaks system headers on macos */
+/* be sure that no system headers are included after this */
 #define extern  /* empty, to force storage allocation */
 #include "as.h"
 #undef extern
 
-#include "error.h"
-#include "out.h"
-
+#ifdef YYDEBUG
 extern int yydebug;
+#endif
+
 extern void yyparse();
 extern void lexinit();
 
@@ -81,17 +87,20 @@ extern int nshstrtab;
 
 void create_additional_sections();
 
-void stop(void) {
+void
+stop(void) {
 	exit(nerrors != 0); 
 }
 
-static void stop_on_signal(int sig) {
+static
+void stop_on_signal(int sig) {
 	stop();
 }
 
 int
 main(int argc, char **argv)
 {
+
 	char *p;
 	int i;
 	static char sigs[] = {
@@ -110,7 +119,9 @@ main(int argc, char **argv)
 			continue;
 		switch (*p++) {
 		case 'D':
+#ifdef YYDEBUG
 			yydebug = 1;
+#endif
 			break;
 		case 'o':
 			if (*p != '\0') {
