@@ -93,12 +93,12 @@ item_t	keytab[] = {
 	{ 0,	DIRECTIVE_LIST,		1,		".list" },
 #endif
 	{ 0,	DIRECTIVE_MESSAGE,	1,		".message" },
-	{ 0,	PLT,			0,		"@PLT" },
-	{ 0,	ELF_SYMTYPE,		S_FUNC,		"@function" },
-	{ 0,	ELF_SYMTYPE,		S_OBJECT,	"@object" },
-	{ 0,	ELF_SHTYPE,		SHT_PROGBITS,	"@progbits" },
-	{ 0,	ELF_SHTYPE,		SHT_NOBITS,	"@nobits" },
-	{ 0,	ELF_SHTYPE,		SHT_NOTE,	"@note" },
+	{ 0,	PLT,			0,		ELFM "PLT" },
+	{ 0,	ELF_SYMTYPE,		S_FUNC,		ELFM "function" },
+	{ 0,	ELF_SYMTYPE,		S_OBJECT,	ELFM "object" },
+	{ 0,	ELF_SHTYPE,		SHT_PROGBITS,	ELFM "progbits" },
+	{ 0,	ELF_SHTYPE,		SHT_NOBITS,	ELFM "nobits" },
+	{ 0,	ELF_SHTYPE,		SHT_NOTE,	ELFM "note" },
 
 	{ 0,	DIRECTIVE_CFI_IGNORE,	0,		".cfi_def_cfa" },
        	{ 0,	DIRECTIVE_CFI_IGNORE,	0,		".cfi_def_cfa_offset" },
