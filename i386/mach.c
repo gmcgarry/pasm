@@ -84,7 +84,7 @@ ea_1_16(int param)
 void
 ea_1(int param)
 {
-	printf("ea_1: param=0x%x (opcode), reg_1=0x%x, rm_1=0x%x, mod_1=0x%x, sib_1=0x%x, exp_1.val=0x%x\n", param, reg_1, rm_1, mod_1, sib_1, exp_1.val);
+	printf("ea_1: param=0x%x (opcode), reg_1=0x%x, rm_1=0x%x, mod_1=0x%x, sib_1=0x%x, exp_1.val=0x%lld\n", param, reg_1, rm_1, mod_1, sib_1, exp_1.val);
 
 	/* ea_1: param=0x20 (opcode), reg_1=0x5, rm_1=0x0, mod_1=0x2, sib_1=0x0, exp_1.val=0xfffffffc */
 

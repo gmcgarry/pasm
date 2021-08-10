@@ -160,9 +160,3 @@ void mov(register int opc);
 void extshft(int opc, int reg);
 void bittestop(int opc);
 void imul(int reg);
-
-
-static void suffix()
-{
-	printf("==========> %.*s <=============\n", stringlen, stringbuf);
-}
