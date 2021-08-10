@@ -121,7 +121,7 @@ newlabel(item_t *ip)
 	ADDR_T oldval = ip->i_valu;
 #endif
 
-	printf("newlabel: (%s) lineno=%ld, pass=%d, section=%d oldval=%lld, DOTVAL=%lld, gain=%ld\n", ip->i_name, lineno, pass, DOTSCT, oldval, DOTVAL, sect[DOTSCT].s_gain);
+	printf("newlabel: (%s) lineno=%ld, pass=%d, section=%d oldval=%ld, DOTVAL=%ld, gain=%ld\n", ip->i_name, lineno, pass, DOTSCT, oldval, DOTVAL, sect[DOTSCT].s_gain);
 	fflush(0);
 
 	if (DOTSCT == S_UND)
@@ -292,7 +292,7 @@ switchsect(int sectno)
 	if (DOTSCT != S_UND) {
 		sp = &sect[DOTSCT];
 		sp->s_size = DOTVAL - sp->s_base;
-		printf("switchsect(): closing section %d at %d (pass=%d)\n", DOTSCT, sp->s_size, pass);
+		printf("switchsect(): closing section %d at %ld (pass=%d)\n", DOTSCT, sp->s_size, pass);
 	}
 	if (sectno == S_UND) {
 		DOTSCT = S_UND;
@@ -301,7 +301,7 @@ switchsect(int sectno)
 	sp = &sect[sectno];
 	DOTVAL = sp->s_size + sp->s_base;
 	DOTSCT = sectno;
-	printf("switchsect(): starting section %d at %ld (size=%d,base=%d,pass=%d)\n", DOTSCT, DOTVAL, sp->s_size, sp->s_base, pass);
+	printf("switchsect(): starting section %d at %ld (size=%ld,base=%ld,pass=%d)\n", DOTSCT, DOTVAL, sp->s_size, sp->s_base, pass);
 }
 
 void

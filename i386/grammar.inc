@@ -35,6 +35,7 @@
 
 operation: DIRECTIVE_USE16		{ use32 = 0; address_long = 0; operand_long = 0; }
 	| DIRECTIVE_USE32		{ use32 = 1; address_long = 1; operand_long = 1; }
+	| DIRECTIVE_USE64		{ use32 = 1; address_long = 1; operand_long = 1; }
 	| prefix oper			{ address_long = use32; operand_long = use32; }
 	| prefix1			/* to allow for only prefixes on a line */
 	;
@@ -93,7 +94,7 @@ oper	: NOOP_1			{ emit1($1); }
 	| IMUL ea_2			{ reg_1 = IS_R32 | (address_long ? 0 : 0310); imul(0); }
 	| IMUL ea_2 ',' XREG		{ reg_1 = $4 | IS_R32 | (address_long ? 0 : 0310); imul($4|0x10); }
 	| IMUL ea_ea ',' XREG		{ imul($4|0x10); }
-	| INT absexp 			{ if ($2==3) emit1(0314); else { fit(ufitb($2)); emit1(0315); emit1((int)$2); } }
+	| INT const  			{ if ($2==3) emit1(0314); else { fit(ufitb($2)); emit1(0315); emit1((int)$2); } }
 	| RET				{ emit1($1); }
 	| RET expr			{ emit1($1-1); newrelo($2.typ, RELO2); emit2((int)($2.val)); }
 	| SETCC ea_2			{ if (reg_2 & (IS_R32|IS_RSEG)) { serror("register error"); } emit1(0xF); emit1($1|0x90); ea_2(0); }

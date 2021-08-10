@@ -41,6 +41,12 @@
 
 #include "y.tab.h"
 
+#ifdef _DEBUG
+#define DPRINTF(x)	printf(x)
+#else
+#define DPRINTF(x)	/* no debug */
+#endif
+
 extern sect_t sect[]; /* XXXGJM remove */
 
 
@@ -84,7 +90,7 @@ ea_1_16(int param)
 void
 ea_1(int param)
 {
-	printf("ea_1: param=0x%x (opcode), reg_1=0x%x, rm_1=0x%x, mod_1=0x%x, sib_1=0x%x, exp_1.val=0x%lld\n", param, reg_1, rm_1, mod_1, sib_1, exp_1.val);
+	DPRINTF(("ea_1: param=0x%x (opcode), reg_1=0x%x, rm_1=0x%x, mod_1=0x%x, sib_1=0x%x, exp_1.val=0x%llx\n", param, reg_1, rm_1, mod_1, sib_1, exp_1.val));
 
 	/* ea_1: param=0x20 (opcode), reg_1=0x5, rm_1=0x0, mod_1=0x2, sib_1=0x0, exp_1.val=0xfffffffc */
 
@@ -97,23 +103,23 @@ ea_1(int param)
 		return;
 	}
 	if (is_reg(reg_1)) {
-		printf("using reg_1 as target\n");
+		DPRINTF(("using reg_1 as target\n"));
 		emit1(0300 | param | (reg_1&07));
 		return;
 	}
 	if (rm_1 == 04) {
 		/* sib field use here */
-		printf("using sib at target\n");
+		DPRINTF(("using sib at target\n"));
 		emit1(mod_1 << 6 | param | 04);
 		emit1(sib_1 | reg_1);
 	} else {
-		printf("using reg_1 masked\n");
+		DPRINTF(("using reg_1 masked\n"));
 		emit1(mod_1<<6 | param | (reg_1&07));
 	}
 
 	if ((mod_1 == 0 && reg_1 == 5) || mod_1 == 2) {
 		/* ??? should this be protected by a call to "small" ??? */
-		printf("target is [ebp+offset], assuming 32-bit offset)\n");
+		DPRINTF(("target is [ebp+offset], assuming 32-bit offset)\n"));
 		RELOMOVE(relonami, rel_1);
 		newrelo(exp_1.typ, RELO4);
 		emit4((long)(exp_1.val));
@@ -359,7 +365,7 @@ adsize_exp(expr_t exp, int relpc)
 void
 addop(int opc)
 {
-	printf("addop: reg_1=0x%x, reg_2=0x%x\n", reg_1, reg_2);
+	DPRINTF(("addop: reg_1=0x%x, reg_2=0x%x\n", reg_1, reg_2));
 
 	regsize(opc);
 	if (is_reg(reg_2)) {
@@ -372,7 +378,7 @@ addop(int opc)
 		RELOMOVE(relonami, rel_2);
 		opsize_exp(exp_2, (opc&1));
 	} else if (is_expr(reg_2)) {
-		printf("add immediate (ea_2) to register or memory (ea_1)\n");
+		DPRINTF(("add immediate (ea_2) to register or memory (ea_1)\n"));
 		/*	Add immediate to register or memory */
 		if ((opc&1) == 0) {
 			emit1(0200);
@@ -504,7 +510,7 @@ test(int opc)
 void
 mov(int opc)
 {
-	printf("reg1=%x, reg2=%x, rm1=%x, rm2=%x\n", reg_1, reg_2, rm_1, rm_2);
+	DPRINTF(("reg1=%x, reg2=%x, rm1=%x, rm2=%x\n", reg_1, reg_2, rm_1, rm_2));
 
 /*		reg1=200, reg2=5, rm1=0, rm2=0 */
 
@@ -654,4 +660,24 @@ imul(int reg)
 	} else {
 		 badsyntax();
 	}
+}
+
+
+
+void
+argprefix()
+{
+	if (!use32 && address_long)
+		emit1(0xe7);
+	else if (use32 && !address_long)
+		emit1(0x67);
+}
+		
+void
+opprefix()
+{
+	if (!use32 && operand_long)
+		emit1(0xe6);
+	else if (use32 && !operand_long)
+		emit1(0x66);
 }

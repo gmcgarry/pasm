@@ -58,8 +58,6 @@
 #define ASC_COMMENT     '#'
 #define	CTRL(x)		((x) & 037)
 #define ISALPHA(c)	(isalpha(c) || (c) == '_' || (c) == '.' || (c) == '@' || (c) == '%')
-
-
 #if 0
 /* XXXGJM: allowing '-' in identifiers causes problems with expressions, but GCC does this for its section name */
 #define ISALNUM(c)	(isalnum(c) || (c) == '_' || (c) == '.' || (c) == '-')

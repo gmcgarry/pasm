@@ -106,6 +106,20 @@
 {0,	RSYSTR,		6,		"%tr6"},
 {0,	RSYSTR,		7,		"%tr7"},
 
+{0,	OTOGGLE,	0x66 /* 0146 */,	"o16"},	/* operand size toggle */
+{0,	OTOGGLE,	0xe6 /* 0346 */,	"o32"},	/* operand size toggle */
+{0,	ATOGGLE,	0x67 /* 0147 */,	"a16"},	/* address size toggle */
+{0,	ATOGGLE,	0xe7 /* 0347 */,	"a32"},	/* address size toggle */
+{0,	PREFIX,		0xf2 /* 0362 */,	"repne"},
+{0,	PREFIX,		0xf2 /* 0362 */,	"repnz"},
+{0,	PREFIX,		0xf3 /* 0363 */,	"rep"},
+{0,	PREFIX,		0xf3 /* 0363 */,	"repe"},
+{0,	PREFIX,		0xf3 /* 0363 */,	"repz"},
+{0,	PREFIX,		0x26 /* 046 */,		"eseg"},
+{0,	PREFIX,		0x2e /* 056 */,		"cseg"},
+{0,	PREFIX,		0x36 /* 066 */,		"sseg"},
+{0,	PREFIX,		0x3e /* 076 */,		"dseg"},
+
 {0,	ADDOP,		000,		"addb"},
 {0,	ADDOP,		001,		"add"},
 {0,	ADDOP,		010,		"orb"},
@@ -271,24 +285,11 @@
 {0,	NOTOP,		061,		"div"},
 {0,	NOTOP,		070,		"idivb"},
 {0,	NOTOP,		071,		"idiv"},
+
 {0,	PREFIX,		0144,		"fseg"},
 {0,	PREFIX,		0145,		"gseg"},
-
-{0,	OTOGGLE,	0x66 /* 0146 */,		"o16"},	/* operand size toggle */
-{0,	OTOGGLE,	0xe6 /* 0346 */,		"o32"},	/* operand size toggle */
-{0,	ATOGGLE,	0x67 /* 0147 */,		"a16"},	/* address size toggle */
-{0,	ATOGGLE,	0xe7 /* 0347 */,		"a32"},	/* address size toggle */
-
 {0,	PREFIX,		0360,		"lock"},
-{0,	PREFIX,		0362,		"repne"},
-{0,	PREFIX,		0362,		"repnz"},
-{0,	PREFIX,		0363,		"rep"},
-{0,	PREFIX,		0363,		"repe"},
-{0,	PREFIX,		0363,		"repz"},
-{0,	PREFIX,		046,		"eseg"},
-{0,	PREFIX,		056,		"cseg"},
-{0,	PREFIX,		066,		"sseg"},
-{0,	PREFIX,		076,		"dseg"},
+
 {0,	PUSHOP,		0,		"push"},
 {0,	PUSHOP,		1,		"pop"},
 {0,	RET,		0303,		"ret"},
@@ -484,6 +485,10 @@
 {0,	NOOP_2,		017+(010<<8),	"invd"},
 {0,	EXTOP1,		071,		"invlpg"},
 {0,	NOOP_2,		017+(011<<8),	"wbinvd"},
+
+/* AMD64 instructions */
+
+{0,	NOOP_2,		0x0F+(0x05<<8),		"syscall" },
 
 {0,	PUSHOP,		0,		"pushl"},	/* done */
 {0,	PUSHOP,		0,		"pushq"},	/* done */

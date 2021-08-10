@@ -160,3 +160,6 @@ void mov(register int opc);
 void extshft(int opc, int reg);
 void bittestop(int opc);
 void imul(int reg);
+
+void opprefix(void);
+void argprefix(void);

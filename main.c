@@ -43,6 +43,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -310,7 +311,8 @@ pass_23(int n)
 	for (i = 0; i < FB_SIZE; i++)
 		fb_ptr[FB_FORW+i] = fb_ptr[FB_HEAD+i];
 #ifdef ASLD
-	for (sp = sect; sp < &sect[nsect]; sp++) {
+	for (i = 1; i < nsect; i++) {
+		sp = &sect[i];
 		if (sp->s_flag & BASED) {
 			base = sp->s_base;
 			if (base % sp->s_align)
@@ -347,7 +349,7 @@ pass_23(int n)
 
 	printf("----------------------------\n");
 	printf("nsymb = %d\n", nsymb);
-	printf("size = %d\n", sect[symtab_sectno].s_size);
+	printf("size = %ld\n", sect[symtab_sectno].s_size);
 
 	printf("------------- end of pass %d (2/3) -------------\n", pass);
 }
@@ -469,6 +471,7 @@ create_additional_sections()
 	sp->s_item->i_name = remember(".symtab");
 	sp->s_entsize = sizeof(Elf_Sym);
 	sp->s_link = nsect; /* the next section */
+	sp->s_align = ALIGNSECT;
 	sect[symtab_sectno].s_size = sizeof(Elf_Sym); /* empty symbol */
 
 	strtab_sectno = nsect++;
@@ -476,12 +479,14 @@ create_additional_sections()
 	sp->s_type = SHT_STRTAB;
 	sp->s_item = item_alloc(S_SECTION|strtab_sectno);
 	sp->s_item->i_name = remember(".strtab");
+	sp->s_align = ALIGNSECT;
 
 	shstrtab_sectno = nsect++;
 	sp = &sect[shstrtab_sectno];
 	sp->s_type = SHT_STRTAB;
 	sp->s_item = item_alloc(S_SECTION|shstrtab_sectno);
 	sp->s_item->i_name = remember(".shstrtab");
+	sp->s_align = ALIGNSECT;
 }
 
 static void
@@ -495,9 +500,9 @@ outstart(void)
 
 	printf("---------------------------------------\n");
 	printf("nsect = %d\n", nsect);
-	printf("nrelo = %d (entsize=%d)\n", nrelo, sizeof(Elf_Rel));
-	printf("nsymb = %d, size=%d (entsize=%d)\n", nsymb, sect[symtab_sectno].s_size, sizeof(Elf_Sym));
-	printf("nstrtab = %d,%d size=%d,%d\n", nstrtab, nshstrtab, sect[strtab_sectno].s_size, sect[shstrtab_sectno].s_size);
+	printf("nrelo = %d (entsize=%ld)\n", nrelo, sizeof(Elf_Rel));
+	printf("nsymb = %d, size=%ld (entsize=%ld)\n", nsymb, sect[symtab_sectno].s_size, sizeof(Elf_Sym));
+	printf("nstrtab = %d,%d size=%ld,%ld\n", nstrtab, nshstrtab, sect[strtab_sectno].s_size, sect[shstrtab_sectno].s_size);
 	printf("---------------------------------------\n");
 
 #if 0
@@ -571,7 +576,7 @@ outfinish()
 	for (i = 1; i < nsect; i++) {
 
 		sect_t *sp = &sect[i];
-		printf("SECTION %d: offset=%d, size=%d, nameidx=%d, link=%d, info=%d\n", i, off, sp->s_size - sp->s_zero, sp->s_item ? sp->s_item->i_type : 0, sp->s_link, sp->s_info);
+		printf("SECTION %d: offset=%ld, size=%ld, nameidx=%d, link=%ld, info=%ld\n", i, off, sp->s_size - sp->s_zero, sp->s_item ? sp->s_item->i_type : 0, sp->s_link, sp->s_info);
 
 		Elf_Shdr shdr = {
 			.sh_name = sp->s_item ? sp->s_item->i_type : 0,

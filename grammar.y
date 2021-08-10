@@ -145,7 +145,7 @@ static item_t	*last_it;
 #define	LISTLINE(n)	/* empty */
 #endif /* LISTING */
 
-#define	RELODONE	{ printf("line %d: \n", lineno); assert(relonami == RELO_UNDEF); } while (0)
+#define	RELODONE	{ assert(relonami == RELO_UNDEF); } while (0)
 
 program	: /* empty */
 	| program IDENT ':'			{ newident($2, DOTSCT); newlabel($2); RELODONE; }
