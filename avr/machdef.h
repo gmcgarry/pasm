@@ -24,6 +24,9 @@
 
 #define IGNORECASE
 
+#define valu_t          int             /* type of expression values */
+#define uvalu_t         unsigned int    /* unsigned valu_t */
+
 /* ========== Machine independent type declarations ========== */
 
 #define	PASS_1		0

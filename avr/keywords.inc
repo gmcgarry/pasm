@@ -78,7 +78,7 @@
 #endif
 
 	{ 0,	MNEMONIC_STS,		0x9200,		"sts" },	/* k, Rr    1001 001d dddd 0000 + 16k */
-#if 0
+#if notyet
 	{ 0,	MNEMONIC_STS_AVR8L,	0xa800,		"sts" },	/* Rd, k    1010 1kkk dddd kkkk */
 #endif
 
@@ -102,7 +102,7 @@
 #endif
 
 	{ 0,	MNEMONIC_LDS,		0x9000,		"lds" },	/* Rd, k    1001 000d dddd 0000 + 16k */
-#if 0
+#if notyet
 	{ 0,	MNEMONIC_LDS_AVR8L,	0xa000,		"lds" },	/* Rd, k    1010 0kkk dddd kkkk */
 #endif
 
@@ -224,6 +224,7 @@
 	{ 0,	TWOOP_1,		0x1c00,		"rol" },	/* Rd       0001 11dd dddd dddd */ /* adc alias */
 
 	{ 0,	MNEMONIC_SER,		0xef0f,		"ser" },	/* Rd       1110 1111 dddd 1111 */ /* ldi alias */
+	{ 0,	MNEMONIC_CBR,		0x7000,		"cbr" },	/* Rd, K    0111 KKKK dddd KKKK ~K */
 
 	/* non-core instructions */
 	{ 0,	MNEMONIC_MOVW,		0x100,		"movw" },	/* Rd, Rr   0000 0001 dddd rrrr */
@@ -236,14 +237,10 @@
 	{ 0,	MNEMONIC_FMUL,		0x380,		"fmuls" },	/* Rd, Rr   0000 0011 1ddd 0rrr */
 	{ 0,	MNEMONIC_FMUL,		0x388,		"fmulsu"},	/* Rd, Rr   0000 0011 1ddd 1rrr */
 
-	/* done to here */
-
 	{ 0,	BITSET,			0x9408,		"bset" },	/* s        1001 0100 0sss 1000 */
 	{ 0,	BITSET,			0x9488,		"bclr" },	/* s        1001 0100 1sss 1000 */
 	{ 0,	BITLOAD,		0xfa00,		"bst" },	/* Rr, b    1111 101d dddd 0bbb */
 	{ 0,	BITLOAD,		0xf800,		"bld" },	/* Rd, b    1111 100d dddd 0bbb */
-
-	{ 0,	MNEMONIC_CBR,		0x7000,		"cbr" },	/* Rd, K    0111 KKKK dddd KKKK ~K */
 
 	{ 0,	BITSKIP,		0x9900,		"sbic" },	/* P, b     1001 1001 PPPP Pbbb */
 	{ 0,	BITSKIP,		0x9b00,		"sbis" },	/* P, b     1001 1011 PPPP Pbbb */
