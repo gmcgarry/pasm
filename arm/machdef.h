@@ -35,8 +35,10 @@
  */
 
 #define LISTING
-#define ASLD
 #define THREE_PASS
+#if 0
+#define ASLD
+#endif
 
 /* ========== Machine independent type declarations ========== */
 
@@ -70,7 +72,10 @@
 #define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.' || (c) == '%')
 #define ISALNUM(c)      (isalnum(c) || (c) == '_' || (c) == '.')
 
-#define ELFM	"%"
+#define ELFM		"%"
+
+#define MODE_ARM	0
+#define MODE_THUMB	1
 
 #define S_REG		0xF
 #define S_NUM		0x8

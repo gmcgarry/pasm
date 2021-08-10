@@ -33,6 +33,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+%token <y_word> DIRECTIVE_CPU
+%token <y_word> DIRECTIVE_ARCH
+%token <y_word> DIRECTIVE_EABIATTR
+%token <y_word> DIRECTIVE_FPU
+%token <y_word> DIRECTIVE_MODE
+%token <y_word> DIRECTIVE_SYNTAX
+
 %token <y_word> COND
 %token <y_word> LINK
 %token <y_word> BRANCH
@@ -46,6 +53,7 @@
 %token <y_word> RRX
 %token <y_word> SDT
 %token <y_word> BYTE
+%token <y_word> HALF
 %token <y_word> TRANS
 %token <y_word> BDT
 %token <y_word> SWI

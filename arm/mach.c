@@ -42,6 +42,8 @@
 
 extern sect_t sect[];
 
+int mode = MODE_ARM;
+
 
 void
 machstart(int pass)
@@ -53,8 +55,33 @@ machfinish(int pass)
 {
 }
 
+void
+setcpu(const char* id)
+{
+	warning("ignoring .cpu directive");
+}
 
-void branch(word_t brtyp, word_t link, valu_t val)
+void
+setarch(const char* id)
+{
+	warning("ignoring .arch directive");
+}
+
+
+void
+setfpu(const char* fpu)
+{
+	warning("ignoring .fpu directive");
+}
+
+void
+setmode(int m)
+{
+	mode = m;
+}
+
+void
+branch(word_t brtyp, word_t link, valu_t val)
 {
 	valu_t offset;
 
@@ -67,7 +94,8 @@ void branch(word_t brtyp, word_t link, valu_t val)
 	return;
 }
 
-void data(long opc, long ins, valu_t val, short typ)
+void
+data(long opc, long ins, valu_t val, short typ)
 {
 	valu_t tmpval;
 	int adrflag = 0;
@@ -140,7 +168,8 @@ void data(long opc, long ins, valu_t val, short typ)
    12-bit field.  Unfortunately this means that some numbers may not fit at
    all. */
 
-int calcimm(word_t *opc, valu_t *val,short typ)
+int
+calcimm(word_t *opc, valu_t *val, short typ)
 {
 	int i = 0;
 
@@ -218,10 +247,10 @@ int calcimm(word_t *opc, valu_t *val,short typ)
 	return(0);	/* Failed if can't encode it after 16 rotates */
 }
 
-
 /* Calculate an offset in an address */
 
-word_t calcoffset(valu_t val)
+word_t
+calcoffset(valu_t val)
 {
 	if((val & 0xFFFFF000) == 0)
 		return(val|0x00800000);
@@ -235,7 +264,8 @@ word_t calcoffset(valu_t val)
 
 /* This routine deals with STR and LDR instructions */
 
-void strldr(long opc, long ins, valu_t val)
+void
+strldr(long opc, long ins, valu_t val)
 {
 
 	long reg, reg2;	/* The registers we are using */
@@ -267,7 +297,7 @@ void strldr(long opc, long ins, valu_t val)
 		if (!bflag && pass == PASS_3){	/* Debugging info */
 			/* warning("LDR address extension"); */
 			if (dflag)
-				printf("value: %lx\n", val);
+				printf("value: %llx\n", val);
 		}
 
 		opc = 0x03A00000;	/* Set opc for putaddr */
@@ -312,7 +342,7 @@ void strldr(long opc, long ins, valu_t val)
 		if (!bflag && pass == PASS_3){	/* Debugging info */
 			/* warning("STR address extension"); */
 			if (dflag)
-				printf("value: %lx\n", val);
+				printf("value: %llx\n", val);
 		}
 
 		opc = 0x03A00000;	/* Set opc for putaddr */
@@ -350,7 +380,8 @@ void strldr(long opc, long ins, valu_t val)
    optimisation problem with mobile addresses ! */
 
 
-void calcadr(word_t ins, word_t reg, valu_t val, short typ)
+void
+calcadr(word_t ins, word_t reg, valu_t val, short typ)
 {
 	valu_t tmpval = val;
 	word_t opc = 0xff;	/* Dummy opc used as a flag for data() */
@@ -373,7 +404,8 @@ void calcadr(word_t ins, word_t reg, valu_t val, short typ)
 }
 
 
-word_t calcshft(valu_t val, short typ, word_t styp)
+word_t
+calcshft(valu_t val, short typ, word_t styp)
 {
 	if (typ == S_UND) 
 		return(0);
@@ -387,7 +419,8 @@ word_t calcshft(valu_t val, short typ, word_t styp)
 	return((val & 0x1F)<<7);
 }
 
-void rotateleft2(long *x)
+void
+rotateleft2(valu_t *x)
 {
 	unsigned long bits;
 
@@ -412,7 +445,8 @@ void rotateleft2(long *x)
    less instruction, because that will upset other addresses.
 */
 
-void putaddr(long opc, long ins, long val, int count)
+void
+putaddr(long opc, long ins, long val, int count)
 {
 	long tmpval = val;
 	long reg = ins & 0x0000F000;
@@ -478,7 +512,8 @@ void putaddr(long opc, long ins, long val, int count)
 #define PBITTABSZ	128
 static char *pbittab[PBITTABSZ];
 
-int oursmall(int fitsmall, int gain)
+int
+oursmall(int fitsmall, int gain)
 {
 	register int bit;
 	register char *p;
