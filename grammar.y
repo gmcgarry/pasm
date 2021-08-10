@@ -103,7 +103,7 @@ static item_t	*last_it;
 %token DIRECTIVE_EQU
 %token DIRECTIVE_SET
 %token DIRECTIVE_MESSAGE
-%token DIRECTIVE_ALIGN
+%token <y_word> DIRECTIVE_ALIGN
 %token DIRECTIVE_ASSERT
 %token DIRECTIVE_SPACE
 %token DIRECTIVE_SEEK
@@ -214,7 +214,7 @@ operation: /* empty */
 	| DIRECTIVE_EQU IDENT '=' absexp	{ $2->i_type = S_ABS; $2->i_valu = $4; }
 	| DIRECTIVE_SET IDENT ',' absexp	{ $2->i_type = S_ABS; $2->i_valu = $4; }
 	| DIRECTIVE_EXTERN externlist
-	| DIRECTIVE_ALIGN optabs		{ align($2); }
+	| DIRECTIVE_ALIGN optabs		{ if (!($1)) align($2); else align(0x1<<$2); }
 	| DIRECTIVE_SPACE absexp		{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; (&sect[DOTSCT])->s_zero += $2; }
 	| DIRECTIVE_SEEK absexp			{
 							if (DOTSCT == S_UND)

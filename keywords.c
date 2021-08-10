@@ -69,6 +69,7 @@ item_t	keytab[] = {
 	{ 0,	DIRECTIVE_ASCII,	1,		".asciz" },
 	{ 0,	DIRECTIVE_ASCII,	1,		".string" },
 	{ 0,	DIRECTIVE_ALIGN,	0,		".align" },
+	{ 0,	DIRECTIVE_ALIGN,	1,		".p2align" },
 	{ 0,	DIRECTIVE_ASSERT,	0,		".assert" },
 	{ 0,	DIRECTIVE_SPACE,	0,		".space" },
 	{ 0,	DIRECTIVE_SEEK,		0,		".seek" },
