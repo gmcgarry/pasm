@@ -21,8 +21,6 @@
 	{ 0,	DIRECTIVE_SEGMENT,	CSEG,		".cseg" },
 	{ 0,	DIRECTIVE_SEGMENT,	DSEG,		".dseg" },
 
-	{ 0,	MACHID,			M_ATMEGA328P,	"ATmega328P"	},
-
 	{ 0,	SHIFTFUNC,		0,		"low" },
 	{ 0,	SHIFTFUNC,		8,		"high" },
 	{ 0,	SHIFTFUNC,		0,		"lo8" },

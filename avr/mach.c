@@ -36,6 +36,11 @@ machfinish(int pass)
 }
 
 void
+setdevice(const char *name)
+{
+}
+
+void
 branch(int opc, expr_t exp)
 {
 	int distw = (exp.val - (DOTVAL + 2)) / 2;

@@ -17,6 +17,7 @@
 #define RELOMOVE(a,b)   {a = b; b = 0;}
 
 #define M_ATMEGA328P	0
+#define M_ATMEGA168P	1
 
 #define CSEG		0
 #define DSEG		1
@@ -28,3 +29,4 @@
 void branch(int opc, expr_t exp);
 void reljump(int opc, expr_t exp);
 void absjump(int opc, expr_t exp);
+void setdevice(const char* id);

@@ -50,7 +50,7 @@ operation: BASICOP				{ emit2($1); }
         | MNEMONIC_LSL reg8 			{ emit2($1 | ($2 << 4) | (($2 & 0x0f) << 0) | (($2 & 0x10) << 5)); }
         | MNEMONIC_ROL reg8           		{ emit2($1 | ($2 << 4) | (($2 & 0x0f) << 0) | (($2 & 0x10) << 5)); }
 
-	| DIRECTIVE_DEVICE MACHID		{ }
+	| DIRECTIVE_DEVICE IDENT		{ setdevice($2->i_name); }
 	| DIRECTIVE_DEFINE IDENT '=' REG8	{ $2->i_type = S_ABS; $2->i_valu = $4; }
 	| DIRECTIVE_SEGMENT			{
 							static const char *Names[] = { ".text", ".data" };
