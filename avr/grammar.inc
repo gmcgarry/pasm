@@ -16,9 +16,11 @@
 
 operation: BASICOP				{ emit2($1); }
 	| BRANCHOP expr				{ branch($1, $2); }
+	| BRANCHOP_BCOND imm3 ',' expr		{ branch($1 | $2, $4); }
 	| ONEOP reg8				{ emit2($1 | ($2 << 4)); }
 	| ONEOPI reg8 ',' imm8			{ emit2($1 | (($2 & 0x0f) << 4) | (($4 & 0xf0) << 4) | ($4 & 0x0f)); }
 	| TWOOP reg8 ',' reg8			{ emit2($1 | ($2 << 4) | (($4 & 0x0f) << 0) | (($4 & 0x10) << 5)); }
+	| TWOOP_1 reg8				{ emit2($1 | ($2 << 4) | (($2 & 0x0f) << 0) | (($2 & 0x10) << 5)); }
 	| BITOP reg8 ',' imm3			{ emit2($1 | ($2 << 4) | $4); }
 
 	| MNEMONIC_RJMP expr			{ reljump($1, $2); }
@@ -27,21 +29,36 @@ operation: BASICOP				{ emit2($1); }
 	| MNEMONIC_IN reg8 ',' port		{ emit2($1 | ($2 << 4) | ($4 & 0x0f) | (($4 & 0x30) << 5)); }
         | MNEMONIC_OUT port ',' reg8		{ emit2($1 | ($4 << 4) | ($2 & 0x0f) | (($2 & 0x30) << 5)); }
 
-	/* non-core instructions */
-        | MNEMONIC_ADIW regw ',' imm6
-        | MNEMONIC_SBIW regw ',' imm6		{ emit2($1 | ($2 << 4) | ($4 & 0x0f) | (($4 & 0x30) << 2)); }
-	| MNEMONIC_MOVW reg8 ',' reg8		{ if (($2 | $4) & 1) serror("invalid register"); emit2($1 | (($2 & 0x1e) << 3) | ($4 >> 1)); }
+	| MNEMONIC_LPM 				{ emit2(0x95c8 | ($1 ? 0x10 : 0x00)); }
+	| MNEMONIC_LPM reg8 ',' REG16		{ if ($4 != ZREG) serror("bad 16-bit register"); emit2(0x9004 | ($2 << 4) | ($1 ? 0x02 : 0x00)); }
+	| MNEMONIC_LPM reg8 ',' REG16 '+'	{ if ($4 != ZREG) serror("bad 16-bit register"); emit2(0x9005 | ($2 << 4) | ($1 ? 0x02 : 0x00)); }
 
-	| MNEMONIC_LPM_Z reg8 ',' REG16		{ if ($4 != ZREG) serror("bad 16-bit register"); emit2($1 | ($2 << 4)); }
-	| MNEMONIC_LPM_ZP reg8 ',' REG16 '+'	{ if ($4 != ZREG) serror("bad 16-bit register"); emit2($1 | ($2 << 4)); }
+	/* non-core instructions */
+        | MNEMONIC_OPIW regw ',' imm6		{ emit2($1 | ($2 << 4) | ($4 & 0x0f) | (($4 & 0x30) << 2)); }
+	| MNEMONIC_MOVW reg8 ',' reg8		{ if (($2 | $4) & 1) serror("invalid register"); emit2($1 | (($2 & 0x1e) << 3) | ($4 >> 1)); }
 
 	| MNEMONIC_ST REG16 ',' reg8		{ emit2(0x8200 | ($2 << 2) | ($4 << 4) | (($2 & 1) << 12)); }
 	| MNEMONIC_ST REG16 '+' ',' reg8	{ emit2(0x9201 | ($2 << 2) | ($5 << 4)); }
 	| MNEMONIC_ST '-' REG16 ',' reg8	{ emit2(0x9202 | ($3 << 2) | ($5 << 4)); }
 
+	| MNEMONIC_STS imm16 ',' reg8		{ emit2($1 | ($4 << 4)); emit2($2); }
+	| MNEMONIC_STD REG16 '+' imm6 ',' reg8	{ emit2($1 | ($6 << 4) | (($4 & 0x20) << 8) | (($4 & 0x18) << 7) | ($4 & 0x07) | ($2 << 2)); }
+
 	| MNEMONIC_LD reg8 ',' REG16		{ emit2(0x8000 | ($4 << 2) | ($2 << 4) | (($4 & 1) << 12)); }
 	| MNEMONIC_LD reg8 ',' REG16 '+'	{ emit2(0x9001 | ($4 << 2) | ($2 << 4)); }
 	| MNEMONIC_LD reg8 ',' '-' REG16 	{ emit2(0x9002 | ($5 << 2) | ($2 << 4)); }
+
+	| MNEMONIC_LDS reg8 ',' imm16		{ emit2($1 | ($2 << 4)); emit2($4); }
+	| MNEMONIC_LDD reg8 ',' REG16 '+' imm6	{ emit2($1 | ($2 << 4) | (($6 & 0x20) << 8) | (($6 & 0x18) << 7) | ($6 & 0x07) | ($4 << 2)); }
+
+        | MNEMONIC_MULS regU ',' regU		{ emit2($1 | ($2 << 4) | ($4 << 0)); }
+	| MNEMONIC_FMUL regV ',' regV		{ emit2($1 | (($2&0x7) << 4) | ($4&0x7)); }
+
+	| BITSET imm3				{ emit2($1 | ($1 << 4)); }
+	| BITLOAD reg8 ',' imm3			{ emit2($1 | ($1 << 4) | $4); }
+	| BITSKIP imm5 ',' imm3			{ emit2($1 | ($2 << 3) | $4); }
+
+	| MNEMONIC_CBR reg8 ',' imm8		{ emit2($1 | ($2 << 4) | ($4 & 0x0f) | (($4 & 0xf0) << 4)); }
 
 	/* aliases */
         | MNEMONIC_CLR reg8			{ emit2($1 | ($2 << 4) | (($2 & 0x0f) << 0) | (($2 & 0x10) << 5)); }
@@ -73,11 +90,17 @@ port:	expr					{ $$ = $1.val; if ($$ < -64|| $$ > 64) serror("6-bit constant out
 imm3:	expr					{ $$ = $1.val; if ($$ < 0 || $$ > 7) serror("3-bit constant out of range"); }
 	;
 
-imm6:	expr					{ $$ = $1.val; if ($$ < -63 || $$ > 63) serror("8-bit constant out of range"); }
+imm5:	expr					{ $$ = $1.val; if ($$ < 0 || $$ > 31) serror("5-bit constant out of range"); }
+	;
+
+imm6:	expr					{ $$ = $1.val; if ($$ < -63 || $$ > 63) serror("6-bit constant out of range"); }
 	;
 
 imm8:	expr					{ $$ = $1.val; if ($$ < -255 || $$ > 255) serror("8-bit constant out of range"); }
 	| SHIFTFUNC '(' expr ')'		{ $$ = ($3.val >> $1) & 0xff; }
+	;
+
+imm16:	expr					{ $$ = $1.val; if ($$ < -65535 || $$ > 65635) serror("16-bit constant out of range"); }
 	;
 
 reg8:	REG8					{ if ($1 < 0 && $1 > 31) serror("bad register"); $$ = $1; }
@@ -86,4 +109,10 @@ reg8:	REG8					{ if ($1 < 0 && $1 > 31) serror("bad register"); $$ = $1; }
 
 regw:	REG8					{ if ($1 != 24 && $1 != 26 && $1 != 28 && $1 != 30) serror("bad register"); $$ = ($1 - 24) / 2; }
 	| IDENT					{ if (($1->i_type & S_SCTMASK) != S_ABS) serror("bad register alias"); $$ = ($1->i_valu - 24) / 2; }
+	;
+
+regU:	REG8					{ if ($1 < 16 || $1 < 16) serror("invalid register"); }
+	;
+
+regV:	REG8					{ if ($1 < 16 || $1 > 23) serror("invalid register"); }
 	;

@@ -142,7 +142,7 @@ void
 newsect(item_t *ip, int type, const char* flags)
 {
 	int sectno;
-	int flag = 0;
+	int eflags = 0;
 	sect_t *sp = NULL;
 
 	printf("newsect(%s,)\n", ip->i_name);
@@ -157,12 +157,12 @@ newsect(item_t *ip, int type, const char* flags)
 	if (flags) {
 		while (*flags) {
 			switch (*flags) {
-				case 'a': flag |= SHF_ALLOC; break;
-				case 'w': flag |= SHF_WRITE; break;
-				case 'x': flag |= SHF_EXECINSTR; break;
-				case 'M': flag |= SHF_MERGE; break;
-				case 'S': flag |= SHF_STRINGS; break;
-				case 'T': flag |= SHF_TLS; break;
+				case 'a': eflags |= SHF_ALLOC; break;
+				case 'w': eflags |= SHF_WRITE; break;
+				case 'x': eflags |= SHF_EXECINSTR; break;
+				case 'M': eflags |= SHF_MERGE; break;
+				case 'S': eflags |= SHF_STRINGS; break;
+				case 'T': eflags |= SHF_TLS; break;
 				default: fatal("unrecognised section flag '%s'", *flags); break;
 			}
 			flags++;
@@ -179,7 +179,7 @@ newsect(item_t *ip, int type, const char* flags)
 		int i;
 		for (i = 0; i < (int)(sizeof(DefaultSectionFlags)/sizeof(DefaultSectionFlags[0])); i++) {
 			if (strcmp(DefaultSectionFlags[i].name, ip->i_name) == 0) {
-				flag |= DefaultSectionFlags[i].flags;
+				eflags |= DefaultSectionFlags[i].flags;
 				break;
 			}
 		}
@@ -195,14 +195,15 @@ newsect(item_t *ip, int type, const char* flags)
 			fatal("too many sections");
 		sp = &sect[sectno];
 		sp->s_type = type & 0xffffffff;
-		sp->s_flag = flag;
+		sp->s_flag = 0;
 		sp->s_item = ip;
 		sp->s_align = ALIGNSECT;
 		sp->s_zero = 0;
 		ip->i_type = S_SECTION | sectno;
 		ip->i_valu = 0;
+		sp->s_eflags = eflags;
 		/* create relocation table for section */
-		if (flag & SHF_ALLOC) {
+		if (eflags & SHF_ALLOC) {
 			static char tmp[256];
 #ifdef ELF64
 			strcpy(tmp, ".rela");
@@ -216,6 +217,7 @@ newsect(item_t *ip, int type, const char* flags)
 #else
 			sp->s_type = SHT_REL;
 #endif
+			sp->s_eflags = SHF_INFO_LINK;
 			sp->s_flag = 0;
 			sp->s_entsize = sizeof(Elf_Rel);
 			sp->s_link = symtab_sectno;

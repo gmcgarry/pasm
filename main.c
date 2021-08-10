@@ -581,7 +581,7 @@ outfinish()
 		Elf_Shdr shdr = {
 			.sh_name = sp->s_item ? sp->s_item->i_type : 0,
 			.sh_type = sp->s_type,
-			.sh_flags = sp->s_flag,
+			.sh_flags = sp->s_eflags,
 			.sh_addr = sp->s_base,
 			.sh_offset = off,
 			.sh_size = sp->s_size /* + sp->s_comm */,

@@ -156,6 +156,7 @@ struct sect {
 	long	s_entsize;	/* ELF */
 	long	s_link;		/* ELF */
 	long	s_info;		/* ELF */
+	long	s_eflags;	/* ELF */
 #ifdef THREE_PASS
 	ADDR_T	s_gain;		/* gain in PASS_2 */
 #endif

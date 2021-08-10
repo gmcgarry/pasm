@@ -16,7 +16,6 @@
 
 %token DIRECTIVE_DEVICE
 %token DIRECTIVE_DEFINE
-%token DIRECTIVE_ORG
 
 %token <y_word> SHIFTFUNC
 
@@ -27,10 +26,16 @@
 
 %token <y_word> BASICOP
 %token <y_word> BRANCHOP
+%token <y_word> BRANCHOP_BCOND
 %token <y_word> ONEOP
 %token <y_word> ONEOPI
 %token <y_word> TWOOP
+%token <y_word> TWOOP_1
 %token <y_word> BITOP
+
+%token <y_word> BITLOAD
+%token <y_word> BITSET
+%token <y_word> BITSKIP
 
 %token <y_word> MNEMONIC_LPM
 %token <y_word> MNEMONIC_ELPM
@@ -46,6 +51,11 @@
 %token <y_word> MNEMONIC_RJMP
 %token <y_word> MNEMONIC_JMP
 
+%token <y_word> MNEMONIC_MOVW
+%token <y_word> MNEMONIC_MULS
+%token <y_word> MNEMONIC_FMUL
+%token <y_word> MNEMONIC_OPIW
+
 %token <y_word> MNEMONIC_BRBS
 %token <y_word> MNEMONIC_BRBC
 %token <y_word> MNEMONIC_ADD
@@ -60,14 +70,6 @@
 %token <y_word> MNEMONIC_CPSE
 %token <y_word> MNEMONIC_MOV
 %token <y_word> MNEMONIC_MUL
-%token <y_word> MNEMONIC_MOVW
-%token <y_word> MNEMONIC_MULS
-%token <y_word> MNEMONIC_MULSU
-%token <y_word> MNEMONIC_FMUL
-%token <y_word> MNEMONIC_FMULS
-%token <y_word> MNEMONIC_FMULSU
-%token <y_word> MNEMONIC_ADIW
-%token <y_word> MNEMONIC_SBIW
 %token <y_word> MNEMONIC_SUBI
 %token <y_word> MNEMONIC_SBCI
 %token <y_word> MNEMONIC_ANDI
@@ -91,39 +93,15 @@
 %token <y_word> MNEMONIC_ST
 %token <y_word> MNEMONIC_LDD
 %token <y_word> MNEMONIC_STD
-%token <y_word> MNEMONIC_COUNT
-%token <y_word> MNEMONIC_LPM_Z
-%token <y_word> MNEMONIC_LPM_ZP
-%token <y_word> MNEMONIC_ELPM_Z
-%token <y_word> MNEMONIC_ELPM_ZP
-%token <y_word> MNEMONIC_LD_X
-%token <y_word> MNEMONIC_LD_XP
-%token <y_word> MNEMONIC_LD_MX
-%token <y_word> MNEMONIC_LD_Y
-%token <y_word> MNEMONIC_LD_YP
-%token <y_word> MNEMONIC_LD_MY
-%token <y_word> MNEMONIC_LD_Z
-%token <y_word> MNEMONIC_LD_ZP
-%token <y_word> MNEMONIC_LD_MZ
-%token <y_word> MNEMONIC_ST_X
-%token <y_word> MNEMONIC_ST_XP
-%token <y_word> MNEMONIC_ST_MX
-%token <y_word> MNEMONIC_ST_Y
-%token <y_word> MNEMONIC_ST_YP
-%token <y_word> MNEMONIC_ST_MY
-%token <y_word> MNEMONIC_ST_Z
-%token <y_word> MNEMONIC_ST_ZP
-%token <y_word> MNEMONIC_ST_MZ
-%token <y_word> MNEMONIC_LDD_Y
-%token <y_word> MNEMONIC_LDD_Z
-%token <y_word> MNEMONIC_STD_Y
-%token <y_word> MNEMONIC_STD_Z
-%token <y_word> MNEMONIC_LDS_AVR8L
-%token <y_word> MNEMONIC_STS_AVR8L
 
 %type <y_word> reg8
 %type <y_valu> regw
+%type <y_valu> regU
+%type <y_valu> regV
 %type <y_valu> port
+
 %type <y_valu> imm3
+%type <y_valu> imm5
 %type <y_valu> imm6
 %type <y_valu> imm8
+%type <y_valu> imm16

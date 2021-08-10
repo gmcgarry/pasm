@@ -46,7 +46,7 @@ branch(int opc, expr_t exp)
 	int distw = (exp.val - (DOTVAL + 2)) / 2;
 	int sm;
 
-	printf("branch: exp.val = %d, DOTVAL=%d\n", exp.val, DOTVAL);
+	printf("branch: exp.val = %ld, DOTVAL=%ld\n", exp.val, DOTVAL);
 
 	/* k        1111 00kk kkkk k001 */
 
@@ -76,7 +76,7 @@ reljump(int opc, expr_t exp)
         /* k        1100 kkkk kkkk kkkk */
         /* k        1101 kkkk kkkk kkkk */
 
-	printf("RJMP abs=%d, rel=%d\n", exp.val, distw);
+	printf("RJMP abs=%ld, rel=%d\n", exp.val, distw);
 
 	if (pass == PASS_2 && distw > 0 && !(exp.typ & S_DOT))
 		distw -= sect[DOTSCT].s_gain;
