@@ -45,16 +45,27 @@ extern void stop();
 
 
 /* ARGSUSED */
-void yyerror(const char* message)
+void
+yyerror(const char* message)
 {
-} /* we will do our own error printing */
+	/* we will do our own error printing */
+}
 
-void nosect(void)
+void
+nosect(void)
 {
 	fatal("no sections");
 }
 
-static void diag(const char* tail, const char* s, va_list ap)
+void
+nofit(void)
+{
+	if (pass == PASS_3)
+		warning("too big");
+}
+
+static void
+diag(const char* tail, const char* s, va_list ap)
 {
 	fflush(stdout);
 	if (modulename)
@@ -66,7 +77,8 @@ static void diag(const char* tail, const char* s, va_list ap)
 }
 
 /* VARARGS1 */
-void fatal(const char* s, ...)
+void
+fatal(const char* s, ...)
 {
 	va_list ap;
 	va_start(ap, s);
@@ -79,7 +91,8 @@ void fatal(const char* s, ...)
 }
 
 /* VARARGS1 */
-void serror(const char* s, ...)
+void
+serror(const char* s, ...)
 {
 	va_list ap;
 	va_start(ap, s);
@@ -92,20 +105,15 @@ void serror(const char* s, ...)
 }
 
 /* VARARGS1 */
-void warning(const char* s, ...)
+void
+warning(const char* s, ...)
 {
 	va_list ap;
 	va_start(ap, s);
 
 	nerrors++;
 	diag(" (warning)\n", s, ap);
-	stop();
+/*	stop(); */
 
 	va_end(ap);
-}
-
-void nofit(void)
-{
-	if (pass == PASS_3)
-		warning("too big");
 }
