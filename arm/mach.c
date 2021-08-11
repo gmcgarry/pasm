@@ -81,9 +81,9 @@ setmode(int m)
 }
 
 void
-branch(word_t brtyp, word_t link, valu_t val)
+branch(word_t brtyp, word_t link, ADDR_T val)
 {
-	valu_t offset;
+	ADDR_T offset;
 
 	offset = val - DOTVAL - 8;		/* Allow for pipeline */
 	if ((offset & 0xFC000000) != 0 && (offset & 0xFC000000) != 0xFC000000){
@@ -95,9 +95,9 @@ branch(word_t brtyp, word_t link, valu_t val)
 }
 
 void
-data(long opc, long ins, valu_t val, short typ)
+data(long opc, long ins, ADDR_T val, short typ)
 {
-	valu_t tmpval;
+	ADDR_T tmpval;
 	int adrflag = 0;
 
 	if (typ == S_REG){	/* The argument is a register */
@@ -169,7 +169,7 @@ data(long opc, long ins, valu_t val, short typ)
    all. */
 
 int
-calcimm(word_t *opc, valu_t *val, short typ)
+calcimm(word_t *opc, ADDR_T *val, short typ)
 {
 	int i = 0;
 
@@ -250,7 +250,7 @@ calcimm(word_t *opc, valu_t *val, short typ)
 /* Calculate an offset in an address */
 
 word_t
-calcoffset(valu_t val)
+calcoffset(ADDR_T val)
 {
 	if((val & 0xFFFFF000) == 0)
 		return(val|0x00800000);
@@ -265,7 +265,7 @@ calcoffset(valu_t val)
 /* This routine deals with STR and LDR instructions */
 
 void
-strldr(long opc, long ins, valu_t val)
+strldr(long opc, long ins, ADDR_T val)
 {
 
 	long reg, reg2;	/* The registers we are using */
@@ -297,7 +297,7 @@ strldr(long opc, long ins, valu_t val)
 		if (!bflag && pass == PASS_3){	/* Debugging info */
 			/* warning("LDR address extension"); */
 			if (dflag)
-				printf("value: %llx\n", val);
+				printf("value: %lx\n", val);
 		}
 
 		opc = 0x03A00000;	/* Set opc for putaddr */
@@ -342,7 +342,7 @@ strldr(long opc, long ins, valu_t val)
 		if (!bflag && pass == PASS_3){	/* Debugging info */
 			/* warning("STR address extension"); */
 			if (dflag)
-				printf("value: %llx\n", val);
+				printf("value: %lx\n", val);
 		}
 
 		opc = 0x03A00000;	/* Set opc for putaddr */
@@ -381,9 +381,9 @@ strldr(long opc, long ins, valu_t val)
 
 
 void
-calcadr(word_t ins, word_t reg, valu_t val, short typ)
+calcadr(word_t ins, word_t reg, ADDR_T val, short typ)
 {
-	valu_t tmpval = val;
+	ADDR_T tmpval = val;
 	word_t opc = 0xff;	/* Dummy opc used as a flag for data() */
 
 /* First check that the address is in range */
@@ -405,7 +405,7 @@ calcadr(word_t ins, word_t reg, valu_t val, short typ)
 
 
 word_t
-calcshft(valu_t val, short typ, word_t styp)
+calcshft(ADDR_T val, short typ, word_t styp)
 {
 	if (typ == S_UND) 
 		return(0);
@@ -420,7 +420,7 @@ calcshft(valu_t val, short typ, word_t styp)
 }
 
 void
-rotateleft2(valu_t *x)
+rotateleft2(ADDR_T *x)
 {
 	unsigned long bits;
 

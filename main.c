@@ -373,7 +373,7 @@ newmodule(char *s)
 	 * the user is familiar with. Moreover, it is not reproducable.
 	 */
 	if ((sflag & (SYM_EXT|SYM_LOC|SYM_LAB)) && PASS_SYMB)
-		newsymb(s, S_MOD, (valu_t)0);
+		newsymb(s, S_MOD, (ADDR_T)0);
 #endif
 #ifdef LISTING
 	listtemp = 0;
@@ -390,7 +390,7 @@ commfinish(void)
 	common_t *cp;
 	sect_t *sp;
 	item_t *ip;
-	valu_t addr;
+	ADDR_T addr;
 
 	switchsect(S_UND);
 
@@ -440,7 +440,7 @@ commfinish(void)
 				/* * save symbol table index * for possible relocation */
 				ip->i_valu = nsymb;
 			}
-			newsymb(ip->i_name, S_EXTERN|S_UND, (valu_t)0);
+			newsymb(ip->i_name, S_EXTERN|S_UND, (ADDR_T)0);
 		}
 	}
 

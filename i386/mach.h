@@ -140,7 +140,7 @@ char dr_m[8][8] = {
 void ea_1_16(int param);
 void ea_1(int param);
 void ea_2(int param);
-int checkscale(valu_t val);
+int checkscale(ADDR_T val);
 void reverse(void);
 void badsyntax(void);
 void regsize(int sz);

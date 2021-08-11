@@ -52,7 +52,7 @@
 extern sect_t sect[SECTMAX];  /* XXXGJM remove  */
 
 
-valu_t
+ADDR_T
 load(const item_t* ip)
 {
         int sct = ip->i_type & S_SCTMASK;
@@ -78,7 +78,7 @@ load(const item_t* ip)
 }
 
 int
-store(item_t* ip, valu_t val)
+store(item_t* ip, ADDR_T val)
 {
         int sct = ip->i_type & S_SCTMASK;
 #ifdef ASLD
@@ -168,7 +168,7 @@ combine(int typ1, int typ2, int op)
 
 #ifdef LISTING
 int
-printx(int ndig, valu_t val)
+printx(int ndig, ADDR_T val)
 {
 	static char buf[8];
 	char* p;
@@ -289,14 +289,14 @@ emit1(int arg)
 #ifdef LISTING
 	if (listeoln) {
 		if (listflag & 1) {
-			listcolm += printx(VALWIDTH, (valu_t)DOTVAL);
+			listcolm += printx(VALWIDTH, (ADDR_T)DOTVAL);
 			listcolm++;
 			putchar(' ');
 		}
 		listeoln = 0;
 	}
 	if (listflag & 2)
-		listcolm += printx(2, (valu_t)arg);
+		listcolm += printx(2, (ADDR_T)arg);
 #endif
 	switch (pass) {
 		case PASS_1:
@@ -320,7 +320,7 @@ emit1(int arg)
 void
 emit2(int arg)
 {
-#if 0
+#if 1
 	printf("emit2(0x%04x)\n", arg & 0xffff);
 #endif
 #ifdef BYTES_REVERSED
@@ -348,7 +348,7 @@ emit4(long arg)
 }
 
 void
-emitx(valu_t val, int n)
+emitx(ADDR_T val, int n)
 {
 #if 0
 	printf("emitx(val=%lx, n=%d)\n", val, n);

@@ -138,7 +138,7 @@ ea_2(int param)
 }
 
 int
-checkscale(valu_t val)
+checkscale(ADDR_T val)
 {
 	int v = val;
 

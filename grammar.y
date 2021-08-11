@@ -64,7 +64,7 @@ static item_t	*last_it;
 
 %union {
 	word_t y_word;
-	valu_t y_valu;
+	ADDR_T y_valu;
 	expr_t y_expr;
 	item_t *y_item;
 };
@@ -197,6 +197,7 @@ operation: /* empty */
 								sect[DOTSCT].s_zero += $2 - DOTVAL;
 								DOTVAL = $2;
 							}
+							sect[DOTSCT].s_gain = 0;
 						}
 #if 0
 	| DIRECTIVE_LINE optabs			{
@@ -206,11 +207,11 @@ operation: /* empty */
 								else
 									hllino++;
 								/* XXXGJM: these go in the dwarf section, not the symtab, like in coff file */
-								newsymb((char *)0, (DOTSCT | S_LIN), (valu_t)DOTVAL);
+								newsymb((char *)0, (DOTSCT | S_LIN), (ADDR_T)DOTVAL);
 							}
 						}
 #endif
-	| DIRECTIVE_FILE STRING			{ if ((sflag & SYM_LIN) && PASS_SYMB) newsymb(stringbuf, (S_ABS | S_FILE), (valu_t)DOTVAL); }
+	| DIRECTIVE_FILE STRING			{ if ((sflag & SYM_LIN) && PASS_SYMB) newsymb(stringbuf, (S_ABS | S_FILE), (ADDR_T)DOTVAL); }
 	| DIRECTIVE_EQU IDENT '=' absexp	{ $2->i_type = S_ABS; $2->i_valu = $4; }
 	| DIRECTIVE_SET IDENT ',' absexp	{ $2->i_type = S_ABS; $2->i_valu = $4; }
 	| DIRECTIVE_EXTERN externlist
@@ -264,7 +265,7 @@ dataflist
 #endif
 
 expr	: error					{ serror("expr syntax err"); $$.val = 0; $$.typ = S_UND; }
-	| NUMBER8				{ $$.val = $1; /* valu_t = int64_t */ $$.typ = S_ABS; }
+	| NUMBER8				{ $$.val = $1; /* ADDR_T = int64_t */ $$.typ = S_ABS; }
 	| id_fb					{ $$.val = load($1); last_it = $1; $$.typ = $1->i_type & S_SCTMASK; }
 	| STRING				{ if (stringlen != 1) serror("too many chars"); $$.val = stringbuf[0]; $$.typ = S_ABS; }
 #if 1

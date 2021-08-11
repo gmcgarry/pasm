@@ -66,7 +66,21 @@ sbrs	skip if bit in register set
 }
 
 void
-reljump(int opc, expr_t exp)
+absjump(int opc, expr_t exp)
+{
+	int distw = exp.val;
+
+       	/* k        1001 010k kkkk 110k + 16k */
+        /* k        1001 010k kkkk 111k + 16k */
+
+	if (!fitx(distw, 22))
+		fatal("target address too large");
+	emit2(opc | ((distw >> 13) & 0x1f0) | ((distw >> 16) & 0x01));
+	emit2(distw & 0xffff);
+}
+
+void
+jump(int opc, expr_t exp)
 {
 	int distw = (exp.val - (DOTVAL + 2)) / 2;
 	int sm;
@@ -77,27 +91,18 @@ reljump(int opc, expr_t exp)
 	if (pass == PASS_2 && distw > 0 && !(exp.typ & S_DOT))
 		distw -= sect[DOTSCT].s_gain;
 	sm = distw > 0 ? fit12(distw) : fit12(-distw);
-	if (sm) {
+	if (small(sm, 2)) {
+		if (opc == 0xc000 || opc == 0x940c) /* RJMP/JMP */
+			opc = 0xc000;
+		else if (opc == 0xd000 || opc == 0x940e) /* RCALL/CALL */
+			opc = 0xd000;
 		emit2(opc | (distw & 0x0fff));
 	} else {
-		if (opc == 0xc000) /* RJMP */
+		if (opc == 0xc000 || opc == 0x940c) /* RJMP/JMP */
 			opc = 0x940c;
-		else if (opc == 0xd00) /* RCALL */
+		else if (opc == 0xd000 || opc == 0x940e) /* RCALL/CALL */
 			opc = 0x940e;
-		absjump(opc, exp);
+		emit2(opc | ((exp.val >> 13) & 0x1f0) | ((exp.val >> 16) & 0x01));
+		emit2(exp.val & 0xffff);
 	}
-}
-
-void
-absjump(int opc, expr_t exp)
-{
-	int distw = exp.val / 2;
-
-       	/* k        1001 010k kkkk 110k + 16k */
-        /* k        1001 010k kkkk 111k + 16k */
-
-	if (!fitx(distw, 22))
-		fatal("target address too large");
-	emit2(opc | ((distw >> 13) & 0x1f0) | ((distw >> 16) & 0x01));
-	emit2(distw & 0xffff);
 }

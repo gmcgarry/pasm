@@ -122,16 +122,16 @@ newlabel(item_t *ip)
 #endif
 
 	printf("newlabel: (%s) lineno=%ld, pass=%d, section=%d oldval=%ld, DOTVAL=%ld, gain=%ld\n", ip->i_name, lineno, pass, DOTSCT, oldval, DOTVAL, sect[DOTSCT].s_gain);
-	fflush(0);
 
 	if (DOTSCT == S_UND)
 		nosect();
 	ip->i_type &= ~S_SCTMASK;
 	ip->i_type |= DOTSCT;
-	if (store(ip, (valu_t) DOTVAL) == 0)
+	if (store(ip, (ADDR_T) DOTVAL) == 0)
 		return;
 #ifdef THREE_PASS
 	if (pass == PASS_2) {
+		/* XXXGJM this isn't try for .org directive with fixed base */
 		assert(oldval - (ADDR_T) ip->i_valu == sect[DOTSCT].s_gain);
 	}
 	assert(pass != PASS_2 || oldval - (ADDR_T) ip->i_valu == sect[DOTSCT].s_gain);
@@ -239,7 +239,7 @@ newsect(item_t *ip, int type, const char* flags)
 }
 
 void
-newbase(valu_t base)
+newbase(ADDR_T base)
 {
 	sect_t *sp = &sect[DOTSCT];
 
@@ -263,7 +263,7 @@ newbase(valu_t base)
  *   -	i_valu is used for relocation info during PASS_3
  */
 void
-newcomm(item_t *ip, valu_t val)
+newcomm(item_t *ip, ADDR_T val)
 {
 	if (pass == PASS_1) {
 		if (DOTSCT == S_UND)
@@ -307,9 +307,9 @@ switchsect(int sectno)
 }
 
 void
-align(valu_t bytes)
+align(ADDR_T bytes)
 {
-	valu_t gap;
+	ADDR_T gap;
 	sect_t *sp;
 
 	if (DOTSCT == S_UND)
@@ -453,7 +453,7 @@ new_string(int sectno, const char *s)
 }
 
 void
-newsymb(const char *name, int type, valu_t valu)
+newsymb(const char *name, int type, ADDR_T valu)
 {
 	printf("new symbol: name=%s, type=%04x, value=%04lx\n", name, type, valu);
 

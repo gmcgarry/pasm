@@ -17,15 +17,12 @@
 #define	THREE_PASS	/* branch and offset optimization */
 #define	LISTING		/* enable listing facilities */
 
-#define ADDR_T		long
+#define ADDR_T		unsigned int
 
 #define ALIGNWORD	1
 #define ALIGNSECT	1
 
 #define IGNORECASE
-
-#define valu_t          int             /* type of expression values */
-#define uvalu_t         unsigned int    /* unsigned valu_t */
 
 /* ========== Machine independent type declarations ========== */
 

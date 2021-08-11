@@ -56,11 +56,8 @@
 #define BYTES_REVERSED
 */
 
-#undef ADDR_T
-#define ADDR_T long
-
-#undef word_t
-#define word_t	long
+#define ADDR_T		unsigned int
+#define word_t		unsigned int
 
 #define ALIGNWORD	4
 #define ALIGNSECT	4

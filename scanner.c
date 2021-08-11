@@ -462,7 +462,7 @@ need_stringbuf()
 static int
 innumber(int c)
 {
-	uvalu_t uv;
+	ADDR_T v;
 	char* p;
 	int radix;
 	static char num[40 + 1];
@@ -504,16 +504,16 @@ innumber(int c)
 	}
 	if (radix != 16 && (c == 'f' || c == 'b'))
 		return infbsym(num);
-	uv = 0;
+	v = 0;
 	while ((c = *p++)) {
 		if (c > '9')
 			c -= ('a' - '9' - 1);
 		c -= '0';
 		if ((unsigned)c >= radix)
 			serror("digit exceeds radix");
-		uv = uv * radix + c;
+		v = v * radix + c;
 	}
-	yylval.y_valu = uv; /* signed = unsigned */
+	yylval.y_valu = v;
 	return NUMBER8;
 
 floatconstant:

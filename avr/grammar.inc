@@ -23,8 +23,8 @@ operation: BASICOP				{ emit2($1); }
 	| TWOOP_1 reg8				{ emit2($1 | ($2 << 4) | (($2 & 0x0f) << 0) | (($2 & 0x10) << 5)); }
 	| BITOP reg8 ',' imm3			{ emit2($1 | ($2 << 4) | $4); }
 
-	| MNEMONIC_RJMP expr			{ reljump($1, $2); }
-	| MNEMONIC_JMP expr			{ absjump($1, $2); }
+	| MNEMONIC_RJMP expr			{ jump($1, $2); }
+	| MNEMONIC_JMP expr			{ jump($1, $2); }
 
 	| MNEMONIC_IN reg8 ',' port		{ emit2($1 | ($2 << 4) | ($4 & 0x0f) | (($4 & 0x30) << 5)); }
         | MNEMONIC_OUT port ',' reg8		{ emit2($1 | ($4 << 4) | ($2 & 0x0f) | (($2 & 0x30) << 5)); }

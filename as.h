@@ -85,11 +85,6 @@
 #define	GENLAB		".L"		/* compiler generated labels */
 #endif
 
-#ifndef valu_t
-#define	valu_t		int64_t		/* type of expression values */
-#define	uvalu_t		uint64_t	/* unsigned valu_t */
-#endif
-
 #ifndef ADDR_T
 #define	ADDR_T		unsigned short	/* type of dot */
 #endif
@@ -100,7 +95,7 @@
  */
 
 #ifndef word_t
-#define	word_t		short		/* type of keyword value */
+#define	word_t		unsigned short		/* type of keyword value */
 #endif
 
 #ifndef ALIGNWORD
@@ -118,8 +113,8 @@
 /* ========== type declarations ========== */
 
 struct expr {
-	short	typ;
-	valu_t	val;
+	short typ;
+	ADDR_T val;
 };
 typedef	struct expr expr_t;
 
@@ -131,7 +126,7 @@ struct item {
 	 *	- the token type for keywords, returned by yylex()
 	 *	- the symbol type for IDENT and FBSYM tokens
 	 */
-	valu_t i_valu;		/* symbol value */
+	ADDR_T i_valu;		/* symbol value */
 	const char *i_name;	/* symbol name */
 };
 typedef	struct item item_t;
@@ -139,7 +134,7 @@ typedef	struct item item_t;
 struct common {
 	struct common *c_next;
 	item_t *c_it;
-	valu_t c_size;
+	ADDR_T c_size;
 };
 typedef struct common common_t;
 
@@ -247,7 +242,7 @@ extern short	dflag;		/* -d option (list mode) */
 #endif
 
 #define RELO_UNDEF	0
-extern valu_t relonami INIT(RELO_UNDEF);
+extern ADDR_T relonami INIT(RELO_UNDEF);
 
 #ifdef THREE_PASS
 extern short	bflag;		/* -b option (no optimizations) */
@@ -312,21 +307,21 @@ void	 newequate(item_t *, int);
 void	 newident(item_t *, int);
 void	 newlabel(item_t *);
 void	 newsect(item_t *, int, const char*);
-void	 newbase(valu_t);
-void	 newcomm(item_t *, valu_t);
+void	 newbase(ADDR_T);
+void	 newcomm(item_t *, ADDR_T);
 void	 switchsect(int);
-void	 align(valu_t);
+void	 align(ADDR_T);
 void	 newrelo(int, int);
 long	 new_string(int sectno, const char *);
-void	 newsymb(const char *, int, valu_t);
+void	 newsymb(const char *, int, ADDR_T);
 
 /* misc.c */
-valu_t	 load(const item_t *);
-int	 store(item_t *, valu_t);
+ADDR_T	 load(const item_t *);
+int	 store(item_t *, ADDR_T);
 const char *remember(const char *);
 int	 combine(int, int, int);
 #ifdef LISTING
-int	 printx(int, valu_t);
+int	 printx(int, ADDR_T);
 void	 listline(int);
 #endif
 #ifdef THREE_PASS
@@ -335,7 +330,7 @@ int	 small(int, int);
 void	 emit1(int);
 void	 emit2(int);
 void	 emit4(long);
-void	 emitx(valu_t, int);
+void	 emitx(ADDR_T, int);
 void	 emit8(int64_t);
 void	 emitstr(int);
 void	 emitf(int size, int negative);

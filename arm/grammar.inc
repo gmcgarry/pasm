@@ -37,7 +37,7 @@
 operation: DIRECTIVE_CPU IDENT 					{ setcpu($2->i_name); }
 	| DIRECTIVE_EABIATTR NUMBER8 ',' NUMBER8		{ }
 	| DIRECTIVE_ARCH IDENT					{ setarch($2->i_name); }
-	| DIRECTIVE_FPU	IDENT					{ setfpu($2); }
+	| DIRECTIVE_FPU	IDENT					{ setfpu($2->i_name); }
 	| DIRECTIVE_MODE					{ setmode($1); }
 	| DIRECTIVE_SYNTAX IDENT				{ }
 	| BRANCH optlink expr					{ branch($1, $2, $3.val); }

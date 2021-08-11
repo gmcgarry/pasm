@@ -27,6 +27,5 @@
 #define XREG		3		/* r26/r27 */
 
 void branch(int opc, expr_t exp);
-void reljump(int opc, expr_t exp);
-void absjump(int opc, expr_t exp);
+void jump(int opc, expr_t exp);
 void setdevice(const char* id);
