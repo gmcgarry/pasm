@@ -16,18 +16,20 @@
 
 operation: BASICOP				{ emit2($1); }
 	| BRANCHOP expr				{ branch($1, $2); }
-	| BRANCHOP_BCOND imm3 ',' expr		{ branch($1 | $2, $4); }
+	| BRANCHOP_SREG imm3 ',' expr		{ branch($1 | $2, $4); }
 	| ONEOP reg8				{ emit2($1 | ($2 << 4)); }
 	| ONEOPI reg8 ',' imm8			{ emit2($1 | (($2 & 0x0f) << 4) | (($4 & 0xf0) << 4) | ($4 & 0x0f)); }
 	| TWOOP reg8 ',' reg8			{ emit2($1 | ($2 << 4) | (($4 & 0x0f) << 0) | (($4 & 0x10) << 5)); }
 	| TWOOP_1 reg8				{ emit2($1 | ($2 << 4) | (($2 & 0x0f) << 0) | (($2 & 0x10) << 5)); }
-	| BITOP reg8 ',' imm3			{ emit2($1 | ($2 << 4) | $4); }
 
 	| MNEMONIC_RJMP expr			{ jump($1, $2); }
 	| MNEMONIC_JMP expr			{ jump($1, $2); }
 
+	| SKIPBITOP reg8 ',' imm3		{ emit2($1 | ($2 << 4) | $4); }
+
 	| MNEMONIC_IN reg8 ',' port		{ emit2($1 | ($2 << 4) | ($4 & 0x0f) | (($4 & 0x30) << 5)); }
         | MNEMONIC_OUT port ',' reg8		{ emit2($1 | ($4 << 4) | ($2 & 0x0f) | (($2 & 0x30) << 5)); }
+	| IOBITSET port ',' imm3		{ emit2($1 | ($2 << 3) | $4); }
 
 	| MNEMONIC_LPM 				{ emit2(0x95c8 | ($1 ? 0x10 : 0x00)); }
 	| MNEMONIC_LPM reg8 ',' REG16		{ if ($4 != ZREG) serror("bad 16-bit register"); emit2(0x9004 | ($2 << 4) | ($1 ? 0x02 : 0x00)); }
@@ -56,7 +58,6 @@ operation: BASICOP				{ emit2($1); }
 
 	| BITSET imm3				{ emit2($1 | ($1 << 4)); }
 	| BITLOAD reg8 ',' imm3			{ emit2($1 | ($1 << 4) | $4); }
-	| BITSKIP imm5 ',' imm3			{ emit2($1 | ($2 << 3) | $4); }
 
 	| MNEMONIC_CBR reg8 ',' imm8		{ emit2($1 | ($2 << 4) | ($4 & 0x0f) | (($4 & 0xf0) << 4)); }
 

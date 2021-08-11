@@ -44,39 +44,24 @@ void
 branch(int opc, expr_t exp)
 {
 	int distw = (exp.val - (DOTVAL + 2)) / 2;
-	int sm;
+	int sm1, sm2;
 
 	/* k        1111 00kk kkkk k001 */
 
 	if (pass == PASS_2 && distw > 0 && !(exp.typ & S_DOT))
 		distw -= sect[DOTSCT].s_gain;
-	sm = distw > 0 ? fit7(distw) : fit7(-distw);
-	if (sm) {
+	sm1 = distw > 0 ? fit7(distw) : fit7(-distw);
+	sm2 = distw > 0 ? fit12(distw) : fit12(-distw);
+	if (sm1 && small(sm1, 4)) {
 		emit2(opc | ((distw & 0x7f) << 3));
+	} else if (sm2 && small(sm2, 2)) {
+		emit2((opc ^ 0x400) | (0x1 << 3));
+		emit2(0xc000 | (distw & 0x0fff)); /* RJMP */
 	} else {
-		emit2(opc | ((distw & 0x7f) << 3));
-#if 0
-sbrc	skip if bit in register cleared
-sbrs	skip if bit in register set
-		emit2("sbrs r0,3");
-		dist += (dist < 0 ? 2 : -2);
-		emit("rjmp dist");
-#endif
+		emit2((opc ^ 0x400) | (0x02 << 3));
+		emit2(0x940c | ((exp.val >> 13) & 0x1f0) | ((exp.val >> 16) & 0x01));
+		emit2(exp.val & 0xffff);
 	}
-}
-
-void
-absjump(int opc, expr_t exp)
-{
-	int distw = exp.val;
-
-       	/* k        1001 010k kkkk 110k + 16k */
-        /* k        1001 010k kkkk 111k + 16k */
-
-	if (!fitx(distw, 22))
-		fatal("target address too large");
-	emit2(opc | ((distw >> 13) & 0x1f0) | ((distw >> 16) & 0x01));
-	emit2(distw & 0xffff);
 }
 
 void

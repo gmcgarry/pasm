@@ -152,27 +152,27 @@
 	{ 0,	BASICOP,		0x95f8,		"espm" },	/*          1001 0101 1111 1000 */
 	{ 0,	BASICOP,		0x9598,		"break" },	/*          1001 0101 1001 1000 */
 
-	{ 0,	BRANCHOP,		0xf001,		"breq" },	/* k        1111 00kk kkkk k001 */
-	{ 0,	BRANCHOP,		0xf401,		"brne" },	/* k        1111 01kk kkkk k001 */
-	{ 0,	BRANCHOP,		0xf000,		"brcs" },	/* k        1111 00kk kkkk k000 */
-	{ 0,	BRANCHOP,		0xf400,		"brcc" },	/* k        1111 01kk kkkk k000 */
-	{ 0,	BRANCHOP,		0xf400,		"brsh" },	/* k        1111 01kk kkkk k000 */
-	{ 0,	BRANCHOP,		0xf000,		"brlo" },	/* k        1111 00kk kkkk k000 */
-	{ 0,	BRANCHOP,		0xf002,		"brmi" },	/* k        1111 00kk kkkk k010 */
-	{ 0,	BRANCHOP,		0xf402,		"brpl" },	/* k        1111 01kk kkkk k010 */
-	{ 0,	BRANCHOP,		0xf404,		"brge" },	/* k        1111 01kk kkkk k100 */
-	{ 0,	BRANCHOP,		0xf004,		"brlt" },	/* k        1111 00kk kkkk k100 */
-	{ 0,	BRANCHOP,		0xf005,		"brhs" },	/* k        1111 00kk kkkk k101 */
-	{ 0,	BRANCHOP,		0xf405,		"brhc" },	/* k        1111 01kk kkkk k101 */
-	{ 0,	BRANCHOP,		0xf006,		"brts" },	/* k        1111 00kk kkkk k110 */
-	{ 0,	BRANCHOP,		0xf406,		"brtc" },	/* k        1111 01kk kkkk k110 */
-	{ 0,	BRANCHOP,		0xf003,		"brvs" },	/* k        1111 00kk kkkk k011 */
-	{ 0,	BRANCHOP,		0xf403,		"brvc" },	/* k        1111 01kk kkkk k011 */
-	{ 0,	BRANCHOP,		0xf007,		"brie" },	/* k        1111 00kk kkkk k111 */
-	{ 0,	BRANCHOP,		0xf407,		"brid" },	/* k        1111 01kk kkkk k111 */
+	{ 0,	BRANCHOP,		0xf001,		"breq" },	/* k        1111 00kk kkkk k001 */ /* equal */
+	{ 0,	BRANCHOP,		0xf401,		"brne" },	/* k        1111 01kk kkkk k001 */ /* not equal */
+	{ 0,	BRANCHOP,		0xf000,		"brcs" },	/* k        1111 00kk kkkk k000 */ /* carry cleared */
+	{ 0,	BRANCHOP,		0xf400,		"brcc" },	/* k        1111 01kk kkkk k000 */ /* carry set */
+	{ 0,	BRANCHOP,		0xf400,		"brsh" },	/* k        1111 01kk kkkk k000 */ /* same or higher */
+	{ 0,	BRANCHOP,		0xf000,		"brlo" },	/* k        1111 00kk kkkk k000 */ /* lower */
+	{ 0,	BRANCHOP,		0xf002,		"brmi" },	/* k        1111 00kk kkkk k010 */ /* minus */
+	{ 0,	BRANCHOP,		0xf402,		"brpl" },	/* k        1111 01kk kkkk k010 */ /* plus */
+	{ 0,	BRANCHOP,		0xf404,		"brge" },	/* k        1111 01kk kkkk k100 */ /* greater or equal */
+	{ 0,	BRANCHOP,		0xf004,		"brlt" },	/* k        1111 00kk kkkk k100 */ /* less than */
+	{ 0,	BRANCHOP,		0xf005,		"brhs" },	/* k        1111 00kk kkkk k101 */ /* half carry set */
+	{ 0,	BRANCHOP,		0xf405,		"brhc" },	/* k        1111 01kk kkkk k101 */ /* half carry clear */
+	{ 0,	BRANCHOP,		0xf006,		"brts" },	/* k        1111 00kk kkkk k110 */ /* t flag set */
+	{ 0,	BRANCHOP,		0xf406,		"brtc" },	/* k        1111 01kk kkkk k110 */ /* t flag clear */
+	{ 0,	BRANCHOP,		0xf003,		"brvs" },	/* k        1111 00kk kkkk k011 */ /* overflow set */
+	{ 0,	BRANCHOP,		0xf403,		"brvc" },	/* k        1111 01kk kkkk k011 */ /* overflow clear */
+	{ 0,	BRANCHOP,		0xf007,		"brie" },	/* k        1111 00kk kkkk k111 */ /* interrupt enabled */
+	{ 0,	BRANCHOP,		0xf407,		"brid" },	/* k        1111 01kk kkkk k111 */ /* interrupt disabled */
 
-	{ 0,	BRANCHOP_BCOND,		0xf000,		"brbs" },	/* s, k     1111 00kk kkkk ksss */
-	{ 0,	BRANCHOP_BCOND,		0xf400,		"brbc" },	/* s, k     1111 01kk kkkk ksss */
+	{ 0,	BRANCHOP_SREG,		0xf000,		"brbs" },	/* s, k     1111 00kk kkkk ksss */ /* bit set in SREG */
+	{ 0,	BRANCHOP_SREG,		0xf400,		"brbc" },	/* s, k     1111 01kk kkkk ksss */ /* bit clear in SREG */
 
 	{ 0,	ONEOP,			0x9400,		"com" },	/* Rd       1001 010d dddd 0000 */
 	{ 0,	ONEOP,			0x9401,		"neg" },	/* Rd       1001 010d dddd 0001 */
@@ -206,8 +206,8 @@
 	{ 0,	TWOOP,			0x2c00,		"mov" },	/* Rd, Rr   0010 11rd dddd rrrr */
 	{ 0,	TWOOP,			0x9c00,		"mul" },	/* Rd, Rr   1001 11rd dddd rrrr */
 
-	{ 0,	BITOP,			0xfc00,		"sbrc" },	/* Rr, b    1111 110r rrrr 0bbb */
-	{ 0,	BITOP,			0xfe00,		"sbrs" },	/* Rr, b    1111 111r rrrr 0bbb */
+	{ 0,	SKIPBITOP,		0xfc00,		"sbrc" },	/* Rr, b    1111 110r rrrr 0bbb */
+	{ 0,	SKIPBITOP,		0xfe00,		"sbrs" },	/* Rr, b    1111 111r rrrr 0bbb */
 
 	{ 0,	MNEMONIC_RJMP,		0xc000,		"rjmp" },	/* k        1100 kkkk kkkk kkkk */
 	{ 0,	MNEMONIC_RJMP,		0xd000,		"rcall" },	/* k        1101 kkkk kkkk kkkk */
@@ -242,7 +242,7 @@
 	{ 0,	BITLOAD,		0xfa00,		"bst" },	/* Rr, b    1111 101d dddd 0bbb */
 	{ 0,	BITLOAD,		0xf800,		"bld" },	/* Rd, b    1111 100d dddd 0bbb */
 
-	{ 0,	BITSKIP,		0x9900,		"sbic" },	/* P, b     1001 1001 PPPP Pbbb */
-	{ 0,	BITSKIP,		0x9b00,		"sbis" },	/* P, b     1001 1011 PPPP Pbbb */
-	{ 0,	BITSKIP,		0x9a00,		"sbi" },	/* P, b     1001 1010 PPPP Pbbb */
-	{ 0,	BITSKIP,		0x9800,		"cbi" },	/* P, b     1001 1000 PPPP Pbbb */
+	{ 0,	IOBITSET,		0x9900,		"sbic" },	/* P, b     1001 1001 PPPP Pbbb */
+	{ 0,	IOBITSET,		0x9b00,		"sbis" },	/* P, b     1001 1011 PPPP Pbbb */
+	{ 0,	IOBITSET,		0x9a00,		"sbi" },	/* P, b     1001 1010 PPPP Pbbb */
+	{ 0,	IOBITSET,		0x9800,		"cbi" },	/* P, b     1001 1000 PPPP Pbbb */

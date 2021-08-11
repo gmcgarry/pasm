@@ -26,16 +26,16 @@
 
 %token <y_word> BASICOP
 %token <y_word> BRANCHOP
-%token <y_word> BRANCHOP_BCOND
+%token <y_word> BRANCHOP_SREG
 %token <y_word> ONEOP
 %token <y_word> ONEOPI
 %token <y_word> TWOOP
 %token <y_word> TWOOP_1
-%token <y_word> BITOP
+%token <y_word> SKIPBITOP
 
 %token <y_word> BITLOAD
 %token <y_word> BITSET
-%token <y_word> BITSKIP
+%token <y_word> IOBITSET
 
 %token <y_word> MNEMONIC_LPM
 %token <y_word> MNEMONIC_ELPM
