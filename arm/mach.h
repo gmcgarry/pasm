@@ -39,14 +39,14 @@ extern int success;	/* LDR/STR address failure flag */
 
 /* ARM32 Specific routines */
 void branch(word_t brtyp, word_t link, ADDR_T val);
-void data(long opc, long ins, ADDR_T val, short typ);
-int calcimm(word_t *opc, ADDR_T *val,short typ);
+void data(ADDR_T opc, long ins, ADDR_T val, short typ);
+int calcimm(ADDR_T *opc, ADDR_T *val,short typ);
 word_t calcoffset(ADDR_T val);
-void strldr(long opc, long ins, ADDR_T val);
+void strldr(ADDR_T opc, long ins, ADDR_T val);
 void calcadr(word_t ins, word_t reg, ADDR_T val, short typ);
 word_t calcshft(ADDR_T val, short typ, word_t styp);
 void rotateleft2(ADDR_T *x);
-void putaddr(long opc, long ins, long val, int count);
+void putaddr(ADDR_T opc, long ins, long val, int count);
 int oursmall(int fitsmall, int gain);
 void setcpu(const char* id);
 void setarch(const char* id);

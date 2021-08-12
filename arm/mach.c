@@ -169,7 +169,7 @@ data(long opc, long ins, ADDR_T val, short typ)
    all. */
 
 int
-calcimm(word_t *opc, ADDR_T *val, short typ)
+calcimm(ADDR_T *opc, ADDR_T *val, short typ)
 {
 	int i = 0;
 
