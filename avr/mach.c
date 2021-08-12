@@ -59,6 +59,7 @@ branch(int opc, expr_t exp)
 		emit2(0xc000 | (distw & 0x0fff)); /* RJMP */
 	} else {
 		emit2((opc ^ 0x400) | (0x02 << 3));
+		newrelo(exp.typ, RELO4); /* XXXGJM: fixme, a different reloc type */
 		emit2(0x940c | ((exp.val >> 13) & 0x1f0) | ((exp.val >> 16) & 0x01));
 		emit2(exp.val & 0xffff);
 	}
@@ -76,7 +77,7 @@ jump(int opc, expr_t exp)
 	if (pass == PASS_2 && distw > 0 && !(exp.typ & S_DOT))
 		distw -= sect[DOTSCT].s_gain;
 	sm = distw > 0 ? fit12(distw) : fit12(-distw);
-	if (small(sm, 2)) {
+	if (small(sm, 2)) { /* XXXGJM: don't convert to rjmp if target is external */
 		if (opc == 0xc000 || opc == 0x940c) /* RJMP/JMP */
 			opc = 0xc000;
 		else if (opc == 0xd000 || opc == 0x940e) /* RCALL/CALL */
@@ -87,6 +88,7 @@ jump(int opc, expr_t exp)
 			opc = 0x940c;
 		else if (opc == 0xd000 || opc == 0x940e) /* RCALL/CALL */
 			opc = 0x940e;
+		newrelo(exp.typ, RELO4); /* XXXGJM: fixme, a different reloc type */
 		emit2(opc | ((exp.val >> 13) & 0x1f0) | ((exp.val >> 16) & 0x01));
 		emit2(exp.val & 0xffff);
 	}
