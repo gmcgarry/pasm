@@ -33,8 +33,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "elf.h"
-
 int wr_open(const char *filename, int n);
 void wr_close(void);
 
