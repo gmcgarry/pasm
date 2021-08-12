@@ -39,8 +39,8 @@
  * No system registers for now ...
  */
 
-{0,	DIRECTIVE_USE16,	0,		".code16"},
-{0,	DIRECTIVE_USE32,	0,		".code32"},
+{0,	PSEUDOOP_USE16,	0,		".code16"},
+{0,	PSEUDOOP_USE32,	0,		".code32"},
 {0,	R32,		0,		"%ax"},
 {0,	R32,		1,		"%cx"},
 {0,	R32,		2,		"%dx"},

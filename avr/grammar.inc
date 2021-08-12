@@ -70,9 +70,9 @@ operation: BASICOP				{ emit2($1); }
         | MNEMONIC_LSL reg8 			{ emit2($1 | ($2 << 4) | (($2 & 0x0f) << 0) | (($2 & 0x10) << 5)); }
         | MNEMONIC_ROL reg8           		{ emit2($1 | ($2 << 4) | (($2 & 0x0f) << 0) | (($2 & 0x10) << 5)); }
 
-	| DIRECTIVE_DEVICE IDENT		{ setdevice($2->i_name); }
-	| DIRECTIVE_DEFINE IDENT '=' REG8	{ $2->i_type = S_ABS; $2->i_valu = $4; }
-	| DIRECTIVE_SEGMENT			{
+	| PSEUDOOP_DEVICE IDENT			{ setdevice($2->i_name); }
+	| PSEUDOOP_DEFINE IDENT '=' REG8	{ $2->i_type = S_ABS; $2->i_valu = $4; }
+	| PSEUDOOP_SEGMENT			{
 							static const char *Names[] = { ".text", ".data" };
 							if ($1 >= (int)(sizeof(Names) / sizeof(Names[0]))) fatal("internal error, bad segment");
 							struct item *ip = item_search(Names[$1]);
@@ -111,7 +111,7 @@ regw:	REG8					{ if ($1 != 24 && $1 != 26 && $1 != 28 && $1 != 30) serror("bad r
 	| IDENT					{ if (($1->i_type & S_SCTMASK) != S_ABS) serror("bad register alias"); $$ = ($1->i_valu - 24) / 2; }
 	;
 
-regU:	REG8					{ if ($1 < 16 || $1 < 16) serror("invalid register"); }
+regU:	REG8					{ if ($1 < 16) serror("invalid register"); }
 	;
 
 regV:	REG8					{ if ($1 < 16 || $1 > 23) serror("invalid register"); }

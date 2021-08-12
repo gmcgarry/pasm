@@ -14,12 +14,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-	{ 0,	DIRECTIVE_DEVICE,	0,		".device" },
-	{ 0,	DIRECTIVE_DEFINE,	0,		".def" },
-	{ 0,	DIRECTIVE_DATA,		1,		".db" },
+	{ 0,	PSEUDOOP_DEVICE,	0,		".device" },
+	{ 0,	PSEUDOOP_DEFINE,	0,		".def" },
+	{ 0,	PSEUDOOP_DATA,		1,		".db" },
 
-	{ 0,	DIRECTIVE_SEGMENT,	CSEG,		".cseg" },
-	{ 0,	DIRECTIVE_SEGMENT,	DSEG,		".dseg" },
+	{ 0,	PSEUDOOP_SEGMENT,	CSEG,		".cseg" },
+	{ 0,	PSEUDOOP_SEGMENT,	DSEG,		".dseg" },
 
 	{ 0,	SHIFTFUNC,		0,		"low" },
 	{ 0,	SHIFTFUNC,		8,		"high" },

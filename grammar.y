@@ -83,34 +83,34 @@ static item_t	*last_it;
 %token <y_valu> NUMBER8
 %token NUMBERF
 %token DOT
-%token DIRECTIVE_EXTERN
-%token <y_word> DIRECTIVE_DATA
-%token DIRECTIVE_DATA8
+%token PSEUDOOP_EXTERN
+%token <y_word> PSEUDOOP_DATA
+%token PSEUDOOP_DATA8
 #ifdef USE_FLOAT
-%token <y_word> DIRECTIVE_DATAF
+%token <y_word> PSEUDOOP_DATAF
 #endif
-%token <y_word> DIRECTIVE_ASCII
-%token DIRECTIVE_SECTION
-%token DIRECTIVE_END
-%token DIRECTIVE_GLOBAL
-%token DIRECTIVE_LOCAL
-%token DIRECTIVE_TYPE
-%token DIRECTIVE_SIZE
-%token DIRECTIVE_IDENT
-%token DIRECTIVE_COMMON
-%token DIRECTIVE_BASE
-%token DIRECTIVE_ORG
-%token DIRECTIVE_EQU
-%token DIRECTIVE_SET
-%token DIRECTIVE_MESSAGE
-%token <y_word> DIRECTIVE_ALIGN
-%token DIRECTIVE_ASSERT
-%token DIRECTIVE_SPACE
-%token DIRECTIVE_SEEK
-%token DIRECTIVE_CFI_IGNORE
-%token <y_word> DIRECTIVE_LINE
-%token DIRECTIVE_FILE
-%token <y_word> DIRECTIVE_LIST
+%token <y_word> PSEUDOOP_ASCII
+%token PSEUDOOP_SECTION
+%token PSEUDOOP_END
+%token PSEUDOOP_GLOBAL
+%token PSEUDOOP_LOCAL
+%token PSEUDOOP_TYPE
+%token PSEUDOOP_SIZE
+%token PSEUDOOP_IDENT
+%token PSEUDOOP_COMMON
+%token PSEUDOOP_BASE
+%token PSEUDOOP_ORG
+%token PSEUDOOP_EQU
+%token PSEUDOOP_SET
+%token PSEUDOOP_MESSAGE
+%token <y_word> PSEUDOOP_ALIGN
+%token PSEUDOOP_ASSERT
+%token PSEUDOOP_SPACE
+%token PSEUDOOP_SEEK
+%token PSEUDOOP_CFI_IGNORE
+%token <y_word> PSEUDOOP_LINE
+%token PSEUDOOP_FILE
+%token <y_word> PSEUDOOP_LIST
 %token <y_word> ELF_SHTYPE
 %token <y_word> ELF_SYMTYPE
 %token <y_wrod> PLT
@@ -163,7 +163,7 @@ program	: /* empty */
 
 operation: /* empty */
 #ifdef LISTING
-	| DIRECTIVE_LIST			{ if ($1) listtemp = listmode; else if ((dflag & 01000) == 0) listtemp = 0; }
+	| PSEUDOOP_LIST				{ if ($1) listtemp = listmode; else if ((dflag & 01000) == 0) listtemp = 0; }
 #endif
         | IDENT '=' expr			{
 #ifdef LISTING
@@ -173,18 +173,18 @@ operation: /* empty */
                                 			newequate($1, $3.typ);
                                 			store($1, $3.val);
                         			}
-	| DIRECTIVE_MESSAGE STRING		{ puts(stringbuf); }
-	| DIRECTIVE_SECTION IDENT		{ newsect($2, 0, NULL); }
-	| DIRECTIVE_SECTION IDENT ',' STRING ',' ELF_SHTYPE	{ newsect($2, $<y_word>6, stringbuf); }
-	| DIRECTIVE_END				{ }
-	| DIRECTIVE_GLOBAL IDENT		{ $2->i_type |= S_EXTERN; }
-	| DIRECTIVE_LOCAL IDENT			{ $2->i_type &= ~S_EXTERN; }
-	| DIRECTIVE_SIZE IDENT ',' expr		{ /* if (PASS_SYMB) $2->i_size = $4.valu; */ }
-	| DIRECTIVE_TYPE IDENT ',' ELF_SYMTYPE	{ if (PASS_SYMB) $2->i_type |= $4; }
-	| DIRECTIVE_IDENT STRING		{ }
-	| DIRECTIVE_COMMON IDENT ',' absexp optsize 	{ newcomm($2, $4);}
-	| DIRECTIVE_BASE absexp			{ if (pass == PASS_1) newbase($2); }
-	| DIRECTIVE_ORG absexp			{
+	| PSEUDOOP_MESSAGE STRING		{ puts(stringbuf); }
+	| PSEUDOOP_SECTION IDENT		{ newsect($2, 0, NULL); }
+	| PSEUDOOP_SECTION IDENT ',' STRING ',' ELF_SHTYPE	{ newsect($2, $<y_word>6, stringbuf); }
+	| PSEUDOOP_END				{ }
+	| PSEUDOOP_GLOBAL IDENT		{ $2->i_type |= S_EXTERN; }
+	| PSEUDOOP_LOCAL IDENT			{ $2->i_type &= ~S_EXTERN; }
+	| PSEUDOOP_SIZE IDENT ',' expr		{ /* if (PASS_SYMB) $2->i_size = $4.valu; */ }
+	| PSEUDOOP_TYPE IDENT ',' ELF_SYMTYPE	{ if (PASS_SYMB) $2->i_type |= $4; }
+	| PSEUDOOP_IDENT STRING			{ }
+	| PSEUDOOP_COMMON IDENT ',' absexp optsize 	{ newcomm($2, $4);}
+	| PSEUDOOP_BASE absexp			{ if (pass == PASS_1) newbase($2); }
+	| PSEUDOOP_ORG absexp			{
 							if (DOTSCT == S_UND)
 								nosect();
 							if ($2 < DOTVAL)
@@ -200,7 +200,7 @@ operation: /* empty */
 							sect[DOTSCT].s_gain = 0;
 						}
 #if 0
-	| DIRECTIVE_LINE optabs			{
+	| PSEUDOOP_LINE optabs			{
 							if ((sflag & SYM_LIN) && PASS_SYMB) {
 								if ($2)
 									hllino = (short)$2;
@@ -211,13 +211,13 @@ operation: /* empty */
 							}
 						}
 #endif
-	| DIRECTIVE_FILE STRING			{ if ((sflag & SYM_LIN) && PASS_SYMB) newsymb(stringbuf, (S_ABS | S_FILE), (ADDR_T)DOTVAL); }
-	| DIRECTIVE_EQU IDENT '=' absexp	{ $2->i_type = S_ABS; $2->i_valu = $4; }
-	| DIRECTIVE_SET IDENT ',' absexp	{ $2->i_type = S_ABS; $2->i_valu = $4; }
-	| DIRECTIVE_EXTERN externlist
-	| DIRECTIVE_ALIGN optabs		{ if (!($1)) align($2); else align(0x1<<$2); }
-	| DIRECTIVE_SPACE absexp		{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; (&sect[DOTSCT])->s_zero += $2; }
-	| DIRECTIVE_SEEK absexp			{
+	| PSEUDOOP_FILE STRING			{ if ((sflag & SYM_LIN) && PASS_SYMB) newsymb(stringbuf, (S_ABS | S_FILE), (ADDR_T)DOTVAL); }
+	| PSEUDOOP_EQU IDENT '=' absexp		{ $2->i_type = S_ABS; $2->i_valu = $4; }
+	| PSEUDOOP_SET IDENT ',' absexp		{ $2->i_type = S_ABS; $2->i_valu = $4; }
+	| PSEUDOOP_EXTERN externlist
+	| PSEUDOOP_ALIGN optabs			{ if (!($1)) align($2); else align(0x1<<$2); }
+	| PSEUDOOP_SPACE absexp			{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; (&sect[DOTSCT])->s_zero += $2; }
+	| PSEUDOOP_SEEK absexp			{
 							if (DOTSCT == S_UND)
 								nosect();
 							if ($2 < DOTVAL)
@@ -227,14 +227,14 @@ operation: /* empty */
 							sect[DOTSCT].s_zero += $2 - DOTVAL;
 							DOTVAL = $2;
 						}
-	| DIRECTIVE_DATA datalist
-	| DIRECTIVE_DATA8 data8list
+	| PSEUDOOP_DATA datalist
+	| PSEUDOOP_DATA8 data8list
 #ifdef USE_FLOAT
-	| DIRECTIVE_DATAF dataflist
+	| PSEUDOOP_DATAF dataflist
 #endif
-	| DIRECTIVE_ASCII STRING		{ emitstr($1); }
-	| DIRECTIVE_CFI_IGNORE optabs		{ }
-	| DIRECTIVE_CFI_IGNORE absexp ',' absexp { }
+	| PSEUDOOP_ASCII STRING			{ emitstr($1); }
+	| PSEUDOOP_CFI_IGNORE optabs		{ }
+	| PSEUDOOP_CFI_IGNORE absexp ',' absexp { }
 	;
 
 externlist

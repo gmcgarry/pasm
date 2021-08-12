@@ -33,13 +33,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-{ 0,		DIRECTIVE_CPU,		0,		".cpu" },
-{ 0,		DIRECTIVE_ARCH,		0,		".arch" },
-{ 0,		DIRECTIVE_EABIATTR,	0,		".eabi_attribute" },
-{ 0,		DIRECTIVE_SYNTAX,	0,		".syntax" },
-{ 0,		DIRECTIVE_FPU,		0,		".fpu" },
-{ 0,		DIRECTIVE_MODE,		MODE_ARM,	".arm" },
-{ 0,		DIRECTIVE_MODE,		MODE_THUMB,	".thumb" },
+{ 0,		PSEUDOOP_CPU,		0,		".cpu" },
+{ 0,		PSEUDOOP_ARCH,		0,		".arch" },
+{ 0,		PSEUDOOP_EABIATTR,	0,		".eabi_attribute" },
+{ 0,		PSEUDOOP_SYNTAX,	0,		".syntax" },
+{ 0,		PSEUDOOP_FPU,		0,		".fpu" },
+{ 0,		PSEUDOOP_MODE,		MODE_ARM,	".arm" },
+{ 0,		PSEUDOOP_MODE,		MODE_THUMB,	".thumb" },
 
 { 0,		COND,		0x00000000,	".EQ" },
 { 0,		COND,		0x10000000,	".NE" },
@@ -196,6 +196,5 @@
 
 { 0,		MUL,		0x00000090,	"MUL" },
 { 0,		MLA,		0x00200090,	"MLA" },
-
 
 /* PUSH */

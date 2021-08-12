@@ -14,12 +14,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-%token DIRECTIVE_DEVICE
-%token DIRECTIVE_DEFINE
+%token PSEUDOOP_DEVICE
+%token PSEUDOOP_DEFINE
 
 %token <y_word> SHIFTFUNC
 
-%token <y_word> DIRECTIVE_SEGMENT
+%token <y_word> PSEUDOOP_SEGMENT
 %token <y_word> MACHID
 %token <y_word> REG8
 %token <y_word> REG16
@@ -101,7 +101,6 @@
 %type <y_valu> port
 
 %type <y_valu> imm3
-%type <y_valu> imm5
 %type <y_valu> imm6
 %type <y_valu> imm8
 %type <y_valu> imm16

@@ -39,9 +39,9 @@
 
 %token <y_word> ATOGGLE
 %token <y_word> OTOGGLE
-%token <y_word> DIRECTIVE_USE16
-%token <y_word> DIRECTIVE_USE32
-%token <y_word> DIRECTIVE_USE64
+%token <y_word> PSEUDOOP_USE16
+%token <y_word> PSEUDOOP_USE32
+%token <y_word> PSEUDOOP_USE64
 %token <y_word> R64
 %token <y_word> R32
 %token <y_word> R16

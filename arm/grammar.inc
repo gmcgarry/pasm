@@ -34,12 +34,12 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-operation: DIRECTIVE_CPU IDENT 					{ setcpu($2->i_name); }
-	| DIRECTIVE_EABIATTR NUMBER8 ',' NUMBER8		{ }
-	| DIRECTIVE_ARCH IDENT					{ setarch($2->i_name); }
-	| DIRECTIVE_FPU	IDENT					{ setfpu($2->i_name); }
-	| DIRECTIVE_MODE					{ setmode($1); }
-	| DIRECTIVE_SYNTAX IDENT				{ }
+operation: PSEUDOOP_CPU IDENT 					{ setcpu($2->i_name); }
+	| PSEUDOOP_EABIATTR NUMBER8 ',' NUMBER8			{ }
+	| PSEUDOOP_ARCH IDENT					{ setarch($2->i_name); }
+	| PSEUDOOP_FPU	IDENT					{ setfpu($2->i_name); }
+	| PSEUDOOP_MODE						{ setmode($1); }
+	| PSEUDOOP_SYNTAX IDENT					{ }
 	| BRANCH optlink expr					{ branch($1, $2, $3.val); }
 	| DATA1 optcond opts optp REG ',' REG ',' operand	{ data($1,$2|$3|$4|$5<<12|$7<<16,$9.val,$9.typ); }
 	| DATA2 optcond opts optp REG ',' operand		{ data($1,$2|$3|$4|$5<<12,$7.val,$7.typ); }

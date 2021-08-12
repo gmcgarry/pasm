@@ -33,12 +33,12 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-%token <y_word> DIRECTIVE_CPU
-%token <y_word> DIRECTIVE_ARCH
-%token <y_word> DIRECTIVE_EABIATTR
-%token <y_word> DIRECTIVE_FPU
-%token <y_word> DIRECTIVE_MODE
-%token <y_word> DIRECTIVE_SYNTAX
+%token <y_word> PSEUDOOP_CPU
+%token <y_word> PSEUDOOP_ARCH
+%token <y_word> PSEUDOOP_EABIATTR
+%token <y_word> PSEUDOOP_FPU
+%token <y_word> PSEUDOOP_MODE
+%token <y_word> PSEUDOOP_SYNTAX
 
 %token <y_word> COND
 %token <y_word> LINK

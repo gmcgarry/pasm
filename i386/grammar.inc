@@ -33,9 +33,9 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-operation: DIRECTIVE_USE16		{ use32 = 0; address_long = 0; operand_long = 0; }
-	| DIRECTIVE_USE32		{ use32 = 1; address_long = 1; operand_long = 1; }
-	| DIRECTIVE_USE64		{ use32 = 1; address_long = 1; operand_long = 1; }
+operation: PSEUDOOP_USE16		{ use32 = 0; address_long = 0; operand_long = 0; }
+	| PSEUDOOP_USE32		{ use32 = 1; address_long = 1; operand_long = 1; }
+	| PSEUDOOP_USE64		{ use32 = 1; address_long = 1; operand_long = 1; }
 	| prefix oper			{ address_long = use32; operand_long = use32; }
 	| prefix1			/* to allow for only prefixes on a line */
 	;
