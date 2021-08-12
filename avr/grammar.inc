@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define FIT(x,b)	(((x) & ~((1 << (b))-1)) == 0)
+
 operation: BASICOP				{ emit2($1); }
 	| BRANCHOP expr				{ branch($1, $2); }
 	| BRANCHOP_SREG imm3 ',' expr		{ branch($1 | $2, $4); }
@@ -85,23 +87,20 @@ operation: BASICOP				{ emit2($1); }
 						}
         ;
 
-port:	expr					{ $$ = $1.val; if ($$ < -64|| $$ > 64) serror("6-bit constant out of range"); }
+port:	imm6					{ $$ = $1; }
 	;
 
-imm3:	expr					{ $$ = $1.val; if ($$ < 0 || $$ > 7) serror("3-bit constant out of range"); }
+imm3:	expr					{ $$ = $1.val; if (!FIT($$, 3)) serror("3-bit constant out of range"); }
 	;
 
-imm5:	expr					{ $$ = $1.val; if ($$ < 0 || $$ > 31) serror("5-bit constant out of range"); }
+imm6:	expr					{ $$ = $1.val; if (!FIT($$, 6)) serror("6-bit constant out of range"); }
 	;
 
-imm6:	expr					{ $$ = $1.val; if ($$ < -63 || $$ > 63) serror("6-bit constant out of range"); }
-	;
-
-imm8:	expr					{ $$ = $1.val; if ($$ < -255 || $$ > 255) serror("8-bit constant out of range"); }
+imm8:	expr					{ $$ = $1.val; if (!FIT($$, 8)) serror("8-bit constant out of range"); }
 	| SHIFTFUNC '(' expr ')'		{ $$ = ($3.val >> $1) & 0xff; }
 	;
 
-imm16:	expr					{ $$ = $1.val; if ($$ < -65535 || $$ > 65635) serror("16-bit constant out of range"); }
+imm16:	expr					{ $$ = $1.val; if (!FIT($$, 16)) serror("16-bit constant out of range"); }
 	;
 
 reg8:	REG8					{ if ($1 < 0 && $1 > 31) serror("bad register"); $$ = $1; }
