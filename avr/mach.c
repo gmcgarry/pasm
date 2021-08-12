@@ -51,12 +51,12 @@ branch(int opc, expr_t exp)
 	if (pass == PASS_2 && distw > 0 && !(exp.typ & S_DOT))
 		distw -= sect[DOTSCT].s_gain;
 	sm1 = distw > 0 ? fit7(distw) : fit7(-distw);
-	sm2 = distw > 0 ? fit12(distw) : fit12(-distw);
+	sm2 = distw > 0 ? fit12(distw - 1) : fit12(-(distw - 1));
 	if (sm1 && small(sm1, 4)) {
 		emit2(opc | ((distw & 0x7f) << 3));
 	} else if (sm2 && small(sm2, 2)) {
 		emit2((opc ^ 0x400) | (0x1 << 3));
-		emit2(0xc000 | (distw & 0x0fff)); /* RJMP */
+		emit2(0xc000 | ((distw - 1) & 0x0fff)); /* RJMP */
 	} else {
 		emit2((opc ^ 0x400) | (0x02 << 3));
 		newrelo(exp.typ, RELO4); /* XXXGJM: fixme, a different reloc type */
