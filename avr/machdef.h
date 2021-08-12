@@ -17,7 +17,7 @@
 #define	THREE_PASS	/* branch and offset optimization */
 #define	LISTING		/* enable listing facilities */
 
-#define ADDR_T		unsigned int
+#define ADDR_T		int
 
 #define ALIGNWORD	1
 #define ALIGNSECT	1
