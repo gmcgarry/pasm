@@ -102,6 +102,7 @@ static item_t	*last_it;
 %token PSEUDOOP_ORG
 %token PSEUDOOP_EQU
 %token PSEUDOOP_SET
+%token PSEUDOOP_ZERO
 %token PSEUDOOP_MESSAGE
 %token <y_word> PSEUDOOP_ALIGN
 %token PSEUDOOP_ASSERT
@@ -130,6 +131,7 @@ static item_t	*last_it;
 %type <y_valu> absexp optabs optsize
 %type <y_expr> expr
 %type <y_item> id_fb
+%type <y_item> sectname
 
 /* ========== Machine dependent Yacc definitions ========== */
 
@@ -174,8 +176,8 @@ operation: /* empty */
                                 			store($1, $3.val);
                         			}
 	| PSEUDOOP_MESSAGE STRING		{ puts(stringbuf); }
-	| PSEUDOOP_SECTION IDENT		{ newsect($2, 0, NULL); }
-	| PSEUDOOP_SECTION IDENT ',' STRING ',' ELF_SHTYPE	{ newsect($2, $<y_word>6, stringbuf); }
+	| PSEUDOOP_SECTION sectname		{ newsect($2, 0, NULL); }
+	| PSEUDOOP_SECTION sectname ',' STRING ',' ELF_SHTYPE	{ newsect($2, $<y_word>6, stringbuf); }
 	| PSEUDOOP_END				{ }
 	| PSEUDOOP_GLOBAL IDENT		{ $2->i_type |= S_EXTERN; }
 	| PSEUDOOP_LOCAL IDENT			{ $2->i_type &= ~S_EXTERN; }
@@ -232,9 +234,25 @@ operation: /* empty */
 #ifdef USE_FLOAT
 	| PSEUDOOP_DATAF dataflist
 #endif
+	| PSEUDOOP_ZERO absexp			{ int i; for (i = 0; i < $2; i++) emit1(0); }
 	| PSEUDOOP_ASCII STRING			{ emitstr($1); }
 	| PSEUDOOP_CFI_IGNORE optabs		{ }
 	| PSEUDOOP_CFI_IGNORE absexp ',' absexp { }
+	;
+
+sectname: IDENT					{ $$ = $1; }
+	| STRING				{
+							const char *name = stringbuf;
+							item_t *ip = item_search(name);
+							if (!ip) {
+								ip = item_alloc(S_UND);
+								ip->i_name = remember(name);
+								printf("creating section ident %s %p\n", ip->i_name, ip);
+								unresolved++;
+								item_insert(ip, H_LOCAL + (hashindex % H_SIZE));
+ 							}
+							$$ = ip;
+						}
 	;
 
 externlist
@@ -268,9 +286,7 @@ expr	: error					{ serror("expr syntax err"); $$.val = 0; $$.typ = S_UND; }
 	| NUMBER8				{ $$.val = $1; /* ADDR_T = int64_t */ $$.typ = S_ABS; }
 	| id_fb					{ $$.val = load($1); last_it = $1; $$.typ = $1->i_type & S_SCTMASK; }
 	| STRING				{ if (stringlen != 1) serror("too many chars"); $$.val = stringbuf[0]; $$.typ = S_ABS; }
-#if 1
 	| '(' expr ')'				{ $$ = $2; }
-#endif
 	| expr OP_OO expr			{ $$.val = ($1.val || $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
 	| expr OP_AA expr			{ $$.val = ($1.val && $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
 	| expr '|' expr				{ $$.val = ($1.val | $3.val); $$.typ = combine($1.typ, $3.typ, 0); }

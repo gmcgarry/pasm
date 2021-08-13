@@ -55,7 +55,7 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_DATA,		RELO4,		".dword" },
 	{ 0,	PSEUDOOP_DATA,		RELO4,		".long" },
 	{ 0,	PSEUDOOP_DATA8,		0,		".quad" },
-
+	{ 0,	PSEUDOOP_ZERO,		0,		".zero" },
 #if 0
 	{ 0,	PSEUDOOP_DATA,		RELO1,		".data1" },
 	{ 0,	PSEUDOOP_DATA,		RELO2,		".data2" },

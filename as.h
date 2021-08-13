@@ -95,7 +95,7 @@
  */
 
 #ifndef word_t
-#define	word_t		unsigned short		/* type of keyword value */
+#define	word_t		short		/* type of keyword value */
 #endif
 
 #ifndef ALIGNWORD

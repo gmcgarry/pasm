@@ -60,7 +60,7 @@ static int getval(int c);
 
 item_t   *hashtab[H_TOTAL];
 short    hashindex;      /* see item_search() */
-static int hash(const char* p);
+int hash(const char* p);
 
 static int maxstring;
 static int curr_token;
@@ -407,7 +407,7 @@ inident(int c)
 	*p = '\0';
 	peekc = c;
 	ip = item_search(name);
-#if 1
+#if 0
 	printf("looking up identifier \"%s\"\n", name);
 	printf("%s ip=%p\n", name, ip);
 #endif
@@ -646,7 +646,7 @@ ok:
 	return FBSYM;
 }
 
-static int
+int
 hash(const char* p)
 {
 	unsigned short h;
