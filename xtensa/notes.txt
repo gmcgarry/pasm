@@ -1,0 +1,36 @@
+Tensilica Cadence Xtensa
+
+Xtensa I
+Xtensa II
+Xtensa III
+	- accelerated MP3 decoding
+	- 32-bit floating-point
+	- 32x32 multiplier
+	- Vectra DSP enhancements
+Xtensa IV
+	- multi-core
+	- 128-bit local memory bus
+Xtensa V
+	- improved multi-core support
+Xtensa 6
+	- lower power consumption
+Xtensa LX
+	- compute parallelism
+	- flexible length instruction extension (FLIX)
+	- 2 to 15-wide issue parallel execution
+	- Vectra LX SIMD DSP 
+	- 16-bit multiply, 16-bit multiply-acculate (MAC)
+	- 6 special-purpose registers
+	- 32-bit program counter
+	- 16 optional 1-bit boolean registers
+	- 16 optional 32-bit floating point registers
+	- 4 optional 32-bit MAC16 data registers
+	- 16-bit or 24-bit instructions
+
+ISA:
+	- 78 instructions (80 core instructions for LX)
+	- 24-bit instruction length
+	- 5/7-stage pipeline with single-cycle execution
+	- load/store model
+	- 32/64 32-bit register file accessible as 16 GPRs
+	- zero-overhead loops
