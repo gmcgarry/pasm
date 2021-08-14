@@ -130,7 +130,6 @@ static item_t	*last_it;
 %type <y_valu> absexp optabs optsize
 %type <y_expr> expr
 %type <y_item> id_fb
-%type <y_item> sectname
 
 /* ========== Machine dependent Yacc definitions ========== */
 
@@ -175,8 +174,8 @@ operation: /* empty */
                                 			store($1, $3.val);
                         			}
 	| PSEUDOOP_MESSAGE STRING		{ puts(stringbuf); }
-	| PSEUDOOP_SECTION sectname		{ newsect($2, 0, NULL); }
-	| PSEUDOOP_SECTION sectname ',' STRING ',' ELF_SHTYPE	{ newsect($2, $<y_word>6, stringbuf); }
+	| PSEUDOOP_SECTION IDENT		{ newsect($2, 0, NULL); }
+	| PSEUDOOP_SECTION IDENT ',' STRING ',' ELF_SHTYPE	{ newsect($2, $<y_word>6, stringbuf); }
 	| PSEUDOOP_END				{ }
 	| PSEUDOOP_GLOBAL IDENT		{ $2->i_type |= S_EXTERN; }
 	| PSEUDOOP_LOCAL IDENT			{ $2->i_type &= ~S_EXTERN; }
@@ -237,21 +236,6 @@ operation: /* empty */
 	| PSEUDOOP_ASCII STRING			{ emitstr($1); }
 	| PSEUDOOP_CFI_IGNORE optabs		{ }
 	| PSEUDOOP_CFI_IGNORE absexp ',' absexp { }
-	;
-
-sectname: IDENT					{ $$ = $1; }
-	| STRING				{
-							const char *name = stringbuf;
-							item_t *ip = item_search(name);
-							if (!ip) {
-								ip = item_alloc(S_UND);
-								ip->i_name = remember(name);
-								printf("creating section ident %s %p\n", ip->i_name, ip);
-								unresolved++;
-								item_insert(ip, H_LOCAL + (hashindex % H_SIZE));
- 							}
-							$$ = ip;
-						}
 	;
 
 externlist

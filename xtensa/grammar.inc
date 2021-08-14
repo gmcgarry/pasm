@@ -21,6 +21,7 @@
 #define encodeRRR(x,r,s,t)	((x) | ((r) << 12) | ((s) << 8) | ((t) << 4))
 
 operation: PSEUDOOP_LITPOS				{ }
+	| PSEUDOOP_SECTION sectname ',' STRING ',' ELF_SHTYPE      { newsect($2, $<y_word>6, stringbuf); }
 	| PSEUDOOP_LITERAL IDENT ',' expr ',' expr	{ emit2($4.val); emit2($6.val); }
 	| PSEUDOOP_LITERAL IDENT ',' expr		{ literal($2, $4); }
 	| insn24					{ emit3($1); }
@@ -64,12 +65,6 @@ insn24	: FORMAT_RRR					{ $$ = encodeRRR($1, 0, 0, 0); }			/*_______ */
 	| CALLXOP		REG			{ $$ = encodeRRR($1, 0, $2, 0);	}			/* ___s__ */
 	;
 
-reg	: REG				{ $$ = $1; }
-	| SREG				{ $$ = $1; }
-	| FREG				{ $$ = $1; }
-	| BREG				{ $$ = $1; }
-	;
-
 imm4	: expr				{ $$ = $1.val; if (!FIT($$,4)) serror("invalid 4-bit alue"); }
 	;
 
@@ -107,8 +102,27 @@ imm12	: expr				{ $$ = $1.val & 0xfff; }
 imm12_x8: absexp			{ $$ = $1 / 8; }
 	;
 
-imm16	: expr				{ $$ = $1.val; if (!FIT($$,16)) serror("value too large"); }
+imm16	: expr				{ $$ = $1.val; /* if (!FIT($$,16)) serror("value too large"); */ }
 	;
 
-imm18	: expr				{ $$ = $1.val; if (!FIT($$,18)) serror("value too large"); }
+imm18	: expr				{ $$ = $1.val; /* if (!FIT($$,18)) serror("value too large"); */ }
+	;
+
+sectname: STRING			{
+						char *name = stringbuf;
+						char *p = name;
+						while (*p && *p != ' ')
+							p++;
+						if (*p)
+							*p = '\0';
+						item_t *ip = item_search(name);
+						if (!ip) {
+							ip = item_alloc(S_UND);
+							ip->i_name = remember(name);
+							printf("creating section ident %s %p\n", ip->i_name, ip);
+							unresolved++;
+							item_insert(ip, H_LOCAL + (hashindex % H_SIZE));
+						}
+						$$ = ip;
+					}
 	;

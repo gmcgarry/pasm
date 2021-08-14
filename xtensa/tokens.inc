@@ -15,16 +15,19 @@
 %type <y_word> imm7_m32		/* (0..127) - 32 */
 %type <y_word> imm8
 %type <y_word> imm8_x4		/* 4*(0..255) */
+#if 0
 %type <y_word> imm8_x8		/* 8*(-127..128) */
+#endif
 %type <y_word> imm8_x256	/* 256*(-127..128) */
 %type <y_word> imm12
 %type <y_word> imm12_x8		/* 8*(0..4096) */
 %type <y_word> imm16
 %type <y_word> imm18
 
-%type <y_word> reg
 %type <y_word> insn24
 %type <y_word> insn16
+
+%type <y_item> sectname		/* for irom sections */
 
 %token <y_word> FORMAT_BRI12
 %token <y_word> FORMAT_BRI12_SI
