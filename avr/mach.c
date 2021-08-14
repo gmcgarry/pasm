@@ -26,6 +26,11 @@ extern sect_t sect[];
 #define fit12(x)	fitx(x, 12)
 
 void
+mflag(const char* flag)
+{
+}
+
+void
 machstart(int pass)
 {
 }

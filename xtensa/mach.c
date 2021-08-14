@@ -20,6 +20,11 @@
 extern int hash(const char* p);
 
 void
+mflag(const char* flag)
+{
+}
+
+void
 machstart(int pass)
 {
 	if (pass == PASS_1) {

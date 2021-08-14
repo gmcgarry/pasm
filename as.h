@@ -336,6 +336,7 @@ void	 emitstr(int);
 void	 emitf(int size, int negative);
 
 /* mach.c */
+void mflag(const char *flag);
 void machstart(int pass);
 void machfinish(int pass);
 

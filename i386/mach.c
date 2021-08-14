@@ -49,6 +49,41 @@
 
 extern sect_t sect[]; /* XXXGJM remove */
 
+int use32  = 1;
+int address_long = 1;
+int operand_long = 1;
+
+char regindex_ind[8][8] = {
+	{ 000,  010,    020,    030,    -1,     050,    060,    070 },
+	{ 001,  011,    021,    031,    -1,     051,    061,    071 },
+	{ 002,  012,    022,    032,    -1,     052,    062,    072 },
+	{ 003,  013,    023,    033,    -1,     053,    063,    073 },
+	{ 004,  014,    024,    034,    -1,     054,    064,    074 },
+	{ 005,  015,    025,    035,    -1,     055,    065,    075 },
+	{ 006,  016,    026,    036,    -1,     056,    066,    076 },
+	{ 007,  017,    027,    037,    -1,     057,    067,    077 },
+};
+
+/* For 16-bit addressing: copied from i86 assembler */
+char sr_m[8] = {
+	-1,     -1,     -1,     7,      -1,     6,      4,      5
+};
+
+char dr_m[8][8] = {
+	{ -1,     -1,     -1,     -1,     -1,     -1,     -1,     -1 },
+	{ -1,     -1,     -1,     -1,     -1,     -1,     -1,     -1 },
+	{ -1,     -1,     -1,     -1,     -1,     -1,     -1,     -1 },
+	{ -1,     -1,     -1,     -1,     -1,     -1,     0,      1 },
+	{ -1,     -1,     -1,     -1,     -1,     -1,     -1,     -1 },
+	{ -1,     -1,     -1,     -1,     -1,     -1,     2,      3 },
+	{ -1,     -1,     -1,     -1,     -1,     -1,     -1,     -1 },
+	{ -1,     -1,     -1,     -1,     -1,     -1,     -1,     -1 }
+};
+
+void
+mflag(const char* flag)
+{
+}
 
 void
 machstart(int pass)
@@ -64,27 +99,27 @@ void
 ea_1_16(int param)
 {
 	reg_1 &= 0xFF;
-        if ((reg_1 & 070) || (param & ~070)) {
-                serror("bad operand");
-        }
-        emit1(reg_1 | param);
-        switch(reg_1 >> 6) {
-        case 0:
-                if (reg_1 == 6 || (reg_1 & 040)) {
-                        RELOMOVE(relonami, rel_1);
-                        newrelo(exp_1.typ, RELO2);
-                        emit2(exp_1.val);
-                }
-                break;
-        case 1:
-                emit1(exp_1.val);
-                break;
-        case 2:
-                RELOMOVE(relonami, rel_1);
-                newrelo(exp_1.typ, RELO2);
-                emit2(exp_1.val);
-                break;
-        }
+	if ((reg_1 & 070) || (param & ~070)) {
+		serror("bad operand");
+	}
+	emit1(reg_1 | param);
+	switch(reg_1 >> 6) {
+	case 0:
+		if (reg_1 == 6 || (reg_1 & 040)) {
+			RELOMOVE(relonami, rel_1);
+			newrelo(exp_1.typ, RELO2);
+			emit2(exp_1.val);
+		}
+		break;
+	case 1:
+		emit1(exp_1.val);
+		break;
+	case 2:
+		RELOMOVE(relonami, rel_1);
+		newrelo(exp_1.typ, RELO2);
+		emit2(exp_1.val);
+		break;
+	}
 }
 
 void
@@ -189,8 +224,7 @@ regsize(int sz)
 	int bit;
 
 	bit = (sz&1) ? 0 : IS_R8;
-	if ((is_reg(reg_1) && (reg_1 & IS_R8) != bit) ||
-	    (is_reg(reg_2) && (reg_2 & IS_R8) != bit)) 
+	if ((is_reg(reg_1) && (reg_1 & IS_R8) != bit) || (is_reg(reg_2) && (reg_2 & IS_R8) != bit)) 
 		serror("register error");
 	if (!address_long) {
 		reg_1 &= ~010;
@@ -206,9 +240,7 @@ indexed(void)
 		if (sib_2 == -1)
 			serror("register error");
 		if (rm_2 == 0 && reg_2 == 4) {
-			/* base register sp, no index register; use
-		   	   indexed mode without index register
-			*/
+			/*  base register sp, no index register; use  indexed mode without index register */
 			rm_2 = 04;
 			sib_2 = 044;
 		}
@@ -218,24 +250,25 @@ indexed(void)
 		}
 		if (small(exp_2.typ == S_ABS && fitb(exp_2.val), 3)) {
 			if (small(exp_2.val == 0 && reg_2 != 5, 1)) {
+			} else {
+				mod_2 = 01;
 			}
-			else mod_2 = 01;
+		} else if (small(0, 1)) {
+		} else {
+			mod_2 = 02;
 		}
-		else	if (small(0, 1)) {
-		}
-		else mod_2 = 02;
-	}
-	else {
-        	if (reg_2 & ~7)
-                	serror("register error");
-        	if (small(exp_2.typ == S_ABS && fitb(exp_2.val), 1)) {
+	} else {
+		if (reg_2 & ~7)
+			serror("register error");
+		if (small(exp_2.typ == S_ABS && fitb(exp_2.val), 1)) {
 			if (small(exp_2.val == 0 && reg_2 != 6, 1)) {
+			} else {
+				reg_2 |= 0100;
 			}
-			else reg_2 |= 0100;
+		} else if (small(0, 1)) {
+		} else {
+			reg_2 |= 0200;
 		}
-		else if (small(0, 1)) {
-		}
-		else reg_2 |= 0200;
 	}
 }
 
@@ -299,7 +332,6 @@ branch(int opc,expr_t exp)
 void
 pushop(int opc)
 {
-
 	regsize(1);
 	if (is_segreg(reg_1)) {
 		/* segment register */
@@ -311,21 +343,20 @@ pushop(int opc)
 		}
 	} else if (is_reg(reg_1)) {
 		/* normal register */
+		if (use32 == 2 && (reg_1 & IS_R32) && operand_long)
+			serror("bad register operand");
 		emit1(0120 | opc<<3 | (reg_1&7));
 	} else if (opc == 0) {
 		if (is_expr(reg_1)) {
-			if (small(exp_1.typ == S_ABS && fitb(exp_1.val),
-				  operand_long ? 3 : 1)) {
+			if (small(exp_1.typ == S_ABS && fitb(exp_1.val), operand_long ? 3 : 1)) {
 				emit1(0152);
 				emit1((int)(exp_1.val));
-			}
-			else {
+			} else {
 				emit1(0150);
 				RELOMOVE(relonami, rel_1);
 				opsize_exp(exp_1, 1);
 			}
-		}
-		else {
+		} else {
 			emit1(0xFF);
 			ea_1(6<<3);
 		}
@@ -466,7 +497,6 @@ callop(int opc)
 void
 xchg(int opc)
 {
-
 	regsize(opc);
 	if (! is_reg(reg_1) || is_acc(reg_2)) {
 		reverse();
@@ -536,7 +566,7 @@ mov(int opc)
 		RELOMOVE(relonami, rel_2);
 		opsize_exp(exp_2, (opc&1));
 	} else if (rm_1 == 05 && is_acc(reg_2)) {
-		/* from accumulator to memory  (displacement) */
+		/* from accumulator to memory (displacement) */
 		emit1(0242 | opc);
 		RELOMOVE(relonami, rel_1);
 		adsize_exp(exp_1, 0);
@@ -608,16 +638,17 @@ bittestop(int opc)
 void
 imul(int reg)
 {
-	/*	This instruction is more elaborate on the 80386. Its most
-		general form is:
-			imul reg, reg_or_mem, immediate.
-		This is the form processed here.
-	*/
+	/*
+	 * This instruction is more elaborate on the 80386. Its most general form is:
+	 *		imul reg, reg_or_mem, immediate.
+	 * This is the form processed here.
+	 */
+
 	regsize(1);
 	if (is_expr(reg_1)) {
 		/* To also handle
-			imul reg, immediate, reg_or_mem
-		*/
+		 *	imul reg, immediate, reg_or_mem
+		 */
 		reverse();
 	}
 	if (is_expr(reg_2)) {
@@ -635,8 +666,7 @@ imul(int reg)
 			RELOMOVE(relonami, rel_2);
 			opsize_exp(exp_2, 1);
 		}
-	}
-	else if (is_reg(reg_1) && ((reg_1&7) == (reg & 07))) {
+	} else if (is_reg(reg_1) && ((reg_1&7) == (reg & 07))) {
 		/* the "reg" field and the "reg_or_mem" field are the same,
 		   and the 3rd operand is not an immediate ...
 		*/
@@ -662,8 +692,6 @@ imul(int reg)
 	}
 }
 
-
-
 void
 argprefix()
 {
@@ -681,3 +709,27 @@ opprefix()
 	else if (use32 && !operand_long)
 		emit1(0x66);
 }
+
+/*
+ * How prefixes work:
+ *
+ * operand : the size of the register
+ * address : the size of the memory object
+ *
+ * Note that explicit opcodes for byte operands are provided in all modes.
+ *
+ * in x86 mode: (16-bit)
+ *	0xe6: word operand
+ *	0xe7: word address
+ * in 386 mode: (32-bit)
+ *	0x66: changes the size of the data to 16-bit			mov %dx, (%ebx), movw $1,(%ebx)
+ *	0x67: changes the size of the address to 16-bit			mov %edx,(%bp,%di) - invoked with '.code16' directive
+ * in x64 mode: (64-bit)
+ *	0x66: changes the size of the data to 16-bit
+ *	0x67: changes the size of the address to 32-bit
+ *	0x4x: REX prefix : 0 1 0 0 W R X B
+ *		W : REX.W changes size of the data to 64-bits		movq $0x1,(%rbx)
+ *		R : REX.R extends the reg value of MODRM		mov %r9b,(%rbx)
+ *		X : REX.X extends the index register			mov %rax,0x40(%r8)
+ *		B : REX.B extends the RM register			mov %rdx,%r9, mov $0x1,%r9b
+ */

@@ -119,6 +119,14 @@ main(int argc, char **argv)
 		if (*p++ != '-')
 			continue;
 		switch (*p++) {
+		case 'm':
+			if (*p != '\0') {
+				mflag(p);
+				break;
+			}
+			if (++i < argc)
+				mflag(argv[i]);
+			break;
 		case 'D':
 #ifdef YYDEBUG
 			yydebug = 1;
@@ -210,7 +218,7 @@ pass_1(int argc, char **argv)
 			continue;
 		}
 		if ((input = fopen(p, "r")) == NULL)
-			fatal("can't open %s", p);
+			fatal("cannot open %s", p);
 		parse(p);
 		fclose(input);
 	}
@@ -496,7 +504,7 @@ outstart(void)
 	long off = 0;
 
 	if (wr_open(aoutpath, nsect) < 0)
-		fatal("can't create %s", aoutpath);
+		fatal("cannot create %s", aoutpath);
 
 	printf("---------------------------------------\n");
 	printf("nsect = %d\n", nsect);

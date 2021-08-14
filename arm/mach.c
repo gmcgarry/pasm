@@ -44,6 +44,10 @@ extern sect_t sect[];
 
 int mode = MODE_ARM;
 
+void
+mflag(const char* flag)
+{
+}
 
 void
 machstart(int pass)
