@@ -130,10 +130,8 @@ newlabel(item_t *ip)
 	if (store(ip, (ADDR_T) DOTVAL) == 0)
 		return;
 #ifdef THREE_PASS
-	if (pass == PASS_2) {
-		/* XXXGJM this isn't try for .org directive with fixed base */
+	if (pass == PASS_2)
 		assert(oldval - (ADDR_T) ip->i_valu == sect[DOTSCT].s_gain);
-	}
 	assert(pass != PASS_2 || oldval - (ADDR_T) ip->i_valu == sect[DOTSCT].s_gain);
 #endif
 }
