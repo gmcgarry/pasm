@@ -30,8 +30,10 @@ mflag(const char* flag)
 void
 machstart(int pass)
 {
-	if (pass == PASS_1)
+	if (pass == PASS_1) {
 		item_insert(&cseg, hash(cseg.i_name));
+		unresolved++
+	}
 	newsect(&cseg, 0, NULL);
 }
 

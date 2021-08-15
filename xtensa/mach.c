@@ -19,6 +19,10 @@
 
 extern int hash(const char* p);
 
+
+static item_t literals = { 0, 0, S_UND, ".literal" };
+
+
 void
 mflag(const char* flag)
 {
@@ -28,16 +32,30 @@ void
 machstart(int pass)
 {
 	if (pass == PASS_1) {
-		item_t *ip;
-		ip = item_alloc(S_UND);
-		ip->i_name = ".literals";
-		item_insert(ip, hash(ip->i_name));
+                item_insert(&literals, hash(literals.i_name));
+		unresolved++;
 	}
+        newsect(&literals, SHT_PROGBITS, "ax");
 }
 
 void
 machfinish(int pass)
 {
+}
+
+void
+literal(item_t *ident, expr_t e)
+{
+	int sct = DOTSCT;
+	printf("=====> DOTSCT = %d\n", DOTSCT);
+	newsect(&literals, SHT_PROGBITS, "ax");
+	printf("<===== DOTSCT = %d\n", DOTSCT);
+	newident(ident, DOTSCT);
+	newlabel(ident);
+	if (PASS_RELO)
+		newrelo(e.typ, RELO4);
+	emit4(e.val);
+	switchsect(sct);
 }
 
 int

@@ -22,16 +22,7 @@
 
 operation: PSEUDOOP_LITPOS				{ }
 	| PSEUDOOP_LITERAL IDENT ',' expr ',' expr	{ emit2($4.val); emit2($6.val); }
-	| PSEUDOOP_LITERAL IDENT ',' expr		{
-								int sct = DOTSCT;
-								newsect(item_search(".literals"), SHT_PROGBITS, "ax");
- 								newident($2, DOTSCT);
-								newlabel($2);
-								if (PASS_RELO)
-									newrelo($4.typ, RELO4);
-								emit4($4.val);
-								switchsect(sct);
-							}
+	| PSEUDOOP_LITERAL IDENT ',' expr		{ literal($2, $4); }
 	| insn24					{ emit3($1); }
 	| insn16					{ emit2($1); }
 	;
@@ -69,7 +60,7 @@ insn24	: FORMAT_RRR					{ $$ = encodeRRR($1, 0, 0, 0); }			/*_______ */
 	| FORMAT_BRI12		REG ',' imm12_x8	{ $$ = encodeRRR($1, $4>>8, $2, 0) | (($4 & 0xff) << 16); }	/* iixs__ */
 	| FORMAT_BRI12_SI	REG ',' imm12		{ $$ = encodeRRR($1, $4>>8, $2, 0) | (($4 & 0xff) << 16); }	/* iixs__ */
 	| FORMAT_RRI8_TSIx256	REG ',' REG ',' imm8_x256	{ $$ = encodeRRR($1, 0, $4, $2) | ($6 << 16); }	/* ii_st_ */
-	| CALLOP		imm18			{ $$ = encodeRRR($1, $2>>8, $2>>12, 0) | ($2 << 16); }	/* iiii__ */
+	| CALLOP		expr			{ $$ = encodeRRR($1, $2.val>>8, $2.val>>12, 0) | ($2.val << 16); newrelo($2.typ, RELO2); }	/* iiii__ */
 	| CALLXOP		REG			{ $$ = encodeRRR($1, 0, $2, 0);	}			/* ___s__ */
 	;
 
