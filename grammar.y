@@ -213,8 +213,8 @@ operation: /* empty */
 						}
 #endif
 	| PSEUDOOP_FILE STRING			{ if ((sflag & SYM_LIN) && PASS_SYMB) newsymb(stringbuf, (S_ABS | S_FILE), (ADDR_T)DOTVAL); }
-	| PSEUDOOP_EQU IDENT '=' absexp		{ $2->i_type = S_ABS; $2->i_valu = $4; }
-	| PSEUDOOP_EQU IDENT ',' absexp		{ $2->i_type = S_ABS; $2->i_valu = $4; }
+	| PSEUDOOP_EQU IDENT '=' absexp		{ $2->i_type = S_ABS; $2->i_valu = $4; unresolved--; }
+	| PSEUDOOP_EQU IDENT ',' absexp		{ $2->i_type = S_ABS; $2->i_valu = $4; unresolved--; }
 	| PSEUDOOP_EXTERN externlist
 	| PSEUDOOP_ALIGN optabs			{ if (!($1)) align($2); else align(0x1<<$2); }
 	| PSEUDOOP_SPACE absexp			{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; (&sect[DOTSCT])->s_zero += $2; }
