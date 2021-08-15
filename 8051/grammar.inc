@@ -202,31 +202,18 @@ bit		: bitv BITPOS
 	else
 		warning("Invalid bit addressable RAM location");
 }
-		| bitv			{ if( pass == PASS_2 ) { if (!isbit8($1) ) warning("Bit address exceeds 8-bits"); } $$ = $1; }
+		| bitv		{ if( pass == PASS_2 ) { if (!isbit8($1) ) warning("Bit address exceeds 8-bits"); } $$ = $1; }
 		;
 
-bitv		: SREG			{ $$ = $1; }
-		| absexp		{ $$ = $1; }
+bitv		: SREG		{ $$ = $1; }
+		| absexp	{ $$ = $1; }
 		;
 
-reg		: R0		{ $$ = $1; }
-		| R1		{ $$ = $1; }
-		| R2		{ $$ = $1; }
-		| R3		{ $$ = $1; }
-		| R4		{ $$ = $1; }
-		| R5		{ $$ = $1; }
-		| R6		{ $$ = $1; }
-		| R7		{ $$ = $1; }
+reg		: AREG		{ $$ = $1; }
+		;
 		;
 
-regi		: R0		{ $$ = $1; }
-		| R1		{ $$ = $1; }
-		| R2		{ $$ = $1; warning("Illegal indirect register: @r2"); }
-		| R3		{ $$ = $1; warning("Illegal indirect register: @r3"); }
-		| R4		{ $$ = $1; warning("Illegal indirect register: @r4"); }
-		| R5		{ $$ = $1; warning("Illegal indirect register: @r5"); }
-		| R6		{ $$ = $1; warning("Illegal indirect register: @r6"); }
-		| R7		{ $$ = $1; warning("Illegal indirect register: @r7"); }
+regi		: AREG		{ $$ = $1; if ($1 > 1) warning("Illegal indirect register: @r2"); }
 		;
 
 data8		: expr		{ if (pass == PASS_2) { if( !isbit8($1.val)) warning("Expression greater than 8-bits"); } $$ = $1.val; }

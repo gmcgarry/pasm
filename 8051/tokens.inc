@@ -72,6 +72,7 @@
 %token <y_word> XCH
 %token <y_word> XCHD
 %token <y_word> XRL
+
 %token <y_word> AB
 %token <y_word> A
 %token <y_word> C
@@ -79,14 +80,7 @@
 %token <y_word> DPTR
 %token <y_word> BITPOS
 
-%token <y_word> R0
-%token <y_word> R1
-%token <y_word> R2
-%token <y_word> R3
-%token <y_word> R4
-%token <y_word> R5
-%token <y_word> R6
-%token <y_word> R7
+%token <y_word> AREG
 %token <y_word> SREG
 
 %token EQU
