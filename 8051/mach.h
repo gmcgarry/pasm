@@ -37,8 +37,21 @@ extern struct mode	mode;
 #define get_b1(m)       ((m).byte1)
 #define get_b2(m)       ((m).byte2)
 
-#define genbyte(b)	emit1(b)
-#define genstr(s)	emitstr(s)
-#define genword(w)	emit2(w)
+void emitop(int opc);
 
-void makeop(int opc, struct mode *m, int add);
+void movop(int add);
+void anlop(int add);
+void orlop(int add);
+void addop(int add);
+void addcop(int add);
+void cjneop(int add);
+void decop(int add);
+void subbop(int add);
+void movxop(int add);
+void xrlop(int add);
+void incop(int add);
+void xchop(int add);
+void djnzop(int add);
+void clrop(int add);
+void cplop(int add);
+void setbop(int add);

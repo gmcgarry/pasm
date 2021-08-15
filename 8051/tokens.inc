@@ -88,3 +88,6 @@
 %token <y_word> R6
 %token <y_word> R7
 %token <y_word> SREG
+
+%token EQU
+%token BIT

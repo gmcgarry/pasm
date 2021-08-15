@@ -35,65 +35,67 @@
 #define isbmsfr(a)	(((a)&0x80) && !((a)&0x07))
 
 
-operation	: NOP			{ makeop($1,NULL,0); }
-		| ACALL addr11		{ makeop($1,&mode,0); }
-		| AJMP addr11		{ makeop($1,&mode,0); }
-		| ADD two_op1		{ makeop($1,&mode,0); }
-		| ADDC two_op1		{ makeop($1,&mode,0); }
-		| SUBB two_op1		{ makeop($1,&mode,0); }
-		| XRL two_op1		{ makeop($1,&mode,0); }
-		| XRL two_op2		{ makeop($1,&mode,4); }
-		| ANL two_op1		{ makeop($1,&mode,0); }
-		| ANL two_op2		{ makeop($1,&mode,4); }
-		| ANL two_op3		{ makeop($1,&mode,6); }
-		| ORL two_op1		{ makeop($1,&mode,0); }
-		| ORL two_op2		{ makeop($1,&mode,4); }
-		| ORL two_op3		{ makeop($1,&mode,6); }
-		| XCH two_op1		{ if (get_md(mode) == 3) warning("Immediate mode is illegal"); makeop($1,&mode,0); }
-		| INC single_op1	{ makeop($1,&mode,0); }
-		| INC DPTR		{ makeop($1,NULL,4); }
-		| DEC single_op1	{ makeop($1,&mode,0); }
-		| DA A			{ makeop($1,NULL,0); }
-		| DIV AB		{ makeop($1,NULL,0); }
-		| JMP '@' A '+' DPTR	{ makeop($1,NULL,0); }
-		| JMP '@' DPTR '+' A	{ makeop($1,NULL,0); }
-		| MUL AB		{ makeop($1,NULL,0); }
-		| RET			{ makeop($1,NULL,0); }
-		| RETI			{ makeop($1,NULL,0); }
-		| RL A			{ makeop($1,NULL,0); }
-		| RLC A			{ makeop($1,NULL,0); }
-		| RR A			{ makeop($1,NULL,0); }
-		| RRC A			{ makeop($1,NULL,0); }
-		| SWAP A		{ makeop($1,NULL,0); }
-		| XCHD two_op1		{ if (get_md(mode) != 2) warning("Invalid addressing mode"); makeop($1,&mode,-2); }
-		| CLR single_op2	{ makeop($1,&mode,0); }
-		| CPL single_op2	{ makeop($1,&mode,0); }
-		| SETB single_op2	{ if (get_md(mode) == 0) warning("Invalid addressing mode"); makeop($1,&mode,-1); }
-		| PUSH data8		{ set_md(mode,0); set_ov(mode,0); set_sz(mode,1); set_b1(mode,$2); makeop($1,&mode,0); }
-		| POP data8		{ set_md(mode,0); set_ov(mode,0); set_sz(mode,1); set_b1(mode,$2); makeop($1,&mode,0); }
-		| LJMP addr16		{ makeop($1,&mode,0); }
-		| LCALL addr16		{ makeop($1,&mode,0); }
-		| JC relative		{ makeop($1,&mode,0); }
-		| JNC relative		{ makeop($1,&mode,0); }
-		| JNZ relative		{ makeop($1,&mode,0); }
-		| JZ relative		{ makeop($1,&mode,0); }
-		| SJMP relative		{ makeop($1,&mode,0); }
-		| CJNE three_op1	{ makeop($1,&mode,0); }
-		| JB two_op4		{ makeop($1,&mode,0); }
-		| JNB two_op4		{ makeop($1,&mode,0); }
-		| JBC two_op4		{ makeop($1,&mode,0); }
-		| DJNZ two_op5		{ makeop($1,&mode,0); }
-		| MOV two_op1		{ makeop($1,&mode,0); }
-		| MOV two_op2		{ makeop($1,&mode,4); }
-		| MOV two_op6		{ makeop($1,&mode,6); }
-		| MOVC A ',' '@' A '+' PC	{ makeop($1,NULL,0); }
-		| MOVC A ',' '@' PC '+' A	{ makeop($1,NULL,0); }
-		| MOVC A ',' '@' A '+' DPTR	{ makeop($1|0x10,NULL,0); }
-		| MOVC A ',' '@' DPTR '+' A	{ makeop($1|0x10,NULL,0); }
-		| MOVX A ',' '@' regi		{ makeop($1,NULL,$5); }
-		| MOVX A ',' '@' DPTR		{ makeop($1,NULL,2); }
-		| MOVX '@' regi ',' A		{ makeop($1,NULL,$3+3); }
-		| MOVX '@' DPTR ',' A		{ makeop($1,NULL,5); }
+operation	: NOP			{ emit1($1); }
+		| ACALL addr11		{ emitop($1); }
+		| AJMP addr11		{ emitop($1); }
+		| ADD two_op1		{ addop(0); }
+		| ADDC two_op1		{ addcop(0); }
+		| SUBB two_op1		{ xrlop(0); }
+		| XRL two_op1		{ xrlop(0); }
+		| XRL two_op2		{ xrlop(4); }
+		| ANL two_op1		{ anlop(0); }
+		| ANL two_op2		{ anlop(4); }
+		| ANL two_op3		{ anlop(6); }
+		| ORL two_op1		{ orlop(0); }
+		| ORL two_op2		{ orlop(4); }
+		| ORL two_op3		{ orlop(6); }
+		| XCH two_op1		{ if (get_md(mode) == 3) warning("Immediate mode is illegal"); xchop(0); }
+		| INC single_op1	{ incop(0); }
+		| INC DPTR		{ incop(4); }
+		| DEC single_op1	{ decop(0); }
+		| DA A			{ emit1($1); }
+		| DIV AB		{ emit1($1); }
+		| JMP '@' A '+' DPTR	{ emit1($1); }
+		| JMP '@' DPTR '+' A	{ emit1($1); }
+		| MUL AB		{ emit1($1); }
+		| RET			{ emit1($1); }
+		| RETI			{ emit1($1); }
+		| RL A			{ emit1($1); }
+		| RLC A			{ emit1($1); }
+		| RR A			{ emit1($1); }
+		| RRC A			{ emit1($1); }
+		| SWAP A		{ emit1($1); }
+		| XCHD two_op1		{ if (get_md(mode) != 2) warning("Invalid addressing mode"); xchop(-2); }
+		| CLR single_op2	{ clrop(0); }
+		| CPL single_op2	{ cplop(0); }
+		| SETB single_op2	{ if (get_md(mode) == 0) warning("Invalid addressing mode"); setbop(-1); }
+		| PUSH data8		{ set_md(mode,0); set_ov(mode,0); set_sz(mode,1); set_b1(mode,$2); emitop($1); }
+		| POP data8		{ set_md(mode,0); set_ov(mode,0); set_sz(mode,1); set_b1(mode,$2); emitop($1); }
+		| LJMP addr16		{ emitop($1); }
+		| LCALL addr16		{ emitop($1); }
+		| JC relative		{ emitop($1); }
+		| JNC relative		{ emitop($1); }
+		| JNZ relative		{ emitop($1); }
+		| JZ relative		{ emitop($1); }
+		| SJMP relative		{ emitop($1); }
+		| CJNE three_op1	{ emitop($1); }
+		| JB two_op4		{ emitop($1); }
+		| JNB two_op4		{ emitop($1); }
+		| JBC two_op4		{ emitop($1); }
+		| DJNZ two_op5		{ emitop($1); }
+		| MOV two_op1		{ movop(0); }
+		| MOV two_op2		{ movop(4); }
+		| MOV two_op6		{ movop(6); }
+		| MOVC A ',' '@' A '+' PC	{ emit1($1); }
+		| MOVC A ',' '@' PC '+' A	{ emit1($1); }
+		| MOVC A ',' '@' A '+' DPTR	{ emit1($1|0x10); }
+		| MOVC A ',' '@' DPTR '+' A	{ emit1($1|0x10); }
+		| MOVX A ',' '@' regi		{ movxop($5); }
+		| MOVX A ',' '@' DPTR		{ movxop(2); }
+		| MOVX '@' regi ',' A		{ movxop($3+3); }
+		| MOVX '@' DPTR ',' A		{ movxop(5); }
+		| IDENT EQU absexp		{ $1->i_type = S_ABS; $1->i_valu = $3; --unresolved; }
+		| IDENT BIT bit			{ $1->i_type = S_ABS; $1->i_valu = $3; --unresolved; }
 		;
 
 two_op1		: A ',' reg		{ set_md(mode,0); set_ov(mode, $3); set_sz(mode, 0); }
