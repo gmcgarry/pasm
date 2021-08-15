@@ -465,14 +465,15 @@ innumber(int c)
 	ADDR_T v;
 	char* p;
 	int radix;
+	int nleft;
 	static char num[40 + 1];
 
 	p = num;
-	radix = 40;
+	nleft = 40;
 	if (c == '.')
 		goto floatconstant;
 	do {
-		if (--radix < 0)
+		if (--nleft < 0)
 			fatal("number too long");
 		if (isupper(c))
 			c += ('a' - 'A');
@@ -484,25 +485,35 @@ innumber(int c)
 	peekc = c;
 	*p = '\0';
 	c = *--p;
-	p = num;
 	radix = 10;
-	if (*p == '0') {
-		radix = 8;
-		p++;
-		if (*p == 'x') {
+	if (c == 'h' || c == 'H') {
+		*p = '\0';
+		p = num;
+		radix = 16;
+	} else if ((p - num) == 8 && (c == 'b' || c == 'B')) {
+		*p = '\0';
+		p = num;
+		radix = 2;
+	} else {
+		p = num;
+		if (*p == '0') {
+			radix = 8;
+			p++;
+			if (*p == 'x') {
+				radix = 16;
+				p++;
+			} else if (*p == 'b') {
+				radix = 2;
+				p++;
+			}
+#ifdef HEXPREFIX
+		} else if (*p == HEXPREFIX) {
 			radix = 16;
 			p++;
-		} else if (*p == 'b') {
-			radix = 2;
-			p++;
-		}
-#ifdef HEXPREFIX
-	} else if (*p == HEXPREFIX) {
-		radix = 16;
-		p++;
 #endif
+		}
 	}
-	if (radix != 16 && (c == 'f' || c == 'b'))
+	if (radix == 10 && (c == 'f' || c == 'b'))
 		return infbsym(num);
 	v = 0;
 	while ((c = *p++)) {
@@ -668,8 +679,10 @@ hash(const char* p)
 static int
 strcompare(const char *s1, const char *s2)
 {
-#ifdef IGNORECASE
+#if 0
 	printf("comparing \"%s\" with \"%s\"\n", s1, s2);
+#endif
+#ifdef IGNORECASE
 	while (*s1 && *s2) {
 		int a = tolower(*s1++);
 		int b = tolower(*s2++);
