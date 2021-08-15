@@ -37,6 +37,13 @@
 #define TCON(a)		(0x88+(a))
 #define P0(a)		(0x80+(a))
 
+	/* intel syntax compatibility */
+	{ 0,	PSEUDOOP_ORG,		0,		"org"	},
+	{ 0,	PSEUDOOP_END,		0,		"end"	},
+	{ 0,	EQU,			0,		"equ"	},
+	{ 0,	BIT,			0,		"bit"	},
+	{ 0,	DOT,			0,		"$"	},
+
 #if 0
 	{ 0,	D_BYTE,			0x0,		".byte"	},
 	{ 0,	D_END,			0x0,		".end"	},
