@@ -162,7 +162,7 @@ combine(int typ1, int typ2, int op)
 			break;
 	}
 	if (pass != PASS_1)
-		serror("illegal operator");
+		serror("illegal operator '%c' ", op);
 	return (S_UND);
 }
 
