@@ -119,6 +119,7 @@ main(int argc, char **argv)
 		if (*p++ != '-')
 			continue;
 		switch (*p++) {
+		case '-':
 		case 'm':
 			if (*p != '\0') {
 				mflag(p);
@@ -231,7 +232,7 @@ pass_1(int argc, char **argv)
 
 		nerrors++;
 		fflush(stdout);
-		fprintf(stderr, "unresolved references:\n");
+		fprintf(stderr, "%d unresolved references:\n", unresolved);
 		for (i = 0; i < H_SIZE; i++) {
 			item_t *ip = hashtab[H_GLOBAL+i];
 			while (ip != 0) {
@@ -337,6 +338,7 @@ pass_23(int n)
 	if (pass == PASS_3)
 		outstart();
 	for (sp = sect; sp < &sect[nsect]; sp++) {
+		sp->s_base = 0;
 		sp->s_size = 0;
 		sp->s_zero = 0;
 #ifdef THREE_PASS
@@ -367,7 +369,7 @@ newmodule(char *s)
 {
 	static char nmbuf[STRINGMAX];
 
-	switchsect(S_UND);
+	switchsect(DEFAULT_SECTION);
 	if (s && s != modulename) {
 		strncpy(nmbuf, s, STRINGMAX-1);
 		modulename = nmbuf;
