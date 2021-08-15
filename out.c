@@ -41,12 +41,12 @@
 #include "out.h"
 
 #ifdef _DEBUG
-#define DPRINTF(x)	DPRINTF((x))
+#define DPRINTF(x)	printf x
 #else
 #define DPRINTF(x)	/* nothing */
 #endif
 
-#define MAX_PARTS	16
+#define MAX_PARTS	32
 
 static FILE *__parts[MAX_PARTS];
 static int nparts = 0;
@@ -100,10 +100,12 @@ wr_open(const char *filename, int n)
 {
 	int i;
 
-	if (n >= MAX_PARTS)
-		return -1;
-
 	DPRINTF(("wr_open(\"%s\")\n", filename));
+
+	if (n >= MAX_PARTS) {
+		DPRINTF(("too many parts: %d>%d\n", n, MAX_PARTS));
+		return -1;
+	}
 
 	fclose(fopen(filename,"wb"));
 	for (i = 0; i < n; i++) {
