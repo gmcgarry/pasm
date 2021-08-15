@@ -34,6 +34,7 @@
  */
 
 #include <assert.h>
+#include <strings.h> /* strcasecmp() */
 
 #include "as.h"
 #include "error.h"
@@ -81,8 +82,15 @@ char dr_m[8][8] = {
 };
 
 void
-mflag(const char* flag)
+mflag(const char* str)
 {
+	if (strcasecmp(str, "16") == 0) {
+		use32 = address_long = operand_long = 0;
+	} else if (strcasecmp(str, "32") == 0) {
+		use32 = address_long = operand_long = 1;
+	} else if (strcasecmp(str, "64") == 0) {
+		use32 = address_long = operand_long = 2;
+	}
 }
 
 void
