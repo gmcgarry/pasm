@@ -158,6 +158,10 @@ struct sect {
 };
 typedef	struct sect sect_t;
 
+#ifndef DEFAULT_SECTION
+#define DEFAULT_SECTION		S_UND
+#endif
+
 /* ========== flag field bits ========== */
 
 /* s_flag bits: */
@@ -172,7 +176,6 @@ typedef	struct sect sect_t;
 #define	SYM_LIN		020	/* .line and .file */
 #define	SYM_SCT		040	/* section names */
 #define	SYM_DEF		073	/* default value */
-
 
 /*
  * extra type bits, internal use only
@@ -253,6 +256,10 @@ extern FILE	*tempfile;
 
 extern char	*stringbuf;	/* contains last string value */
 extern int	stringlen;	/* contains length of last string value */
+
+#ifndef ELFM
+#define ELFM	"@"
+#endif
 
 /*
  * specials for the location counter
@@ -350,10 +357,6 @@ void machfinish(int pass);
 #define RELWR   0x8000		/* High order word lowest address. */
 
 #include "elf.h"
-
-#ifndef ELFM
-#define ELFM	"@"
-#endif
 
 #ifdef ELF64
 typedef Elf64_Ehdr Elf_Ehdr;

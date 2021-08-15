@@ -48,7 +48,6 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_EXTERN,	0,		".define" },
 	{ 0,	PSEUDOOP_EXTERN,	0,		".extern" },
 #endif
-	{ 0,	DOT,			0,		"." },
 
 	{ 0,	PSEUDOOP_DATA,		RELO1,		".byte" },
 	{ 0,	PSEUDOOP_DATA,		RELO2,		".word" },
@@ -82,7 +81,7 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_GLOBAL,	0,		".global" },
 	{ 0,	PSEUDOOP_LOCAL,		0,		".local" },
 	{ 0,	PSEUDOOP_EQU,		0,		".equ" },
-	{ 0,	PSEUDOOP_SET,		0,		".set" },
+	{ 0,	PSEUDOOP_EQU,		0,		".set" },
 	{ 0,	PSEUDOOP_LINE,		0,		".line" },
 	{ 0,	PSEUDOOP_FILE,		0,		".file" },
 	{ 0,	PSEUDOOP_TYPE,		0,		".type" },

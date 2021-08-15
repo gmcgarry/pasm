@@ -101,7 +101,6 @@ static item_t	*last_it;
 %token PSEUDOOP_BASE
 %token PSEUDOOP_ORG
 %token PSEUDOOP_EQU
-%token PSEUDOOP_SET
 %token PSEUDOOP_ZERO
 %token PSEUDOOP_MESSAGE
 %token <y_word> PSEUDOOP_ALIGN
@@ -215,7 +214,7 @@ operation: /* empty */
 #endif
 	| PSEUDOOP_FILE STRING			{ if ((sflag & SYM_LIN) && PASS_SYMB) newsymb(stringbuf, (S_ABS | S_FILE), (ADDR_T)DOTVAL); }
 	| PSEUDOOP_EQU IDENT '=' absexp		{ $2->i_type = S_ABS; $2->i_valu = $4; }
-	| PSEUDOOP_SET IDENT ',' absexp		{ $2->i_type = S_ABS; $2->i_valu = $4; }
+	| PSEUDOOP_EQU IDENT ',' absexp		{ $2->i_type = S_ABS; $2->i_valu = $4; }
 	| PSEUDOOP_EXTERN externlist
 	| PSEUDOOP_ALIGN optabs			{ if (!($1)) align($2); else align(0x1<<$2); }
 	| PSEUDOOP_SPACE absexp			{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; (&sect[DOTSCT])->s_zero += $2; }
@@ -261,8 +260,9 @@ externlist
 	;
 
 datalist: expr					{ if (PASS_RELO) newrelo($1.typ, (int)$<y_word>0|MACHREL_BWR); emitx($1.val, (int)$<y_word>0); }
-	| STRING				{ int i; for (i = 0; i < stringlen; i++) emit1(stringbuf[i]); }
 	| datalist ',' expr			{ if (PASS_RELO) newrelo($3.typ, (int)$<y_word>0|MACHREL_BWR); emitx($3.val, (int)$<y_word>0); }
+	| STRING				{ int i; for (i = 0; i < stringlen; i++) emit1(stringbuf[i]); }
+	| datalist ',' STRING			{ int i; for (i = 0; i < stringlen; i++) emit1(stringbuf[i]); }
 	;
 
 data8list
@@ -283,7 +283,7 @@ dataflist
 #endif
 
 expr	: error					{ serror("expr syntax err"); $$.val = 0; $$.typ = S_UND; }
-	| NUMBER8				{ $$.val = $1; /* ADDR_T = int64_t */ $$.typ = S_ABS; }
+	| NUMBER8				{ $$.val = $1; $$.typ = S_ABS; }
 	| id_fb					{ $$.val = load($1); last_it = $1; $$.typ = $1->i_type & S_SCTMASK; }
 	| STRING				{ if (stringlen != 1) serror("too many chars"); $$.val = stringbuf[0]; $$.typ = S_ABS; }
 	| '(' expr ')'				{ $$ = $2; }
@@ -309,6 +309,9 @@ expr	: error					{ serror("expr syntax err"); $$.val = 0; $$.typ = S_UND; }
 	| '-' expr %prec '*'			{ $$.val = -$2.val; $$.typ = combine(S_ABS, $2.typ, 0); }
 	| '~' expr				{ $$.val = ~$2.val; $$.typ = combine(S_ABS, $2.typ, 0); }
 	| DOT					{ $$.val = DOTVAL; $$.typ = DOTSCT | S_DOT; }
+#ifdef ASC_DOT
+	| ASC_DOT				{ $$.val = DOTVAL; $$.typ = DOTSCT | S_DOT; }
+#endif
 	;
 
 id_fb	: IDENT
