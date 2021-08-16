@@ -80,9 +80,11 @@ load(const item_t* ip)
 int
 store(item_t* ip, ADDR_T val)
 {
+	printf("store(%s, type=%x, val=%x)\n", ip->i_name, ip->i_type, val);
+
         int sct = ip->i_type & S_SCTMASK;
-#ifdef ASLD
-        if (sct == S_UND || sct ==  S_ABS)
+#if 0 /* def ASLD */
+        if (sct != S_UND && sct != S_ABS)
                 val -= sect[sct].s_base;
 #else
 	if (sct == S_UND)
@@ -90,6 +92,9 @@ store(item_t* ip, ADDR_T val)
 #endif
 	assert(pass != PASS_3 || (ip->i_type & S_VAR) || ip->i_valu == val);
 	ip->i_valu = val;
+
+	printf("storing 0x%04x into %s\n", val, ip->i_name);
+
 	return 1;
 }
 
@@ -125,7 +130,7 @@ remember(const char* s)
 int
 combine(int typ1, int typ2, int op)
 {
-#if 0
+#if 1
 	printf("combine(typ1=0x%x, typ2=0x%x, op='%c' (0x%x)\n", typ1, typ2, op, op);
 #endif
 
@@ -133,37 +138,37 @@ combine(int typ1, int typ2, int op)
 #ifndef NO_ASR
 		case 'k':
 			if (typ1 == S_ABS && typ2 == S_ABS)
-				return (S_ABS);
+				return S_ABS;
 			if (typ1 == S_VAR)
 				return (S_ABS | S_VAR);
 			break;
 #endif
 		case '+':
 			if (typ1 == S_ABS)
-				return (typ2);
+				return typ2;
 			if (typ2 == S_ABS)
-				return (typ1);
+				return typ1;
 			break;
 		case '-':
 			if (typ2 == S_ABS)
-				return (typ1);
+				return typ1;
 			if ((typ1 & ~S_DOT) == (typ2 & ~S_DOT) && typ1 != S_UND)
 				return (S_ABS | S_VAR);
 			break;
 		case '>':
 			if (typ1 == S_ABS && typ2 == S_ABS)
-				return (S_ABS);
+				return S_ABS;
 			if (((typ1 & ~S_DOT) == (typ2 & ~S_DOT) && typ1 != S_UND) || (typ1 == S_ABS) || (typ2 == S_ABS))
 				return (S_ABS | S_VAR);
 			break;
 		default:
 			if (typ1 == S_ABS && typ2 == S_ABS)
-				return (S_ABS);
+				return S_ABS;
 			break;
 	}
 	if (pass != PASS_1)
 		serror("illegal operator '%c' ", op);
-	return (S_UND);
+	return S_UND;
 }
 
 #ifdef LISTING
