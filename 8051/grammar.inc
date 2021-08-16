@@ -205,19 +205,18 @@ bit		: bitv BITPOS
 		| bitv		{ if( pass == PASS_2 ) { if (!isbit8($1) ) warning("Bit address exceeds 8-bits"); } $$ = $1; }
 		;
 
-bitv		: SREG		{ $$ = $1; }
+bitv		: SFR		{ $$ = $1; }
 		| absexp	{ $$ = $1; }
 		;
 
 reg		: AREG		{ $$ = $1; }
-		;
 		;
 
 regi		: AREG		{ $$ = $1; if ($1 > 1) warning("Illegal indirect register: @r2"); }
 		;
 
 data8		: expr		{ if (pass == PASS_2) { if( !isbit8($1.val)) warning("Expression greater than 8-bits"); } $$ = $1.val; }
-		| SREG		{ $$ = $1; }
+		| SFR		{ $$ = $1; }
 		;
 
 data16		: expr		{ if (pass == PASS_2) { if( !isbit16($1.val)) warning("Expression greater than 16-bits"); } $$ = $1.val; }

@@ -81,7 +81,7 @@
 %token <y_word> BITPOS
 
 %token <y_word> AREG
-%token <y_word> SREG
+%token <y_word> SFR
 
 %token EQU
 %token BIT
