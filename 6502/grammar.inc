@@ -68,7 +68,14 @@ expr: expr EXTENSION		{
 				}
 	;
 
-operation: NOPOP		{ emit1($1); }
+operation: optlabel instr
+	;
+
+/* for compatibility with asl assembler */
+optlabel:	/* empty */
+	| IDENT			{ newident($1, DOTSCT); newlabel($1); }
+
+instr	: NOPOP			{ emit1($1); }
 	| BITOP expr		{ code($2,$1,$1+8); }
 	| JMPOP expr		{ emit1($1); newrelo($2.typ, RELO2); emit2($2.val); }
 	| JMPOP '(' expr ')'	{ emit1($1+0x20); newrelo($3.typ, RELO2); emit2($3.val); }

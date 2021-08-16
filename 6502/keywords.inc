@@ -37,6 +37,8 @@
  * Mostek 6500 keywords
  */
 
+{0,	PSEUDOOP_ORG,	0,		"org"},
+
 {0,	EXTENSION,	0,		".l"},
 {0,	EXTENSION,	8,		".h"},
 {0,	A,		0,		"a"},
