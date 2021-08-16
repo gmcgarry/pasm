@@ -20,10 +20,13 @@
 #include "mach.h"
 
 extern sect_t sect[];
+extern int hash(const char *);
 
 #define fitx(x, d)	((((x) + (1<<(d-1))) & ~((int)(1<<(d))-1)) == 0)
 #define fit7(x)		fitx(x, 7)
 #define fit12(x)	fitx(x, 12)
+
+static item_t cseg = { 0, 0, S_UND, ".text" };
 
 void
 mflag(const char* flag)
@@ -33,6 +36,11 @@ mflag(const char* flag)
 void
 machstart(int pass)
 {
+	if (pass == PASS_1) {
+		item_insert(&cseg, hash(cseg.i_name));
+		unresolved++;
+	}
+	newsect(&cseg, 0, NULL);
 }
 
 void
@@ -51,7 +59,7 @@ branch(int opc, expr_t exp)
 	int distw = (exp.val - (DOTVAL + 2)) / 2;
 	int sm1, sm2;
 
-	/* k        1111 00kk kkkk k001 */
+	/* k	1111 00kk kkkk k001 */
 
 	if (pass == PASS_2 && distw > 0 && !(exp.typ & S_DOT))
 		distw -= sect[DOTSCT].s_gain;
@@ -76,8 +84,8 @@ jump(int opc, expr_t exp)
 	int distw = (exp.val - (DOTVAL + 2)) / 2;
 	int sm;
 
-        /* k        1100 kkkk kkkk kkkk */
-        /* k        1101 kkkk kkkk kkkk */
+	/* k	1100 kkkk kkkk kkkk */
+	/* k	1101 kkkk kkkk kkkk */
 
 	if (pass == PASS_2 && distw > 0 && !(exp.typ & S_DOT))
 		distw -= sect[DOTSCT].s_gain;
