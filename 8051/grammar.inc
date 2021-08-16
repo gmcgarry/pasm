@@ -78,7 +78,7 @@ operation	: NOP			{ emit1($1); }
 		| JNZ relative		{ emitop($1); }
 		| JZ relative		{ emitop($1); }
 		| SJMP relative		{ emitop($1); }
-		| CJNE three_op1	{ emitop($1); }
+		| CJNE three_op1	{ cjneop(0); }
 		| JB two_op4		{ emitop($1); }
 		| JNB two_op4		{ emitop($1); }
 		| JBC two_op4		{ emitop($1); }
@@ -223,14 +223,10 @@ data8		: expr		{ if (pass == PASS_2) { if( !isbit8($1.val)) warning("Expression 
 data16		: expr		{ if (pass == PASS_2) { if( !isbit16($1.val)) warning("Expression greater than 16-bits"); } $$ = $1.val; }
 		;
 
-const8		: expr		{ $$ = $1.val; }
-		| SREG		{ $$ = $1; }
+const8		: '#' expr	{ $$ = $2.val; }
 		;
 
-expr		: '#' expr	{ $$.typ = S_ABS; $$.val = $2.val; }
-		;
-
-const16		:  expr		{ $$ = $1.val; }
+const16		:  '#' expr	{ $$ = $2.val; }
 		;
 
 addr11		: expr
