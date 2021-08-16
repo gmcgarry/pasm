@@ -49,6 +49,8 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_EXTERN,	0,		".extern" },
 #endif
 
+	{ 0,	DOT,			0,		"." },
+
 	{ 0,	PSEUDOOP_DATA,		RELO1,		".byte" },
 	{ 0,	PSEUDOOP_DATA,		RELO2,		".word" },
 	{ 0,	PSEUDOOP_DATA,		RELO4,		".dword" },
