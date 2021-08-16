@@ -15,7 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-%left '#'
+/* %left '#' */
 
 %type <y_word> const8
 %type <y_word> const16
@@ -83,5 +83,4 @@
 %token <y_word> AREG
 %token <y_word> SFR
 
-%token EQU
 %token BIT

@@ -94,8 +94,7 @@ operation	: NOP			{ emit1($1); }
 		| MOVX A ',' '@' DPTR		{ movxop(2); }
 		| MOVX '@' regi ',' A		{ movxop($3+3); }
 		| MOVX '@' DPTR ',' A		{ movxop(5); }
-		| IDENT EQU absexp		{ $1->i_type = S_ABS; $1->i_valu = $3; --unresolved; }
-		| IDENT BIT bit			{ $1->i_type = S_ABS; $1->i_valu = $3; --unresolved; }
+		| IDENT BIT bit			{ newequate($1, S_ABS); store($1, $3); }
 		;
 
 two_op1		: A ',' reg		{ set_md(mode,0); set_ov(mode, $3); set_sz(mode, 0); }
@@ -215,17 +214,22 @@ reg		: AREG		{ $$ = $1; }
 regi		: AREG		{ $$ = $1; if ($1 > 1) warning("Illegal indirect register: @r2"); }
 		;
 
-data8		: expr		{ if (pass == PASS_2) { if( !isbit8($1.val)) warning("Expression greater than 8-bits"); } $$ = $1.val; }
-		| SFR		{ $$ = $1; }
+data8		: expr		{ if (pass == PASS_2) { if (!isbit8($1.val)) warning("Expression greater than 8-bits"); } $$ = $1.val; }
 		;
 
-data16		: expr		{ if (pass == PASS_2) { if( !isbit16($1.val)) warning("Expression greater than 16-bits"); } $$ = $1.val; }
+data16		: expr		{ if (pass == PASS_2) { if (!isbit16($1.val)) warning("Expression greater than 16-bits"); } $$ = $1.val; }
 		;
 
 const8		: '#' expr	{ $$ = $2.val; }
+		| expr		{ if (pass == PASS_2 && $1.typ != S_ABS) serror("non-const expressions"); $$ = $1.val; }
 		;
 
-const16		:  '#' expr	{ $$ = $2.val; }
+const16		: '#' expr	{ $$ = $2.val; }
+		| expr		{ if (pass == PASS_2 && $1.typ != S_ABS) serror("non-const expressions"); $$ = $1.val; }
+		;
+
+expr		: '#' expr	{ $$.typ = S_ABS; $$.val = $2.val; }
+		| SFR		{ $$.typ = S_ABS; $$.val = $1; }
 		;
 
 addr11		: expr
