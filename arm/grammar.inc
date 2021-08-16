@@ -118,7 +118,7 @@ optsign	:				{ $$ = 0x00800000; }
 	| '-'				{ $$ = 0x0; }
 	;
 
-reglist	: '{ ' rlist '}'			{ $$ = $2; }
+reglist	: '{' rlist '}'			{ $$ = $2; }
 	;
 
 rlist	: REG				{ $$ = 1<<$1; }

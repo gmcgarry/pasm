@@ -80,7 +80,7 @@ load(const item_t* ip)
 int
 store(item_t* ip, ADDR_T val)
 {
-	printf("store(%s, type=%x, val=%x)\n", ip->i_name, ip->i_type, val);
+	printf("store(%s, type=%x, val=%lx)\n", ip->i_name, ip->i_type, val);
 
         int sct = ip->i_type & S_SCTMASK;
 #if 0 /* def ASLD */
@@ -93,7 +93,7 @@ store(item_t* ip, ADDR_T val)
 	assert(pass != PASS_3 || (ip->i_type & S_VAR) || ip->i_valu == val);
 	ip->i_valu = val;
 
-	printf("storing 0x%04x into %s\n", val, ip->i_name);
+	printf("storing 0x%lx into %s\n", val, ip->i_name);
 
 	return 1;
 }

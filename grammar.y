@@ -172,7 +172,6 @@ operation: /* empty */
 #endif
                                 			newequate($1, $3.typ);
                                 			store($1, $3.val);
-							printf("done!\m");
                         			}
 	| PSEUDOOP_MESSAGE STRING		{ puts(stringbuf); }
 	| PSEUDOOP_SECTION IDENT		{ newsect($2, 0, NULL); }
