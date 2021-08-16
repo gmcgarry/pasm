@@ -40,7 +40,7 @@
 	/* intel syntax compatibility */
 	{ 0,	PSEUDOOP_ORG,		0,		"org"	},
 	{ 0,	PSEUDOOP_END,		0,		"end"	},
-	{ 0,	EQU,			0,		"equ"	},
+	{ 0,	'=',			0,		"equ"	},
 	{ 0,	BIT,			0,		"bit"	},
 	{ 0,	PSEUDOOP_DATA,		1,		"db"	},
 	{ 0,	DOT,			0,		"$"	},

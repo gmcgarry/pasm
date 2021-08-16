@@ -172,6 +172,7 @@ operation: /* empty */
 #endif
                                 			newequate($1, $3.typ);
                                 			store($1, $3.val);
+							printf("done!\m");
                         			}
 	| PSEUDOOP_MESSAGE STRING		{ puts(stringbuf); }
 	| PSEUDOOP_SECTION IDENT		{ newsect($2, 0, NULL); }
@@ -187,7 +188,7 @@ operation: /* empty */
 	| PSEUDOOP_ORG absexp			{
 							if (DOTSCT == S_UND)
 								nosect();
-							if ($2 < DOTVAL)
+							if (pass == PASS_2 && $2 < DOTVAL)
 								serror("cannot move location counter backwards");
 							if ((sect[DOTSCT].s_flag & BASED) == 0) {
 								newbase($2);
@@ -212,8 +213,25 @@ operation: /* empty */
 						}
 #endif
 	| PSEUDOOP_FILE STRING			{ if ((sflag & SYM_LIN) && PASS_SYMB) newsymb(stringbuf, (S_ABS | S_FILE), (ADDR_T)DOTVAL); }
-	| PSEUDOOP_EQU IDENT '=' absexp		{ $2->i_type = S_ABS; $2->i_valu = $4; unresolved--; }
-	| PSEUDOOP_EQU IDENT ',' absexp		{ $2->i_type = S_ABS; $2->i_valu = $4; unresolved--; }
+	| IDENT '=' expr
+						{
+#ifdef LISTING
+							if (listflag & 1)
+								listcolm += printx(VALWIDTH, $3.val);
+#endif
+							newequate($1, $3.typ);
+							store($1, $3.val);
+						}
+	| PSEUDOOP_EQU IDENT '=' expr
+	| PSEUDOOP_EQU IDENT ',' expr
+						{
+#ifdef LISTING
+							if (listflag & 1)
+								listcolm += printx(VALWIDTH, $4.val);
+#endif
+							newequate($2, $4.typ);
+							store($2, $4.val);
+						}
 	| PSEUDOOP_EXTERN externlist
 	| PSEUDOOP_ALIGN optabs			{ if (!($1)) align($2); else align(0x1<<$2); }
 	| PSEUDOOP_SPACE absexp			{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; (&sect[DOTSCT])->s_zero += $2; }
