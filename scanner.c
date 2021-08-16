@@ -464,7 +464,7 @@ innumber(int c)
 {
 	ADDR_T v;
 	char* p;
-	int radix;
+	int radix = 10;
 	int nleft;
 	static char num[40 + 1];
 
@@ -508,6 +508,7 @@ innumber(int c)
 			}
 #ifdef HEXPREFIX
 		} else if (*p == HEXPREFIX) {
+			printf("HEX PREFIX\n");
 			radix = 16;
 			p++;
 #endif
