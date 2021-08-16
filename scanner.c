@@ -529,7 +529,7 @@ innumber(int c)
 
 floatconstant:
 	do {
-		if (--radix < 0)
+		if (--nleft < 0)
 			fatal("number too long");
 		*p++ = c;
 		c = nextchar();
