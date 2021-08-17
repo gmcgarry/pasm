@@ -21,7 +21,10 @@ CSRC	= \
 	$(MACH)/mach.c
 COBJ	= $(CSRC:.c=.o)
 
-all:	pasm
+all:	pasm-$(MACH)
+
+pasm-$(MACH):	pasm
+	cp $< $@
 
 clean:
 	rm -f $(COBJ) pasm parser.[ocy] y.tab.h
