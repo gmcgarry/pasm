@@ -165,14 +165,6 @@ operation: /* empty */
 #ifdef LISTING
 	| PSEUDOOP_LIST				{ if ($1) listtemp = listmode; else if ((dflag & 01000) == 0) listtemp = 0; }
 #endif
-        | IDENT '=' expr			{
-#ifdef LISTING
-                                			if (listflag & 1)
-                                        			listcolm += printx(VALWIDTH, $3.val);
-#endif
-                                			newequate($1, $3.typ);
-                                			store($1, $3.val);
-                        			}
 	| PSEUDOOP_MESSAGE STRING		{ puts(stringbuf); }
 	| PSEUDOOP_SECTION IDENT		{ newsect($2, 0, NULL); }
 	| PSEUDOOP_SECTION IDENT ',' STRING ',' ELF_SHTYPE	{ newsect($2, $<y_word>6, stringbuf); }
