@@ -338,7 +338,6 @@ pass_23(int n)
 	if (pass == PASS_3)
 		outstart();
 	for (sp = sect; sp < &sect[nsect]; sp++) {
-		sp->s_base = 0;
 		sp->s_size = 0;
 		sp->s_zero = 0;
 #ifdef THREE_PASS
@@ -572,7 +571,7 @@ outfinish()
 
 	printf("---------------------------------------\n");
 	for (i = 0; i < nsect; i++) {
-		printf("%d: %s, offset = %d, size=%ld\n", i, sect[i].s_item ? sect[i].s_item->i_name : "<null>", offset, sect[i].s_size);
+		printf("%d: %s, address=%d, file-offset=%d, size=%ld\n", i, sect[i].s_item ? sect[i].s_item->i_name : "<null>", sect[i].s_base, offset, sect[i].s_size);
 		offset += sect[i].s_size;
 	}
 	printf("---------------------------------------\n");

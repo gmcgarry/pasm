@@ -186,7 +186,6 @@ operation: /* empty */
 							} else {
 								if (pass == PASS_1)
 									sect[DOTSCT].s_flag |= SOUGHT;
-								sect[DOTSCT].s_zero += $2 - DOTVAL;
 								DOTVAL = $2;
 							}
 							sect[DOTSCT].s_gain = 0;
