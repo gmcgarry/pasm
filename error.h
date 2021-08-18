@@ -35,7 +35,8 @@
 
 void yyerror(const char *);
 void nosect(void);
-void fatal(const char *, ...);
+void nofit(void);
+
 void serror(const char *, ...);
 void warning(const char *, ...);
-void nofit(void);
+void fatal(const char *, ...);

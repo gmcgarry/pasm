@@ -570,7 +570,7 @@ outfinish()
 
 	printf("---------------------------------------\n");
 	for (i = 0; i < nsect; i++) {
-		printf("%d: %s, address=%d, file-offset=%d, size=%ld\n", i, sect[i].s_item ? sect[i].s_item->i_name : "<null>", sect[i].s_base, offset, sect[i].s_size);
+		printf("%d: %s, address=%ld, file-offset=%d, size=%ld\n", i, sect[i].s_item ? sect[i].s_item->i_name : "<null>", sect[i].s_base, offset, sect[i].s_size);
 		offset += sect[i].s_size;
 	}
 	printf("---------------------------------------\n");
