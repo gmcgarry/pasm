@@ -197,7 +197,11 @@ newsect(item_t *ip, int type, const char* flags)
 		sp->s_item = ip;
 		sp->s_align = ALIGNSECT;
 		sp->s_zero = 0;
+#ifdef ASLD
+		ip->i_type = S_EXTERN | S_SECTION | sectno;
+#else
 		ip->i_type = S_SECTION | sectno;
+#endif
 		ip->i_valu = 0;
 		sp->s_eflags = eflags;
 		/* create relocation table for section */
