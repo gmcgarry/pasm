@@ -22,6 +22,8 @@
 #define ALIGNWORD	1
 #define ALIGNSECT	1
 
+#define WORDSIZE	4
+
 /* ========== Machine independent type declarations ========== */
 
 #define	PASS_1		0

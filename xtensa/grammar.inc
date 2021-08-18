@@ -20,9 +20,10 @@
 #define encodeRRRN(x,r,s,t)	((x) | ((r) << 8) | ((s) << 4) | ((t) << 0))
 #define encodeRRR(x,r,s,t)	((x) | ((r) << 12) | ((s) << 8) | ((t) << 4))
 
-operation: PSEUDOOP_LITPOS				{ }
+operation
+	: PSEUDOOP_LITPOS				{ }
 	| PSEUDOOP_SECTION sectname ',' STRING ',' ELF_SHTYPE      { newsect($2, $<y_word>6, stringbuf); }
-	| PSEUDOOP_LITERAL IDENT ',' expr ',' expr	{ emit2($4.val); emit2($6.val); }
+	| PSEUDOOP_LITERAL IDENT ',' expr ',' expr	{ literal($2, $4); /* XXXGJM datalist? */ }
 	| PSEUDOOP_LITERAL IDENT ',' expr		{ literal($2, $4); }
 	| insn24					{ emit3($1); }
 	| insn16					{ emit2($1); }

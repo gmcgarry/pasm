@@ -20,7 +20,8 @@
 extern int hash(const char* p);
 
 
-static item_t literals = { 0, 0, S_UND, ".literal" };
+/* XXXGJM still cannot use sections with the same names as keywords */
+static item_t literals = { 0, 0, S_UND, ".literals" };
 
 
 void
