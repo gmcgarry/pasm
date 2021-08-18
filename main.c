@@ -70,7 +70,6 @@ static void pass_23(int);
 static void outstart(void);
 static void outfinish(void);
 static void commfinish(void);
-static void newmodule(char *s);
 
 extern item_t *hashtab[H_TOTAL];
 
@@ -363,7 +362,7 @@ pass_23(int n)
 	printf("------------- end of pass %d (2/3) -------------\n", pass);
 }
 
-static void
+void
 newmodule(char *s)
 {
 	static char nmbuf[STRINGMAX];

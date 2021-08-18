@@ -90,6 +90,7 @@ static item_t	*last_it;
 %token <y_word> PSEUDOOP_DATAF
 #endif
 %token <y_word> PSEUDOOP_ASCII
+%token PSEUDOOP_MODULE
 %token PSEUDOOP_SECTION
 %token PSEUDOOP_END
 %token PSEUDOOP_GLOBAL
@@ -148,9 +149,6 @@ static item_t	*last_it;
 #define	RELODONE	{ assert(relonami == RELO_UNDEF); } while (0)
 
 program	: /* empty */
-#ifdef ASLD
-	| program MODULE			{ newmodule($2); }
-#endif
 	| program IDENT ':'			{ newident($2, DOTSCT); newlabel($2); RELODONE; }
 	| program NUMBER8 ':'			{ if ($2 < 0 || $2 > 9) { serror("bad f/b label"); $2 = 0; } newlabel(fb_shift((int)$2)); RELODONE; }
 	| program CODE1				{ emit1((int)$2); LISTLINE(0); }
@@ -165,6 +163,9 @@ program	: /* empty */
 #undef RELODONE
 
 operation: /* empty */
+#ifdef ASLD
+	| PSEUDOOP_MODULE IDENT			{ newmodule($2->i_name); }
+#endif
 #ifdef LISTING
 	| PSEUDOOP_LIST				{ if ($1) listtemp = listmode; else if ((dflag & 01000) == 0) listtemp = 0; }
 #endif

@@ -310,6 +310,7 @@ item_t	*fb_shift(int);
 
 
 /* pseuodo.c -> main.c */
+void	 newmodule(char *);
 void	 newequate(item_t *, int);
 void	 newident(item_t *, int);
 void	 newlabel(item_t *);
