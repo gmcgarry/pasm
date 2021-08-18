@@ -351,8 +351,6 @@ pushop(int opc)
 		}
 	} else if (is_reg(reg_1)) {
 		/* normal register */
-		if (use32 == 2 && (reg_1 & IS_R32) && operand_long)
-			serror("bad register operand");
 		emit1(0120 | opc<<3 | (reg_1&7));
 	} else if (opc == 0) {
 		if (is_expr(reg_1)) {
