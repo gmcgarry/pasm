@@ -51,18 +51,18 @@ item_t	keytab[] = {
 
 	{ 0,	DOT,			0,		"." },
 
-	{ 0,	PSEUDOOP_DATA,		RELO1,		".byte" },
-	{ 0,	PSEUDOOP_DATA,		RELO2,		".word" },
-	{ 0,	PSEUDOOP_DATA,		RELO4,		".dword" },
-	{ 0,	PSEUDOOP_DATA,		RELO4,		".long" },
-	{ 0,	PSEUDOOP_DATA8,		0,		".quad" },
+	{ 0,	PSEUDOOP_DATA,		BYTESIZE,	".byte" },
+	{ 0,	PSEUDOOP_DATA,		WORDSIZE,	".word" },
+	{ 0,	PSEUDOOP_DATA,		DWORDSIZE,	".dword" },
+	{ 0,	PSEUDOOP_DATA,		LONGSIZE,	".long" },
+	{ 0,	PSEUDOOP_DATA8,		QUADSIZE,	".quad" },
 	{ 0,	PSEUDOOP_ZERO,		0,		".zero" },
 #if 0
-	{ 0,	PSEUDOOP_DATA,		RELO1,		".data1" },
-	{ 0,	PSEUDOOP_DATA,		RELO2,		".data2" },
-	{ 0,	PSEUDOOP_DATA,		RELO4,		".data4" },
+	{ 0,	PSEUDOOP_DATA,		1,		".data1" },
+	{ 0,	PSEUDOOP_DATA,		2,		".data2" },
+	{ 0,	PSEUDOOP_DATA,		4,		".data4" },
 
-	{ 0,	PSEUDOOP_DATA8,		0,		".data8" },
+	{ 0,	PSEUDOOP_DATA8,		8,		".data8" },
 	{ 0,	PSEUDOOP_DATAF,		4,		".dataf4" },
 	{ 0,	PSEUDOOP_DATAF,		8,		".dataf8" },
 #endif

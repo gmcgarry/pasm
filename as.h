@@ -110,6 +110,26 @@
 #define	VALWIDTH	4
 #endif
 
+#ifndef BYTESIZE
+#define BYTESIZE	1
+#endif
+
+#ifndef WORDSIZE
+#define WORDSIZE	2
+#endif
+
+#ifndef DWORDSIZE
+#define DWORDSIZE	4
+#endif
+
+#ifndef LONGSIZE
+#define LONGSIZE	4
+#endif
+
+#ifndef QUADSIZE
+#define QUADSIZE	8
+#endif
+
 /* ========== type declarations ========== */
 
 struct expr {
@@ -352,7 +372,7 @@ void machfinish(int pass);
 
 #define RELO1        1		/* 1 byte */
 #define RELO2        2		/* 2 bytes */
-#define RELO4        3		/* 4 bytes */
+#define RELO4        4		/* 4 bytes */
 #define RELPC   0x2000 		/* pc relative */
 #define RELBR   0x4000		/* High order byte lowest address. */
 #define RELWR   0x8000		/* High order word lowest address. */

@@ -325,7 +325,7 @@ emit1(int arg)
 void
 emit2(int arg)
 {
-#if 1
+#if 0
 	printf("emit2(0x%04x)\n", arg & 0xffff);
 #endif
 #ifdef BYTES_REVERSED
@@ -360,10 +360,10 @@ emitx(ADDR_T val, int n)
 #endif
 
 	switch (n) {
-		case RELO1:
+		case 1:
 			emit1((int)val);
 			break;
-		case RELO2:
+		case 2:
 #ifdef BYTES_REVERSED
 			emit1(((int)val >> 8));
 			emit1((int)val);
@@ -372,7 +372,7 @@ emitx(ADDR_T val, int n)
 			emit1(((int)val >> 8));
 #endif
 			break;
-		case RELO4:
+		case 4:
 #ifdef WORDS_REVERSED
 			emit2((int)(val >> 16));
 			emit2((int)(val));
