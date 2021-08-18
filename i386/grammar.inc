@@ -33,9 +33,14 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-operation: PSEUDOOP_USE16		{ use32 = 0; address_long = 0; operand_long = 0; }
+#define REX(W,R,X,B)	emit1(0x40 | (W?8:0) | (R&8?4:0) | (X&8?2:0) | (B&8?1:0))
+
+operation
+	: PSEUDOOP_USE16		{ use32 = 0; address_long = 0; operand_long = 0; }
 	| PSEUDOOP_USE32		{ use32 = 1; address_long = 1; operand_long = 1; }
-	| PSEUDOOP_USE64		{ use32 = 1; address_long = 1; operand_long = 1; }
+	| PSEUDOOP_USE64		{ use32 = 2; address_long = 2; operand_long = 2; }
+	| PSEUDOOP_CPU IDENT		{ }
+	| PSEUDOOP_CPU NUMBER8		{ }
 	| prefix oper			{ address_long = use32; operand_long = use32; }
 	| prefix1			/* to allow for only prefixes on a line */
 	;
@@ -45,24 +50,6 @@ prefix	: /* empty */
 	;
 
 prefix1	: prefix PREFIX			{ emit1($2); }
-	| prefix ATOGGLE		{
-						if ((($2 & 0200) >> 7) == address_long) {
-							if (pass == PASS_3)
-								warning("address size toggle ignored");
-						} else {
-							emit1($2 & 0177);
-							address_long = !address_long;
-						}
-					}
-	| prefix OTOGGLE		{
-						if ((($2 & 0200) >> 7) == operand_long) {
-							if (pass == PASS_3)
-								warning("operand size toggle ignored");
-					  	} else {
-							emit1($2 & 0177);
-							operand_long = !operand_long;
-					  	}
-					}
 	;
 
 oper	: NOOP_1			{ emit1($1); }
@@ -87,8 +74,8 @@ oper	: NOOP_1			{ emit1($1); }
 	| ARPLOP R32 ',' ea_2 		{ emit1($1); ea_2($1<<3); }
 	| LSHFT	ea_1 ',' XREG ',' ea_2	{ extshft($1, $4); }
 	| LSHFT	ea_1 ',' ea_2		{ extshft($1, 0 /* XXXGJM */); }
-	| EXTEND ea_2 ',' XREG		{ emit1(0xF); emit1($4); ea_2($1<<3); }
-	| EXTOP ea_2 ',' XREG 		{ emit1(0xF); emit1($4); ea_2($1<<3); }
+	| EXTEND ea_2 ',' XREG		{ emit1(0xF); emit1($1); ea_2($4<<3); }
+	| EXTOP ea_2 ',' XREG 		{ emit1(0xF); emit1($1); ea_2($4<<3); }
 	| EXTOP1 ea_1			{ emit1(0xF); emit1($1&07); ea_1($1&070); }
 	| IMULB	ea_1			{ regsize(0); emit1(0366); ea_1($1&070); }
 	| IMUL ea_2			{ reg_1 = IS_R32 | (address_long ? 0 : 0310); imul(0); }
@@ -123,6 +110,7 @@ oper	: NOOP_1			{ emit1($1); }
 	| FST_ST2			{ emit1($1|4); emit1(($1>>8)|1); }
 /* 486 instructions */
 	| BSWAP R32			{ emit1(0xF); emit1($1|$2); }
+	| BSWAP R64			{ REX(1,0,0,$2); emit1(0xF); emit1($1|$2); }
 	| EXTOPBW ea_2 ',' reg		{ regsize($1); emit1(0xF); emit1($1); ea_2($4<<3); }
 	;
 
@@ -141,7 +129,8 @@ bases	: '(' XREG ')'			{ if (address_long) reg_2 = $2; else reg_2 = sr_m[$2]; si
 	| '(' ',' XREG ',' absexp ')'	{ if ($5 == 1) { reg_2 = $3; sib_2 = 0; rm_2 = 0; } else { rm_2 = 04; sib_2 = checkscale($5) | regindex_ind[05][$3]; reg_2 = 015; } }
 	;
 
-XREG	: R32
+XREG	: R16
+	| R32
 	| R64
 	;
 
@@ -153,16 +142,21 @@ const	: '$' absexp			{ $$ = $2; }
 	;
 
 ea_2	: mem
-	| R8				{ reg_2 = ($1 | IS_R8) | (address_long ? 0 : 0300); rm_2 = 0; }
-	| R32 				{ reg_2 = ($1 | IS_R32) | (address_long ? 0 : 0310); rm_2 = 0; }
-	| R64 				{ reg_2 = ($1 | IS_R64) | (address_long ? 0 : 0310); rm_2 = 0; }
-	| RSEG				{ reg_2 = ($1 | IS_RSEG) | (address_long ? 0 : 020); rm_2 = 0; }
-	| '$' expr 			{ reg_2 = IS_EXPR | (address_long ? 0 : 040); exp_2 = $2; rm_2 = 0; RELOMOVE(rel_2, relonami); }
+	| R8				{ reg_2 = ($1 | IS_R8) | (address_long ? 0 : 0xc0); rm_2 = 0; }
+	| R16 				{ reg_2 = ($1 | IS_R16 | IS_R32) | (address_long ? 0 : 0xc8); rm_2 = 0; }
+	| R32 				{ reg_2 = ($1 | IS_R32) | (address_long ? 0 : 0xc8); rm_2 = 0; }
+	| R32X				{ if (use32 != 2) serror("bad register"); reg_2 = ($1 | IS_R32) | (address_long ? 0 : 0xc8); rm_2 = 0; }
+	| R64 				{ if (use32 != 2) serror("bad register"); reg_2 = ($1 | IS_R32 | IS_R64) | (address_long ? 0 : 0xc8); rm_2 = 0; }
+	| RSEG				{ reg_2 = ($1 | IS_RSEG) | (address_long ? 0 : 0x10); rm_2 = 0; }
+	| '$' expr 			{ reg_2 = IS_EXPR | (address_long ? 0 : 0x20); exp_2 = $2; rm_2 = 0; RELOMOVE(rel_2, relonami); }
+	| RSEG ':' expr			{ static const int prefix[] = { 0x26, 0x2e, 0x36, 0x3e, 0x64, 0x65 }; emit1(prefix[$1]); reg_2 = (address_long ? 5 : 6); mod_2 = 0; rm_2 = 5; exp_2 = $3; RELOMOVE(rel_2, relonami); }
 	;
 
-reg	: R8				{ reg_1 = ($1 | IS_R8) | (address_long ? 0 : 0300); rm_1 = 0; $$ = $1; }
-	| R32				{ reg_1 = ($1 | IS_R32) | (address_long ? 0 : 0310); rm_1 = 0; $$ = $1; }
-	| R64				{ reg_1 = ($1 | IS_R64) | (address_long ? 0 : 0310); rm_1 = 0; $$ = $1; }
+reg	: R8				{ reg_1 = ($1 | IS_R8) | (address_long ? 0 : 0xc0); rm_1 = 0; $$ = $1; }
+	| R16				{ reg_1 = ($1 | IS_R16 | IS_R32) | (address_long ? 0 : 0xc8); rm_1 = 0; $$ = $1; }
+	| R32				{ reg_1 = ($1 | IS_R32) | (address_long ? 0 : 0xc8); rm_1 = 0; $$ = $1; }
+	| R32X				{ if (use32 != 2) serror("bad register"); reg_1 = ($1 | IS_R32) | (address_long ? 0 : 0xc8); rm_1 = 0; $$ = $1; }
+	| R64				{ if (use32 != 2) serror("bad register"); reg_1 = ($1 | IS_R32 | IS_R64) | (address_long ? 0 : 0xc8); rm_1 = 0; $$ = $1; }
 	;
 
 ea_1	: ea_2				{ op_1 = op_2; RELOMOVE(rel_1, rel_2); }

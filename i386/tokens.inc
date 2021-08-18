@@ -37,12 +37,12 @@
  * INTEL 80386 tokens
  */
 
-%token <y_word> ATOGGLE
-%token <y_word> OTOGGLE
-%token <y_word> PSEUDOOP_USE16
-%token <y_word> PSEUDOOP_USE32
-%token <y_word> PSEUDOOP_USE64
+%token PSEUDOOP_CPU
+%token PSEUDOOP_USE16
+%token PSEUDOOP_USE32
+%token PSEUDOOP_USE64
 %token <y_word> R64
+%token <y_word> R32X
 %token <y_word> R32
 %token <y_word> R16
 %token <y_word> R8
