@@ -148,6 +148,9 @@ static item_t	*last_it;
 #define	RELODONE	{ assert(relonami == RELO_UNDEF); } while (0)
 
 program	: /* empty */
+#ifdef ASLD
+	| program MODULE			{ newmodule($2); }
+#endif
 	| program IDENT ':'			{ newident($2, DOTSCT); newlabel($2); RELODONE; }
 	| program NUMBER8 ':'			{ if ($2 < 0 || $2 > 9) { serror("bad f/b label"); $2 = 0; } newlabel(fb_shift((int)$2)); RELODONE; }
 	| program CODE1				{ emit1((int)$2); LISTLINE(0); }
