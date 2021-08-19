@@ -14,7 +14,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define FIT(x,b)		(((x) & ~((1 << (b))-1)) == 0)	/* XXXGJM only works for positive values */
+#define PRINT(x)	printf("XXX: " #x ": %x\n", x);
+
+#define MASK(b)		(~((1<<(b))-1))
+#define FIT(x,b)	(!(((x)>=0) ? (x)&MASK(b) : (-(x))&MASK(b-1)))
 
 #define emit3(x)		do { emit1((x) >> 0); emit1((x) >> 8); emit1((x) >> 16); } while (0)
 #define encodeRRRN(x,r,s,t)	((x) | ((r) << 12) | ((s) << 8) | ((t) << 4))
@@ -54,11 +57,13 @@ insn24	: FORMAT_RRR					{ $$ = encodeRRR($1, 0, 0, 0); }			/*_______ */
 	| FORMAT_RRI8_TSIx2	REG ',' REG ',' imm8	{ $$ = encodeRRR($1, 0, $2, $4) | (($6 / 2) << 16); }	/* ii_st_ */
 	| FORMAT_RRI8_TSIx4	REG ',' REG ',' imm8_x4	{ $$ = encodeRRR($1, 0, $4, $2) | ($6 << 16); }		/* ii2xt2 */
 	| FORMAT_RRI8_TSI	REG ',' REG ',' imm8	{ $$ = encodeRRR($1, 0, $4, $2) | ($6 << 16); }		/* ii_st_ */
-	| FORMAT_RRI8_RSI	REG ',' imm4 ',' imm8	{ $$ = encodeRRR($1, $4, $2, 0) | ($6 << 16); }		/* iirs__ */
+	| FORMAT_BRI8_RSI	REG ',' b4const ',' rel8	{ $$ = encodeRRR($1, $4, $2, 0) | ($6 << 16); }	/* iirs__ */
+
 	| FORMAT_RRI8_STI	REG ',' REG ',' imm8	{ $$ = encodeRRR($1, 0, $2, $4) | ($6 << 16); }		/* ii_st_ */
 	| FORMAT_RII6_TI	REG ',' imm16		{ $$ = encodeRRR($1, 0, 0, $2) | (($4&0xff) << 16) | (($4&0xff00) >> 4); }	/* iiiit_ */
 	| FORMAT_RRR_STmm	REG ',' REG ',' imm5 ',' imm4_p1	{ $$ = encodeRRR($1, $2, $6&0xf, $4) | (($6&0x10)<<12) | ($8<<20); }	/* o_rst_ */
-	| FORMAT_BRI8_RSI	REG ',' b4const ',' imm8	{ $$ = encodeRRR($1, $4, $2, 0) | ($6 << 16); }	/* iirs__ */
+
+
 	| FORMAT_BRI12		REG ',' imm12_x8	{ $$ = encodeRRR($1, $4>>8, $2, 0) | (($4 & 0xff) << 16); }	/* iixs__ */
 	| FORMAT_BRI12_SI	REG ',' imm12		{ $$ = encodeRRR($1, $4>>8, $2, 0) | (($4 & 0xff) << 16); }	/* iixs__ */
 	| FORMAT_RRI8_TSIx256	REG ',' REG ',' imm8_x256	{ $$ = encodeRRR($1, 0, $4, $2) | ($6 << 16); }	/* ii_st_ */
@@ -66,13 +71,13 @@ insn24	: FORMAT_RRR					{ $$ = encodeRRR($1, 0, 0, 0); }			/*_______ */
 	| CALLXOP		REG			{ $$ = encodeRRR($1, 0, $2, 0);	}			/* ___s__ */
 	;
 
-imm4	: expr				{ $$ = $1.val; if (!FIT($$,4)) serror("invalid 4-bit alue"); }
+imm4	: expr				{ PRINT($1.val); $$ = $1.val; if (!FIT($$,4)) serror("invalid 4-bit alue"); }
 	;
 
-imm4_n1	: expr				{ int imm = $1.val;  if (imm < -1 || imm > 15 || imm == 0) serror("bad immediate value"); $$ = (imm > 0 ? imm : 0); }
+imm4_n1	: expr				{ PRINT($1.val); int imm = $1.val;  if (imm < -1 || imm > 15 || imm == 0) serror("bad immediate value"); $$ = (imm > 0 ? imm : 0); }
 	;
 
-imm4_p1	: absexp			{ $$ = $1-1; if (!FIT($$,4)) serror("mask too large"); }
+imm4_p1	: absexp			{ PRINT($1); $$ = $1-1; if (!FIT($$,4)) serror("mask too large"); }
 	;
 
 b4const: absexp				{ $$ = b4const($1); }
@@ -104,6 +109,18 @@ imm12_x8: absexp			{ $$ = $1 / 8; }
 	;
 
 imm16	: expr				{ $$ = $1.val; /* if (!FIT($$,16)) serror("value too large"); */ }
+	;
+
+rel8	: expr				{
+						$$ = $1.val - (DOTVAL + 4);
+						printf("REL: jump to %x from %x (%x)\n", $1.val, DOTVAL, $$);
+						if (pass == PASS_2 && !FIT($$,8)) {
+							printf("REL: error, %x out of range\n", $$);
+#if 0
+							serror("value too large");
+#endif
+						}
+					}
 	;
 
 sectname: STRING			{

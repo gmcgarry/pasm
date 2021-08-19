@@ -64,8 +64,10 @@ b4const(ADDR_T imm4)
 {
 	if (imm4 == -1)
 		return 0;
-	if (imm4 >= 1 && imm4 <= 10)
-		return (int)(imm4 - 1);
+	if (imm4 >= 1 && imm4 <= 8)
+		return (int)(imm4);
+	if (imm4 == 10)
+		return 9;
 	if (imm4 == 12)
 		return 10;
 	if (imm4 == 16)

@@ -6,6 +6,8 @@
 %token <y_word> BREG
 %token <y_word> FREG
 
+%type <y_word> rel8		/* -127 .. 128 */
+
 %type <y_word> imm4		/* 0..15 */
 %type <y_word> imm4_n1		/* 0=-1, 1..15 */
 %type <y_word> imm4_p1		/* 1..16 */
