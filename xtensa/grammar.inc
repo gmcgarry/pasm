@@ -16,8 +16,8 @@
 
 #define FIT(x,b)		(((x) & ~((1 << (b))-1)) == 0)	/* XXXGJM only works for positive values */
 
-#define emit3(x)		do { emit1((x) >> 0); emit1((x) >> 8); emit1((x) << 16); } while (0)
-#define encodeRRRN(x,r,s,t)	((x) | ((r) << 8) | ((s) << 4) | ((t) << 0))
+#define emit3(x)		do { emit1((x) >> 0); emit1((x) >> 8); emit1((x) >> 16); } while (0)
+#define encodeRRRN(x,r,s,t)	((x) | ((r) << 12) | ((s) << 8) | ((t) << 4))
 #define encodeRRR(x,r,s,t)	((x) | ((r) << 12) | ((s) << 8) | ((t) << 4))
 
 operation
@@ -33,7 +33,7 @@ insn16	: FORMAT_RRRN					{ $$ = $1; }
 	| FORMAT_RRRN_RST	REG ',' REG ',' REG	{ $$ = encodeRRRN($1, $2, $4, $6); }
 	| FORMAT_RRRN_S		REG			{ $$ = encodeRRRN($1, 0, $2, 0); }
 	| FORMAT_RRRN_TS	REG ',' REG		{ $$ = encodeRRRN($1, 0, $4, $2); }			/* _st_ */
-	| FORMAT_RRRN_TSIx4	REG ',' REG ',' absexp	{ $$ = encodeRRRN($1, $6/4, $2, $4); }			/* rst_	*/
+	| FORMAT_RRRN_TSIx4	REG ',' REG ',' absexp	{ $$ = encodeRRRN($1, $6/4, $4, $2); }			/* rst_	*/
 	| FORMAT_RRRN_RSI	REG ',' REG ',' imm4_n1	{ $$ = encodeRRRN($1, $2, $4, $6); }			/* rst_ */
 	| FORMAT_RI7		REG ',' imm7_m32	{ $$ = encodeRRRN($1, $4&0xf, $2, ($4>>4)&0x7); }	/* xsx_ */
 	| FORMAT_RI6		REG ',' imm16		{ $$ = encodeRRRN($1, $4&0xf, $2, ($4>>4)&0x3); }	/* xsx_ */
@@ -62,7 +62,7 @@ insn24	: FORMAT_RRR					{ $$ = encodeRRR($1, 0, 0, 0); }			/*_______ */
 	| FORMAT_BRI12		REG ',' imm12_x8	{ $$ = encodeRRR($1, $4>>8, $2, 0) | (($4 & 0xff) << 16); }	/* iixs__ */
 	| FORMAT_BRI12_SI	REG ',' imm12		{ $$ = encodeRRR($1, $4>>8, $2, 0) | (($4 & 0xff) << 16); }	/* iixs__ */
 	| FORMAT_RRI8_TSIx256	REG ',' REG ',' imm8_x256	{ $$ = encodeRRR($1, 0, $4, $2) | ($6 << 16); }	/* ii_st_ */
-	| CALLOP		expr			{ $$ = encodeRRR($1, $2.val>>8, $2.val>>12, 0) | ($2.val << 16); newrelo($2.typ, RELO2); }	/* iiii__ */
+	| CALLOP		expr			{ int rel = ($2.val - DOTVAL + 3); $$ = encodeRRR($1, (rel>>12)&0xf, (rel>>8)&0xf, (rel>>16)&0xf) | (rel << 16); newrelo($2.typ, RELO2); }	/* iiii__ */
 	| CALLXOP		REG			{ $$ = encodeRRR($1, 0, $2, 0);	}			/* ___s__ */
 	;
 
@@ -85,7 +85,7 @@ imm5_p	: absexp			{ $$ = $1; if (!FIT($$,5) || $$ == 0) serror("too large for 5-
 	;
 
 
-imm7_m32: expr				{ $$ = 32 + $1.val; if (!FIT($$,7)) serror("too large for 7-bit immediate"); }
+imm7_m32: expr				{ $$ = $1.val; if ($$ > 95 || $$ < -32) serror("out of range for constant"); }
 	;
 
 imm8	: expr				{ $$ = $1.val; }
@@ -104,9 +104,6 @@ imm12_x8: absexp			{ $$ = $1 / 8; }
 	;
 
 imm16	: expr				{ $$ = $1.val; /* if (!FIT($$,16)) serror("value too large"); */ }
-	;
-
-imm18	: expr				{ $$ = $1.val; /* if (!FIT($$,18)) serror("value too large"); */ }
 	;
 
 sectname: STRING			{

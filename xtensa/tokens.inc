@@ -22,7 +22,6 @@
 %type <y_word> imm12
 %type <y_word> imm12_x8		/* 8*(0..4096) */
 %type <y_word> imm16
-%type <y_word> imm18
 
 %type <y_word> insn24
 %type <y_word> insn16
@@ -93,4 +92,4 @@
 %token <y_word> FORMAT_RSR
 %token <y_word> FORMAT_RUR
 
-%token <y_word> CALLOP CALLX CALL CALLXOP_0 CALLXOP
+%token <y_word> CALLOP CALLX CALL CALLXOP

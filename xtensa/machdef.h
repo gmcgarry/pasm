@@ -18,6 +18,7 @@
 #define	LISTING		/* enable listing facilities */
 
 #define ADDR_T		long
+#define word_t		int
 
 #define ALIGNWORD	1
 #define ALIGNSECT	1

@@ -24,7 +24,7 @@
 { 0,	FORMAT_RRRN_RSI,	0x000B,		"addi.n" },	/* rstB		ar,as,imm4 (0=-1, 1..15)	*/
 { 0,	FORMAT_RI6,		0x008C,		"beqz.n" },	/* xsxC		as,label	*/
 { 0,	FORMAT_RI6,		0x00CC,		"bnez.n" },	/* xs(C+x)C	as,label	*/
-{ 0,	FORMAT_RI7,		0x00AC,		"movi.n" },	/* xsxC		as,imm7 (0..127)-32		*/
+{ 0,	FORMAT_RI7,		0x000C,		"movi.n" },	/* xsxC		as,imm7 (0..127)-32		*/
 { 0,	FORMAT_RRRN_TS,		0x000D,		"mov.n" },	/* 0stD		at,as		*/
 { 0,	FORMAT_RRRN,		0xF00D,		"ret.n" },	/* F00D		-		*/
 { 0,	FORMAT_RRRN,		0xF01D,		"retw.n" },	/* F01D		-		*/
@@ -197,7 +197,7 @@
 
 { 0,	FORMAT_RRR_STmm,	0x040000,	"extui" },	/* o4rst0	ar,at,0..31,1..16 */
 
-{ 0,	CALLXOP_0,		0x000000,	"ill" },	/* 000000	-		*/
+{ 0,	FORMAT_RRR,		0x000000,	"ill" },	/* 000000	-		*/
 
 { 0,	FORMAT_RRI8_TSI,	0x000002,	"l8ui" }, 	/* ii0st2	at,as,(0..255)	*/
 { 0,	FORMAT_RRI8_TSI,	0x004002,	"s8i" },	/* ii4st2	at,as,(0..255)	*/

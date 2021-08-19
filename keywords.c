@@ -70,6 +70,7 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_ASCII,		1,		".asciz" },
 	{ 0,	PSEUDOOP_ASCII,		1,		".string" },
 	{ 0,	PSEUDOOP_ALIGN,		0,		".align" },
+	{ 0,	PSEUDOOP_ALIGN,		0,		".balign" },
 	{ 0,	PSEUDOOP_ALIGN,		1,		".p2align" },
 	{ 0,	PSEUDOOP_ASSERT,	0,		".assert" },
 	{ 0,	PSEUDOOP_SPACE,		0,		".space" },
