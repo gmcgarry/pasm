@@ -50,11 +50,19 @@ insn24	: FORMAT_RRR					{ $$ = encodeRRR($1, 0, 0, 0); }			/*_______ */
 	| FORMAT_RRR_RST	REG ',' REG ',' REG	{ $$ = encodeRRR($1, $2, $4, $6); }			/* __rst_ */
 	| FORMAT_RSR		REG ',' SREG 		{ $$ = encodeRRR($1, $2, $2, $4); }			/* __sst_ */
 	| FORMAT_RRI8_TI	REG ',' imm12		{ $$ = encodeRRR($1, 0, ($4>>16)&0xf, $2) | (($4&0xff)<< 16); }		/* ii_xt_ */
+
+	/* this rule is only used by slli */
 	| FORMAT_RRR_RSI5	REG ',' REG ',' imm5_p	{ $$ = encodeRRR($1, $2, $4, $6&0xf) | (($6&0x10) << 16); }	/* i_rsi_ */
-	| FORMAT_RRR_RTI4	REG ',' REG ',' imm4	{ $$ = encodeRRR($1, $2, $4, $6); }			/* __rot_ */
-	| FORMAT_RRR_RTI5	REG ',' REG ',' imm5	{ $$ = encodeRRR($1, $2, $4, $6&0x4) | (($6&0x10) << 16); }	/* i_rit_ */
+
+	/* this rule is only used by srli */
+	| FORMAT_RRR_RTI4	REG ',' REG ',' imm4	{ $$ = encodeRRR($1, $2, $6, $4); }			/* __rot_ */
+
+	/* this rule is only used for srai */
+	| FORMAT_RRR_RTI5	REG ',' REG ',' imm5	{ $$ = encodeRRR($1, $2, $6&0xf, $4) | (($6&0x10) << 16); }	/* i_rit_ */
+
 	| FORMAT_RRR_SI		REG ',' imm8		{ $$ = encodeRRR($1, 0, $2, 0) | ($4 << 16); }		/* ii_s__ */
-	| FORMAT_RRI8_TSIx2	REG ',' REG ',' imm8	{ $$ = encodeRRR($1, 0, $2, $4) | (($6 / 2) << 16); }	/* ii_st_ */
+	| FORMAT_RRI8_TSIx2	REG ',' REG ',' imm8	{ $$ = encodeRRR($1, 0, $4, $2) | (($6 / 2) << 16); }	/* ii_st_ */
+
 	| FORMAT_RRI8_TSIx4	REG ',' REG ',' imm8_x4	{ $$ = encodeRRR($1, 0, $4, $2) | ($6 << 16); }		/* ii2xt2 */
 	| FORMAT_RRI8_TSI	REG ',' REG ',' imm8	{ $$ = encodeRRR($1, 0, $4, $2) | ($6 << 16); }		/* ii_st_ */
 	| FORMAT_BRI8_RSI	REG ',' b4const ',' rel8	{ $$ = encodeRRR($1, $4, $2, 0) | ($6 << 16); }	/* iirs__ */
@@ -86,7 +94,7 @@ b4const: absexp				{ $$ = b4const($1); }
 imm5	: absexp			{ $$ = $1; if (!FIT($$,5)) serror("immediate too large"); };
 	;
 
-imm5_p	: absexp			{ $$ = $1; if (!FIT($$,5) || $$ == 0) serror("too large for 5-bit immediate"); };
+imm5_p	: absexp			{ $$ = 32 - $1; if (!FIT($$,5) || $$ == 0) serror("too large for 5-bit immediate"); };
 	;
 
 
