@@ -130,11 +130,11 @@
 
 { 0,	FORMAT_RRR_ST,		0x004000,	"break" },	/* 004st0	0..15, 0..15 - XXX S=immediate, T=immediate */
 
-{ 0,	CALLOP,			0x000005,	"call0" },	/* iiii05 	label - imm18	*/
-{ 0,	CALLOP,			0x000015,	"call4" },	/* iiii15	label - imm18	*/
-{ 0,	CALLOP,			0x000025,	"call8" },	/* iiii25	label - imm18	*/
-{ 0,	CALLOP,			0x000035,	"call12" },	/* iiii35	label - imm18	*/
-{ 0,	CALLOP,			0x000006,	"j" },		/* iiii06	label - imm18	*/
+{ 0,	CALLOP,			0x000005,	"call0" },	/* iiii05 	label/4 - imm18	*/
+{ 0,	CALLOP,			0x000015,	"call4" },	/* iiii15	label/4 - imm18	*/
+{ 0,	CALLOP,			0x000025,	"call8" },	/* iiii25	label/4 - imm18	*/
+{ 0,	CALLOP,			0x000035,	"call12" },	/* iiii35	label/4 - imm18	*/
+{ 0,	JUMPOP,			0x000006,	"j" },		/* iiii06	label - imm18	*/
 
 { 0,	CALLXOP,		0x0000C0,	"callx0" },	/* 000sC0	as		*/
 { 0,	CALLXOP,		0x0000D0,	"callx4" },	/* 000sD0	as		*/

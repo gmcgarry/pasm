@@ -14,8 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define PRINT(x)	printf("XXX: " #x ": %x\n", x);
-
 #define MASK(b)		(~((1<<(b))-1))
 #define FIT(x,b)	(!(((x)>=0) ? (x)&MASK(b) : (-(x))&MASK(b-1)))
 
@@ -50,6 +48,11 @@ insn24	: FORMAT_RRR					{ $$ = encodeRRR($1, 0, 0, 0); }			/*_______ */
 	| FORMAT_RRR_RST	REG ',' REG ',' REG	{ $$ = encodeRRR($1, $2, $4, $6); }			/* __rst_ */
 	| FORMAT_RSR		REG ',' SREG 		{ $$ = encodeRRR($1, $2, $2, $4); }			/* __sst_ */
 	| FORMAT_RRI8_TI	REG ',' imm12		{ $$ = encodeRRR($1, 0, ($4>>16)&0xf, $2) | (($4&0xff)<< 16); }		/* ii_xt_ */
+	/* this rule is only used for branches */
+	| FORMAT_BRI12_SI	REG ',' expr		{
+				int rel  = $4.val - (DOTVAL + 4);
+			 	$$ = encodeRRR($1, rel&0xf, $2, 0) | ((rel >> 4) << 16);
+			 }	/* iixs__ */
 
 	/* this rule is only used by slli */
 	| FORMAT_RRR_RSI5	REG ',' REG ',' imm5_p	{ $$ = encodeRRR($1, $2, $4, $6&0xf) | (($6&0x10) << 16); }	/* i_rsi_ */
@@ -60,6 +63,19 @@ insn24	: FORMAT_RRR					{ $$ = encodeRRR($1, 0, 0, 0); }			/*_______ */
 	/* this rule is only used for srai */
 	| FORMAT_RRR_RTI5	REG ',' REG ',' imm5	{ $$ = encodeRRR($1, $2, $6&0xf, $4) | (($6&0x10) << 16); }	/* i_rit_ */
 
+	/* this rule is only used for l32r */
+	| FORMAT_RII6_TI	REG ',' expr		{
+			int rel;
+			if (use_litbase) {
+				item_t *ip = item_search(".litbase");
+ 				rel = $4.val + 4 - ip->i_valu;
+			} else {
+				rel = ($4.val - DOTVAL) >> 2;
+			}
+			printf("L32R (): %lx %lx rel=%x\n", $4.val, DOTVAL, rel);
+			$$ = encodeRRR($1, 0, 0, $2) | ((rel&0x00ff) << 8) | ((rel&0xff00) << 8);
+		 }	/* iiiit_ */
+		
 	| FORMAT_RRR_SI		REG ',' imm8		{ $$ = encodeRRR($1, 0, $2, 0) | ($4 << 16); }		/* ii_s__ */
 	| FORMAT_RRI8_TSIx2	REG ',' REG ',' imm8	{ $$ = encodeRRR($1, 0, $4, $2) | (($6 / 2) << 16); }	/* ii_st_ */
 
@@ -68,24 +84,35 @@ insn24	: FORMAT_RRR					{ $$ = encodeRRR($1, 0, 0, 0); }			/*_______ */
 	| FORMAT_BRI8_RSI	REG ',' b4const ',' rel8	{ $$ = encodeRRR($1, $4, $2, 0) | ($6 << 16); }	/* iirs__ */
 
 	| FORMAT_RRI8_STI	REG ',' REG ',' imm8	{ $$ = encodeRRR($1, 0, $2, $4) | ($6 << 16); }		/* ii_st_ */
-	| FORMAT_RII6_TI	REG ',' imm16		{ $$ = encodeRRR($1, 0, 0, $2) | (($4&0xff) << 16) | (($4&0xff00) >> 4); }	/* iiiit_ */
 	| FORMAT_RRR_STmm	REG ',' REG ',' imm5 ',' imm4_p1	{ $$ = encodeRRR($1, $2, $6&0xf, $4) | (($6&0x10)<<12) | ($8<<20); }	/* o_rst_ */
 
 
 	| FORMAT_BRI12		REG ',' imm12_x8	{ $$ = encodeRRR($1, $4>>8, $2, 0) | (($4 & 0xff) << 16); }	/* iixs__ */
-	| FORMAT_BRI12_SI	REG ',' imm12		{ $$ = encodeRRR($1, $4>>8, $2, 0) | (($4 & 0xff) << 16); }	/* iixs__ */
 	| FORMAT_RRI8_TSIx256	REG ',' REG ',' imm8_x256	{ $$ = encodeRRR($1, 0, $4, $2) | ($6 << 16); }	/* ii_st_ */
-	| CALLOP		expr			{ int rel = ($2.val - DOTVAL + 3); $$ = encodeRRR($1, (rel>>12)&0xf, (rel>>8)&0xf, (rel>>16)&0xf) | (rel << 16); newrelo($2.typ, RELO2); }	/* iiii__ */
 	| CALLXOP		REG			{ $$ = encodeRRR($1, 0, $2, 0);	}			/* ___s__ */
+
+
+	| CALLOP		expr			{
+		int rel = $2.val - (DOTVAL + 4);
+		rel = (rel+3)&~3;
+		printf("YYYY: %lx %lx => rel=%x\n", $2.val , DOTVAL, rel);
+		 $$ = encodeRRR($1, (rel>>8)&0xf, (rel>>4)&0xf, (rel>>0)&0xc) | ((rel >> 12) << 16);
+							}
+
+	| JUMPOP		expr			{
+		 int rel = $2.val - (DOTVAL + 4);
+		printf("XXXX: %lx %lx => rel=%x\n", $2.val , DOTVAL, rel);
+		 $$ = encodeRRR($1, (rel>>6)&0xf, (rel>>2)&0xf, (rel<<2)&0xc) | ((rel >> 10) << 16);
+		 newrelo($2.typ, RELO2); }	/* iiii__ */
 	;
 
-imm4	: expr				{ PRINT($1.val); $$ = $1.val; if (!FIT($$,4)) serror("invalid 4-bit alue"); }
+imm4	: expr				{ $$ = $1.val; if (!FIT($$,4)) serror("invalid 4-bit alue"); }
 	;
 
-imm4_n1	: expr				{ PRINT($1.val); int imm = $1.val;  if (imm < -1 || imm > 15 || imm == 0) serror("bad immediate value"); $$ = (imm > 0 ? imm : 0); }
+imm4_n1	: expr				{ int imm = $1.val;  if (imm < -1 || imm > 15 || imm == 0) serror("bad immediate value"); $$ = (imm > 0 ? imm : 0); }
 	;
 
-imm4_p1	: absexp			{ PRINT($1); $$ = $1-1; if (!FIT($$,4)) serror("mask too large"); }
+imm4_p1	: absexp			{ $$ = $1-1; if (!FIT($$,4)) serror("mask too large"); }
 	;
 
 b4const: absexp				{ $$ = b4const($1); }
@@ -121,7 +148,7 @@ imm16	: expr				{ $$ = $1.val; /* if (!FIT($$,16)) serror("value too large"); */
 
 rel8	: expr				{
 						$$ = $1.val - (DOTVAL + 4);
-						printf("REL: jump to %x from %x (%x)\n", $1.val, DOTVAL, $$);
+						printf("REL: jump to %lx from %lx (%x)\n", $1.val, DOTVAL, $$);
 						if (pass == PASS_2 && !FIT($$,8)) {
 							printf("REL: error, %x out of range\n", $$);
 #if 0

@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <string.h>
+
 #include "as.h"
 #include "error.h"
 
@@ -22,21 +24,27 @@ extern int hash(const char* p);
 
 /* XXXGJM still cannot use sections with the same names as keywords */
 static item_t literals = { 0, 0, S_UND, ".literals" };
-
+static item_t litbase = { 0, 0, S_UND, ".litbase" };
+int use_litbase = 0;
 
 void
 mflag(const char* flag)
 {
+	if (strcmp(flag, "large") == 0)
+		use_litbase = 1;
 }
 
 void
 machstart(int pass)
 {
-	if (pass == PASS_1) {
-                item_insert(&literals, hash(literals.i_name));
-		unresolved++;
+	if (use_litbase) {
+		if (pass == PASS_1) {
+                	item_insert(&literals, hash(literals.i_name));
+                	item_insert(&litbase, hash(litbase.i_name));
+			unresolved += 2;
+		}
+        	newsect(&literals, SHT_PROGBITS, "ax");
 	}
-        newsect(&literals, SHT_PROGBITS, "ax");
 }
 
 void
@@ -48,13 +56,16 @@ void
 literal(item_t *ident, expr_t e)
 {
 	int sct = DOTSCT;
-	printf("=====> DOTSCT = %d\n", DOTSCT);
-	newsect(&literals, SHT_PROGBITS, "ax");
-	printf("<===== DOTSCT = %d\n", DOTSCT);
-	newident(ident, DOTSCT);
+	if (use_litbase) {
+		printf("=====> DOTSCT = %d\n", DOTSCT);
+		newsect(&literals, SHT_PROGBITS, "ax");
+		printf("<===== DOTSCT = %d\n", DOTSCT);
+	}
+	align(4);
+	newident(ident, sct);
 	newlabel(ident);
 	if (PASS_RELO)
-		newrelo(e.typ, RELO4);
+		newrelo(e.typ, WORDSIZE);
 	emit4(e.val);
 	switchsect(sct);
 }

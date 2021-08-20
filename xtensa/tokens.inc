@@ -94,4 +94,4 @@
 %token <y_word> FORMAT_RSR
 %token <y_word> FORMAT_RUR
 
-%token <y_word> CALLOP CALLX CALL CALLXOP
+%token <y_word> JUMPOP CALLOP CALLX CALL CALLXOP
