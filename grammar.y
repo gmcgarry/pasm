@@ -156,7 +156,7 @@ program	: /* empty */
 	| program CODE4				{ emit4((long)$2); LISTLINE(0); }
 	| program operation ';'
 	| program operation '\n'		{ lineno++; LISTLINE(1); RELODONE; }
-	| program '#' NUMBER8 STRING '\n'	{ lineno = $3; /* long = int64_t */ if (modulename) strncpy(modulename, stringbuf, STRINGMAX-1); LISTLINE(1); RELODONE; }
+	| program '#' NUMBER8 STRING '\n'	{ lineno = $3; if (modulename) strncpy(modulename, stringbuf, STRINGMAX-1); LISTLINE(1); RELODONE; }
 	| program error '\n'			{ serror("syntax error"); yyerrok; lineno++; LISTLINE(1); RELODONE; }
 	;
 #undef LISTLINE
