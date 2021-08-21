@@ -51,6 +51,8 @@
 #include "error.h"
 #include "out.h"
 
+#include "version.h"
+
 /* this is _very_ dangerous and breaks system headers on macos */
 /* be sure that no system headers are included after this */
 #define extern  /* empty, to force storage allocation */
@@ -88,12 +90,29 @@ extern int nshstrtab;
 void create_additional_sections();
 
 void
-stop(void) {
+stop(void)
+{
 	exit(nerrors != 0); 
 }
 
-static
-void stop_on_signal(int sig) {
+static void
+stop_on_signal(int sig)
+{
+	stop();
+}
+
+static void
+banner()
+{
+#define XSTR(s) STR(s)
+#define STR(s)	#s
+	printf("Portable Assembler %s (%s)\n", VERSION_STR, XSTR(MACH));
+}
+
+static void
+usage()
+{
+	banner();
 	stop();
 }
 
@@ -159,6 +178,7 @@ main(int argc, char **argv)
 			break;
 		case 'r':
 		case 'v':
+			banner();
 			break;
 		case 'u':
 			uflag = 1;
@@ -167,6 +187,9 @@ main(int argc, char **argv)
 #ifdef THREE_PASS
 			bflag = 1;
 #endif
+			break;
+		case 'h':
+			usage();
 			break;
 		default:
 			continue;
