@@ -46,6 +46,7 @@
 	{ 0,	PSEUDOOP_USE16,	0,		".code16" },
 	{ 0,	PSEUDOOP_USE32,	0,		".code32" },
 	{ 0,	PSEUDOOP_USE64,	0,		".code64" },
+
 	{ 0,	R16,		0,		"%ax" },
 	{ 0,	R16,		1,		"%cx" },
 	{ 0,	R16,		2,		"%dx" },

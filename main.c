@@ -49,7 +49,6 @@
 #include <signal.h>
 
 #include "error.h"
-#include "out.h"
 
 #include "version.h"
 
@@ -69,8 +68,6 @@ extern void lexinit();
 static void pass_1(int, char **);
 static void parse(char *);
 static void pass_23(int);
-static void outstart(void);
-static void outfinish(void);
 static void commfinish(void);
 
 extern item_t *hashtab[H_TOTAL];
@@ -104,9 +101,9 @@ stop_on_signal(int sig)
 static void
 banner()
 {
-#define XSTR(s) STR(s)
-#define STR(s)	#s
-	printf("Portable Assembler %s (%s)\n", VERSION_STR, XSTR(MACH));
+#define STRINGIFY(s)	#s
+#define XSTRINGIFY(s)	STRINGIFY(s)
+	printf("Portable Assembler %s (%s)\n", VERSION_STR, XSTRINGIFY(MACH));
 }
 
 static void
@@ -197,8 +194,11 @@ main(int argc, char **argv)
 		argv[i] = 0;
 	}
 	sflag |= SYM_SCT;
+
 	pass_1(argc, argv);
+#if 0
 	create_additional_sections();
+#endif
 #ifdef THREE_PASS
 	pass_23(PASS_2);
 #endif
@@ -366,11 +366,13 @@ pass_23(int n)
 		sp->s_gain = 0;
 #endif
 	}
+#if 0
 	new_string(strtab_sectno, "");
 	new_string(shstrtab_sectno, "");
 	nsymb = 1;
 	sect[symtab_sectno].s_size = sizeof(Elf_Sym);
 	sect[symtab_sectno].s_info = 1;
+#endif
 	machstart(n);
         newmodule(modulename);
 	rewind(tempfile);
@@ -486,6 +488,8 @@ commfinish(void)
 	}
 
 }
+
+#if 0
 
 void
 create_additional_sections()
@@ -627,3 +631,5 @@ outfinish()
 
 	wr_close();
 }
+
+#endif

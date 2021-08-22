@@ -38,8 +38,6 @@
  */
 
 #include "as.h"
-#include "out.h"
-#include "elf.h"
 
 #include "y.tab.h"
 

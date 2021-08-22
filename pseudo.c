@@ -39,10 +39,10 @@
 
 #include "as.h"
 #include "error.h"
-#include "out.h"
 
 sect_t sect[SECTMAX];
 int nsect = 1;		/* skip S_UND */
+#if 0
 int nsymb = 1;		/* skip S_UND */
 int nrelo = 0;
 int nstrtab = 0;
@@ -51,6 +51,7 @@ int nshstrtab = 0;
 int strtab_sectno;
 int shstrtab_sectno;
 int symtab_sectno;
+#endif
 
 static void new_common(item_t *);
 
@@ -140,7 +141,9 @@ void
 newsect(item_t *ip, int type, const char* flags)
 {
 	int sectno;
+#if 0
 	int eflags = 0;
+#endif
 	sect_t *sp = NULL;
 
 	printf("newsect(%s,)\n", ip->i_name);
@@ -149,6 +152,7 @@ newsect(item_t *ip, int type, const char* flags)
 	printf("flags=%s\n", flags ? flags : "<none>");
 	printf("type=%d\n", type);
 */
+#if 0
 	if (type == 0) 
 		type = SHT_PROGBITS;
 
@@ -182,6 +186,7 @@ newsect(item_t *ip, int type, const char* flags)
 			}
 		}
 	}
+#endif
 
 	sectno = ip->i_type & S_SCTMASK;
 	if (sectno == S_UND) {
@@ -203,6 +208,7 @@ newsect(item_t *ip, int type, const char* flags)
 		ip->i_type = S_SECTION | sectno;
 #endif
 		ip->i_valu = 0;
+#if 0
 		sp->s_eflags = eflags;
 		/* create relocation table for section */
 		if (eflags & SHF_ALLOC) {
@@ -229,6 +235,7 @@ newsect(item_t *ip, int type, const char* flags)
 			sp->s_item->i_name = remember(tmp);
 			nsect++;
 		}
+#endif
 	} else {
 		sp = &sect[sectno];
 		if (sp->s_item != ip)
@@ -349,13 +356,17 @@ align(ADDR_T bytes)
 	sp->s_zero += gap;
 }
 
+#if 0 /* moved to reloc.c */
+
 void
 newrelo(int s, int typ)
 {
 #define RELOCATIONS
 #ifdef RELOCATIONS
 
+#if 0
 	int or_nami;
+#endif
 	int iscomm;
 
 	if (PASS_RELO == 0) {
@@ -396,14 +407,18 @@ newrelo(int s, int typ)
 	printf("newrelo: s=%x\n", s);
 	if (s == S_UND || iscomm) {
 		assert(relonami != RELO_UNDEF);
+#if 0
 		or_nami = relonami;
+#endif
 		relonami = RELO_UNDEF;
 		printf("using relonami\n");
 	} else if (s == S_ABS) {
 		/*
 		 * use first non existing entry (argh)
 		 */
+#if 0
 		or_nami = nsymb;
+#endif
 		printf("using first non-existing entry\n");
 	} else {
 		/*
@@ -412,11 +427,12 @@ newrelo(int s, int typ)
 		/* XXXGJM not anymore */
 #if 0
 		or_nami = nsymb - nsect + s;
-#endif
 		or_nami = 8;
+#endif
 		printf("using section entry\n");
 	}
 
+#if 0
 	int elftype = (typ & 0) + 1;
 
 	Elf_Rel rel = {
@@ -431,16 +447,21 @@ newrelo(int s, int typ)
 	};
 	wr_write(DOTSCT+1, &rel, sizeof(Elf_Rel));
 	sect[DOTSCT+1].s_size += sizeof(Elf_Rel);
+#endif
 
 	printf("--- newrelo() ---\n");
 
 #endif
 }
 
+#endif
+#if 0 /* moved to symtab.c */
+
 long
 new_string(int sectno, const char *s)
 {
 	long r = 0;
+#if 0
 
 	if (s) {
 		long len = strlen(s) + 1;
@@ -450,7 +471,10 @@ new_string(int sectno, const char *s)
 		nstrtab += len;
 		sect[sectno].s_size += len;
 	}
+#if 0
 	printf("wrote \"%s\" into %s at index %ld\n", s, sect[sectno].s_item->i_name, r);
+#endif
+#endif
 	return r;
 }
 
@@ -468,8 +492,10 @@ newsymb(const char *name, int type, ADDR_T valu)
 		else
 			new_string(strtab_sectno, name);
 		nsymb++;
+#if 0
 		sect[symtab_sectno].s_info++;
 		sect[symtab_sectno].s_size += sizeof(Elf_Sym);
+#endif
 		return;
 	}
 	nsymb++;
@@ -479,7 +505,7 @@ newsymb(const char *name, int type, ADDR_T valu)
 		sect[type&S_SCTMASK].s_item->i_type = new_string(shstrtab_sectno, name);
 	else
 		nameidx = new_string(strtab_sectno, name);
-
+#if 0
 	int elftype = ((type & S_TYPEMASK) == S_SECTION ? STT_SECTION : 0)
 		| ((type & S_TYPEMASK) == S_FILE ? STT_FILE : 0)
 		| ((type & S_TYPEMASK) == S_FUNC ? STT_FUNC : 0)
@@ -499,7 +525,11 @@ newsymb(const char *name, int type, ADDR_T valu)
 	wr_write(symtab_sectno, &sym, sizeof(Elf_Sym));
 	sect[symtab_sectno].s_info++;
 	sect[symtab_sectno].s_size += sizeof(Elf_Sym);
+#endif
 }
+
+#endif
+
 
 static void
 new_common(item_t *ip)

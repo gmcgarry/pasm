@@ -38,7 +38,6 @@
 
 #include "as.h"
 #include "error.h"
-#include "out.h"
 
 #include "y.tab.h"
 

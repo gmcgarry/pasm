@@ -11,13 +11,17 @@ YFLAGS	= -d
 LDFLAGS	= $(LDOPTIONS)
 
 CSRC	= \
+	emitter.c \
 	error.c \
+	file.c \
 	keywords.c \
 	main.c \
+	misc.c \
 	out.c \
 	pseudo.c \
-	misc.c \
+	reloc.c \
 	scanner.c \
+	symtab.c \
 	$(MACH)/mach.c
 COBJ	= $(CSRC:.c=.o)
 

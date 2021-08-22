@@ -368,6 +368,10 @@ void mflag(const char *flag);
 void machstart(int pass);
 void machfinish(int pass);
 
+/* out.c */
+void outstart();
+void outfinish();
+
 /* =============== Output C declarations ================ */
 
 #define RELO1        1		/* 1 byte */

@@ -48,7 +48,6 @@ _include <stdio.h>
 _include <string.h>
 
 _include "as.h"
-_include "out.h"
 _include "error.h"
 
 extern int yylex();
