@@ -408,15 +408,13 @@ inident(int c)
 	peekc = c;
 	ip = item_search(name);
 #if 0
-	printf("looking up identifier \"%s\"\n", name);
-	printf("%s ip=%p\n", name, ip);
+	DPRINTF(("looking up identifier \"%s\"\n", name));
+	DPRINTF(("%s ip=%p\n", name, ip));
 #endif
 	if (ip == 0) {
 		ip = item_alloc(S_UND);
 		ip->i_name = remember(name);
-#if 0
-		printf("adding ident %s %p\n", ip->i_name, ip);
-#endif
+		DPRINTF(("adding ident %s %p\n", ip->i_name, ip));
 		unresolved++;
 		item_insert(ip, H_LOCAL + (hashindex % H_SIZE));
 	} else if (hashindex < H_SIZE) {
@@ -508,7 +506,6 @@ innumber(int c)
 			}
 #ifdef HEXPREFIX
 		} else if (*p == HEXPREFIX) {
-			printf("HEX PREFIX\n");
 			radix = 16;
 			p++;
 #endif
@@ -680,9 +677,7 @@ hash(const char* p)
 static int
 strcompare(const char *s1, const char *s2)
 {
-#if 0
-	printf("comparing \"%s\" with \"%s\"\n", s1, s2);
-#endif
+	DPRINTF(("comparing \"%s\" with \"%s\"\n", s1, s2));
 #ifdef IGNORECASE
 	while (*s1 && *s2) {
 		int a = tolower(*s1++);

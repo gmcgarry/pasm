@@ -406,3 +406,10 @@ typedef Elf32_Sym Elf_Sym;
 /* ========== Machine dependent C declarations ========== */
 
 #include "mach.h"
+
+
+#ifdef _DEBUG
+#define DPRINTF(x)	printf x
+#else
+#define DPRINTF(x)	/* nothing */
+#endif

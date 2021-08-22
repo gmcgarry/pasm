@@ -84,10 +84,10 @@ newident(item_t *ip, int typ)
 	static char genlab[] = GENLAB;
 #endif /* GENLAB */
 
-	printf("newident(%s,type=0x%x)\n", ip->i_name, typ);
+	DPRINTF(("newident(%s,type=0x%x)\n", ip->i_name, typ));
 
 	if (pass == PASS_1) {
-		/* printf("declare %s: %o\n", ip->i_name, typ); */
+		/* DPRINTF(("declare %s: %o\n", ip->i_name, typ)); */
 		if (ip->i_type & ~S_EXTERN)
 			serror("multiple declared");
 		else
@@ -111,7 +111,7 @@ newident(item_t *ip, int typ)
 	if (sflag & flag)
 		newsymb(ip->i_name, ip->i_type & (S_EXTERN|S_TYPEMASK|S_SCTMASK), load(ip));
 
-	printf("done with newident()\n");
+	DPRINTF(("done with newident()\n"));
 }
 
 void
@@ -121,7 +121,7 @@ newlabel(item_t *ip)
 	ADDR_T oldval = ip->i_valu;
 #endif
 
-	printf("newlabel: (%s) lineno=%ld, pass=%d, section=%d oldval=%ld, DOTVAL=%ld, gain=%ld\n", ip->i_name, lineno, pass, DOTSCT, oldval, DOTVAL, sect[DOTSCT].s_gain);
+	DPRINTF(("newlabel: (%s) lineno=%ld, pass=%d, section=%d oldval=%ld, DOTVAL=%ld, gain=%ld\n", ip->i_name, lineno, pass, DOTSCT, oldval, DOTVAL, sect[DOTSCT].s_gain));
 
 	if (DOTSCT == S_UND)
 		nosect();
@@ -143,11 +143,11 @@ newsect(item_t *ip, int type, const char* flags)
 	int eflags = 0;
 	sect_t *sp = NULL;
 
-	printf("newsect(%s,)\n", ip->i_name);
+	DPRINTF(("newsect(%s,)\n", ip->i_name));
 /*
-	printf("name=%s, type=%x, valu=%lx\n", ip->i_name, ip->i_type, ip->i_valu);
-	printf("flags=%s\n", flags ? flags : "<none>");
-	printf("type=%d\n", type);
+	DPRINTF(("name=%s, type=%x, valu=%lx\n", ip->i_name, ip->i_type, ip->i_valu));
+	DPRINTF(("flags=%s\n", flags ? flags : "<none>"));
+	DPRINTF(("type=%d\n", type));
 */
 	if (type == 0) 
 		type = SHT_PROGBITS;
@@ -272,7 +272,7 @@ newcomm(item_t *ip, ADDR_T val)
 			nosect();
 		if (val == 0)
 			serror("bad size");
-		printf("declare %s in section %d\n", ip->i_name, DOTSCT);
+		DPRINTF(("declare %s in section %d\n", ip->i_name, DOTSCT));
 		if ((ip->i_type & ~S_EXTERN) == S_UND) {
 			--unresolved;
 			ip->i_type = S_COMMON|DOTSCT|(ip->i_type&S_EXTERN);
@@ -291,12 +291,12 @@ switchsect(int sectno)
 {
 	sect_t *sp;
 
-	printf("switchsect(section %d)\n", sectno);
+	DPRINTF(("switchsect(section %d)\n", sectno));
 
 	if (DOTSCT != S_UND) {
 		sp = &sect[DOTSCT];
 		sp->s_size = DOTVAL - sp->s_base;
-		printf("switchsect(): closing section %d at %ld (pass=%d)\n", DOTSCT, sp->s_size, pass);
+		DPRINTF(("switchsect(): closing section %d at %ld (pass=%d)\n", DOTSCT, sp->s_size, pass));
 	}
 	if (sectno == S_UND) {
 		DOTSCT = S_UND;
@@ -305,7 +305,7 @@ switchsect(int sectno)
 	sp = &sect[sectno];
 	DOTVAL = sp->s_size + sp->s_base;
 	DOTSCT = sectno;
-	printf("switchsect(): starting section %d at %ld (size=%ld,base=%ld,pass=%d)\n", DOTSCT, DOTVAL, sp->s_size, sp->s_base, pass);
+	DPRINTF(("switchsect(): starting section %d at %ld (size=%ld,base=%ld,pass=%d)\n", DOTSCT, DOTVAL, sp->s_size, sp->s_base, pass));
 }
 
 void
@@ -359,11 +359,11 @@ newrelo(int s, int typ)
 	int iscomm;
 
 	if (PASS_RELO == 0) {
-		printf("newrelo: wrong pass, ignoring relocation\n");
+		DPRINTF(("newrelo: wrong pass, ignoring relocation\n"));
 		return;
 	}
 
-	printf("--- newrelo(s=0x%x,n=%d) ---\n", s, typ);
+	DPRINTF(("--- newrelo(s=0x%x,n=%d) ---\n", s, typ));
 
 	s &= ~S_DOT;
 	assert((s & ~(S_TYPEMASK|S_VAR|S_SCTMASK)) == 0);
@@ -378,33 +378,33 @@ newrelo(int s, int typ)
 	iscomm = ((s & S_TYPEMASK) == S_COMMON);
 	s &= ~S_TYPEMASK;
 	if ((typ & RELPC) == 0 && ((s & ~S_VAR) == S_ABS)) {
-		printf("newrelo: skipping constant relocation\n");
+		DPRINTF(("newrelo: skipping constant relocation\n"));
 		return;
 	}
 	if ((typ & RELPC) != 0 && s == DOTSCT && !iscomm) {
-		printf("newrelo: skipping this too\n");
+		DPRINTF(("newrelo: skipping this too\n"));
 		return;
 	}
 	if (pass != PASS_3) {
-		printf("newrelo: not the last pass, reserving space and returning\n");
+		DPRINTF(("newrelo: not the last pass, reserving space and returning\n"));
 		nrelo++;
 		sect[DOTSCT+1].s_size += sizeof(Elf_Rel);
 		return;
 	}
 
 	s &= ~S_VAR;
-	printf("newrelo: s=%x\n", s);
+	DPRINTF(("newrelo: s=%x\n", s));
 	if (s == S_UND || iscomm) {
 		assert(relonami != RELO_UNDEF);
 		or_nami = relonami;
 		relonami = RELO_UNDEF;
-		printf("using relonami\n");
+		DPRINTF(("using relonami\n"));
 	} else if (s == S_ABS) {
 		/*
 		 * use first non existing entry (argh)
 		 */
 		or_nami = nsymb;
-		printf("using first non-existing entry\n");
+		DPRINTF(("using first non-existing entry\n"));
 	} else {
 		/*
 		 * section symbols are at the end
@@ -414,7 +414,7 @@ newrelo(int s, int typ)
 		or_nami = nsymb - nsect + s;
 #endif
 		or_nami = 8;
-		printf("using section entry\n");
+		DPRINTF(("using section entry\n"));
 	}
 
 	int elftype = (typ & 0) + 1;
@@ -432,7 +432,7 @@ newrelo(int s, int typ)
 	wr_write(DOTSCT+1, &rel, sizeof(Elf_Rel));
 	sect[DOTSCT+1].s_size += sizeof(Elf_Rel);
 
-	printf("--- newrelo() ---\n");
+	DPRINTF(("--- newrelo() ---\n"));
 
 #endif
 }
@@ -450,14 +450,14 @@ new_string(int sectno, const char *s)
 		nstrtab += len;
 		sect[sectno].s_size += len;
 	}
-	printf("wrote \"%s\" into %s at index %ld\n", s, sect[sectno].s_item->i_name, r);
+	DPRINTF(("wrote \"%s\" into %s at index %ld\n", s, sect[sectno].s_item->i_name, r));
 	return r;
 }
 
 void
 newsymb(const char *name, int type, ADDR_T valu)
 {
-	printf("new symbol: name=%s, type=%04x, value=%04lx\n", name, type, valu);
+	DPRINTF(("new symbol: name=%s, type=%04x, value=%04lx\n", name, type, valu));
 
 	if (name && *name == 0)
 		name = 0;
@@ -495,7 +495,7 @@ newsymb(const char *name, int type, ADDR_T valu)
 		.st_other = 0,					/* visibility */
 		.st_shndx = shndx,				/* index of related section */
 	};
-	printf("writing symbol %s=%d into %s\n", name, sym.st_name, sect[symtab_sectno].s_item->i_name);
+	DPRINTF(("writing symbol %s=%d into %s\n", name, sym.st_name, sect[symtab_sectno].s_item->i_name));
 	wr_write(symtab_sectno, &sym, sizeof(Elf_Sym));
 	sect[symtab_sectno].s_info++;
 	sect[symtab_sectno].s_size += sizeof(Elf_Sym);

@@ -42,12 +42,6 @@
 
 #include "y.tab.h"
 
-#ifdef _DEBUG
-#define DPRINTF(x)	printf(x)
-#else
-#define DPRINTF(x)	/* no debug */
-#endif
-
 extern sect_t sect[]; /* XXXGJM remove */
 
 int use32  = 1;
