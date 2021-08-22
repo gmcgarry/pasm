@@ -95,6 +95,11 @@ operation	: NOP			{ emit1($1); }
 		| MOVX '@' regi ',' A		{ movxop($3+3); }
 		| MOVX '@' DPTR ',' A		{ movxop(5); }
 		| IDENT BIT bit			{ newequate($1, S_ABS); store($1, $3); }
+		| PSEUDOOP_AREA IDENT '(' flags ')'	{ newsect($2, 0, NULL); }
+		;
+
+flags		: IDENT			{ }
+		| flags ',' IDENT	{ }
 		;
 
 two_op1		: A ',' reg		{ set_md(mode,0); set_ov(mode, $3); set_sz(mode, 0); }

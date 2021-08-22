@@ -47,6 +47,7 @@
 
 	{ 0,	PSEUDOOP_DATA,		1,		".db"	},
 	{ 0,	PSEUDOOP_DATA,		2,		".dw"	},
+	{ 0,	PSEUDOOP_AREA,		0,		".area" },
 
 	{ 0,	BITPOS,			0,		".0"	},
 	{ 0,	BITPOS,			1,		".1"	},
@@ -72,9 +73,12 @@
 	{ 0,	AREG,			6,		"r6"	},
 	{ 0,	AREG,			7,		"r7"	},
 
+#if 0
 	/* common special function registers */
 	{ 0,	SFR,			PSW(6),		"AC"	},
+#endif
 	{ 0,	SFR,			ACC(0),		"ACC"	},
+#if 0
 	{ 0,	SFR,			B(0),		"B"	},
 	{ 0,	SFR,			PSW(7),		"CY"	},
 	{ 0,	SFR,			0x83,		"DPH"	},
@@ -105,7 +109,9 @@
 	{ 0,	SFR,			P3(0),		"P3"	},
 	{ 0,	SFR,			0x87,		"PCON"	},
 	{ 0,	SFR,			IP(4),		"PS"	},
+#endif
 	{ 0,	SFR,			PSW(0),		"PSW"	},
+#if 0
 	{ 0,	SFR,			IP(1),		"PT0"	},
 	{ 0,	SFR,			IP(3),		"PT1"	},
 	{ 0,	SFR,			IP(5),		"PT2"	},
@@ -152,6 +158,7 @@
 	{ 0,	SFR,			T2CON(2),	"TR2"	},
 	{ 0,	SFR,			P3(1),		"TXD"	},
 	{ 0,	SFR,			P3(6),		"WR"	},
+#endif
 
 	/* opcodes */
 	{ 0,	ACALL,			0x11,		"acall"	},
