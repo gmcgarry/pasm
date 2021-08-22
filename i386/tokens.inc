@@ -46,6 +46,7 @@
 %token <y_word> R32
 %token <y_word> R16
 %token <y_word> R8
+%token RIP
 %token <y_word> RSEG
 %token <y_word> RSYSCR
 %token <y_word> RSYSDR

@@ -60,10 +60,16 @@
 #define IS_RSEG		0x1000
 #define IS_R64		0x2000
 
+#define REXW		0x8
+#define REXR		0x4
+#define REXX		0x2
+#define REXB		0x1
+
 #define is_expr(reg)	((reg)&IS_EXPR)
 #define is_segreg(reg)	((reg)&IS_RSEG)
 #define is_reg(reg)	(((reg)&(IS_R8|IS_R16|IS_R32|IS_R64)) != 0)
 #define is_acc(reg)	(is_reg(reg) && ((reg & 07) == 0))
+#define is_reg64(reg)	(((reg)&IS_R64) != 0)
 
 struct operand {
 	int	mod;
@@ -123,3 +129,4 @@ void imul(int reg);
 
 void opprefix(void);
 void argprefix(void);
+void rex(void);
