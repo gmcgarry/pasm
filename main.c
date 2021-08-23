@@ -589,12 +589,12 @@ outstart(void)
 void
 outfinish()
 {
-	int offset = 0;
 	int i;
 	long off = 0;
 
 #if 0
 	printf("---------------------------------------\n");
+	int offset = 0;
 	for (i = 0; i < nsect; i++) {
 		printf("%d: %s, address=%ld, file-offset=%d, size=%ld\n", i, sect[i].s_item ? sect[i].s_item->i_name : "<null>", sect[i].s_base, offset, sect[i].s_size);
 		offset += sect[i].s_size;
