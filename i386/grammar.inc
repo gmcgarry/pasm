@@ -81,7 +81,7 @@ oper	: NOOP_1			{ emit1($1); }
 	| IMUL ea_2			{ reg_1 = IS_R32 | (address_long ? 0 : 0310); imul(0); }
 	| IMUL ea_2 ',' XREG		{ reg_1 = $4 | IS_R32 | (address_long ? 0 : 0310); imul($4|0x10); }
 	| IMUL ea_ea ',' XREG		{ imul($4|0x10); }
-	| INT const  			{ if ($2==3) emit1(0314); else { fit(ufitb($2)); emit1(0315); emit1((int)$2); } }
+	| INT const  			{ if ($2 == 3) emit1(0314); else { fit(ufitb($2)); emit1(0315); emit1((int)$2); } }
 	| RET				{ emit1($1); }
 	| RET expr			{ emit1($1-1); newrelo($2.typ, RELO2); emit2((int)($2.val)); }
 	| SETCC ea_2			{ if (reg_2 & (IS_R32|IS_RSEG)) { serror("register error"); } emit1(0xF); emit1($1|0x90); ea_2(0); }
@@ -117,16 +117,16 @@ oper	: NOOP_1			{ emit1($1); }
 st_i	: ST '(' absexp ')'		{ if (!fit3($3)) { serror("illegal index in FP stack"); } $$ = $3; }
 	;
 
-mem	: expr				{ if (address_long) reg_2 = 05; else reg_2 = 06; mod_2 = 0; rm_2 = 05; exp_2 = $1; RELOMOVE(rel_2, relonami); }
-	| expr PLT			{ if (address_long) reg_2 = 05; else reg_2 = 06; mod_2 = 0; rm_2 = 05; exp_2 = $1; RELOMOVE(rel_2, relonami); }
+mem	: expr				{ reg_2 = IS_EXPR | (address_long ? 05 : 06); mod_2 = 0; rm_2 = 05; exp_2 = $1; RELOMOVE(rel_2, relonami); }
+	| expr PLT			{ reg_2 = IS_EXPR | (address_long ? 05 : 06); mod_2 = 0; rm_2 = 05; exp_2 = $1; RELOMOVE(rel_2, relonami); }
 	| bases				{ exp_2.val = 0; exp_2.typ = S_ABS; indexed(); }
 	| expr bases			{ exp_2 = $1; indexed(); RELOMOVE(rel_2, relonami); }
 	| expr '(' RIP ')'		{ if (use32 != 2) serror("bad register"); reg_2 = 5; mod_2 = 0; rm_2 = 05; exp_2.typ = $1.typ; exp_2.val = $1.val - DOTVAL; RELOMOVE(rel_2, relonami); }
 	;
 
-bases	: '(' XREG ')'			{ if (address_long) reg_2 = $2; else reg_2 = sr_m[$2]; sib_2 = 0; rm_2 = 0; }
-	| '(' XREG ',' XREG ',' scale ')' { if (address_long) reg_2 = $2; else reg_2 = dr_m[$2][$4]; rm_2 = 04; sib_2 |= regindex_ind[$2][$4]; }
-	| '(' XREG ',' XREG ')'		{ if (address_long) reg_2 = $2; else reg_2 = dr_m[$2][$4]; rm_2 = 04; sib_2 = regindex_ind[$2][$4]; }
+bases	: '(' XREG ')'			{ reg_2 = (address_long ? $2 : sr_m[$2]); sib_2 = 0; rm_2 = 0; }
+	| '(' XREG ',' XREG ',' scale ')' { reg_2 = (address_long ? $2 : dr_m[$2][$4]); rm_2 = 04; sib_2 |= regindex_ind[$2][$4]; }
+	| '(' XREG ',' XREG ')'		{ reg_2 = (address_long ? $2 : dr_m[$2][$4]); rm_2 = 04; sib_2 = regindex_ind[$2][$4]; }
 	| '(' ',' XREG ',' absexp ')'	{ if ($5 == 1) { reg_2 = $3; sib_2 = 0; rm_2 = 0; } else { rm_2 = 04; sib_2 = checkscale($5) | regindex_ind[05][$3]; reg_2 = 015; } }
 	;
 

@@ -39,9 +39,11 @@
  * No system registers for now ...
  */
 
+	/* some intel compatibility */
 	{ 0,	PSEUDOOP_DATA,	2,		"dw" },
 	{ 0,	PSEUDOOP_DATA,	1,		"db" },
 	{ 0,	PSEUDOOP_CPU,	0,		"cpu" },
+	{ 0,	'=',		0,		"equ" },
 
 	{ 0,	PSEUDOOP_USE16,	0,		".code16" },
 	{ 0,	PSEUDOOP_USE32,	0,		".code32" },
@@ -127,14 +129,12 @@
 	{ 0,	PREFIX,		0xf3,		"repz" },
 	{ 0,	PREFIX,		0xf0,		"lock" },
 
-#if 0
 	{ 0,	PREFIX,		0x26,		"eseg" },
 	{ 0,	PREFIX,		0x2e,		"cseg" },
 	{ 0,	PREFIX,		0x36,		"sseg" },
 	{ 0,	PREFIX,		0x3e,		"dseg" },
 	{ 0,	PREFIX,		0x64,		"fseg" },
 	{ 0,	PREFIX,		0x65,		"gseg" },
-#endif
 
 	{ 0,	ADDOP,		000,		"addb" },
 	{ 0,	ADDOP,		001,		"add" },
