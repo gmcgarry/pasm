@@ -551,6 +551,7 @@
 	{ 0,	CALLOP,		020+(0350<<8),	"callq" },
 	{ 0,	NOOP_1,		0311,		"leaveq" },
 	{ 0,	RET,		0303,		"retq" },
+	{ 0,	RET,		0303,		"retl" },
 	{ 0,	ROLOP,		051,		"shrl" },
 	{ 0,	NOTOP,		031,		"negl" },
 	{ 0,	IMUL,		00,		"imull" },
@@ -564,5 +565,10 @@
 	{ 0,	LSHFT,		0254,		"shrdl" },
 	{ 0,	ADDOP,		021,		"adcl" },
 	{ 0,	ADDOP,		031,		"sbbl" },
+	{ 0,	ADDOP,		001,		"addw" },
+	{ 0,	PUSHOP,		0,		"pushw" },
+	{ 0,	ADDOP,		051,		"subw" },
+	{ 0,	PUSHOP,		1,		"popw" },
+	{ 0,	ADDOP,		071,		"cmpw" },
 
 	{ 0,	FMEM,		FESC+0+(1<<11),		"fmull" }, /* or is this fmuls? */

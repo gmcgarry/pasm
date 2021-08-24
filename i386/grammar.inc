@@ -130,9 +130,9 @@ bases	: '(' XREG ')'			{ reg_2 = (address_long ? $2 : sr_m[$2]); sib_2 = 0; rm_2
 	| '(' ',' XREG ',' absexp ')'	{ if ($5 == 1) { reg_2 = $3; sib_2 = 0; rm_2 = 0; } else { rm_2 = 04; sib_2 = checkscale($5) | regindex_ind[05][$3]; reg_2 = 015; } }
 	;
 
-XREG	: R16
-	| R32
-	| R64
+XREG	: R16				{ $$ = $1; }
+	| R32				{ $$ = $1; }
+	| R64				{ $$ = $1; }
 	;
 
 scale	: /* empty */			{ sib_2 = 0; }

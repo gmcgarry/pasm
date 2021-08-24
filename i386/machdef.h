@@ -45,6 +45,8 @@
 #define ALIGNWORD	1
 #define ALIGNSECT	1
 
+#define IGNORECASE	1
+
 /* ========== Machine independent type declarations ========== */
 
 #define	PASS_1		0
