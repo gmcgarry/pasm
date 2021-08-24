@@ -58,7 +58,7 @@ oper	: NOOP_1			{ emit1($1); }
 	| JOP2 expr			{ ebranch($1,$2); }
 	| PUSHOP ea_1			{ pushop($1); }
 	| IOOP const 			{ emit1($1); fit(ufitb($2)); emit1((int)$2); }
-	| IOOP R32			{ if ($2!=2) serror("register error"); emit1($1+010); }
+	| IOOP XREG			{ if ($2!=2) serror("register error"); emit1($1+010); }
 	| BITTEST ea_ea			{ bittestop($1); }
 	| ADDOP ea_ea			{ rex(); addop($1); }
 	| ROLOP ea_ea			{ rex(); rolop($1); } 
@@ -117,11 +117,14 @@ oper	: NOOP_1			{ emit1($1); }
 st_i	: ST '(' absexp ')'		{ if (!fit3($3)) { serror("illegal index in FP stack"); } $$ = $3; }
 	;
 
-mem	: expr				{ reg_2 = IS_EXPR | (address_long ? 05 : 06); mod_2 = 0; rm_2 = 05; exp_2 = $1; RELOMOVE(rel_2, relonami); }
-	| expr PLT			{ reg_2 = IS_EXPR | (address_long ? 05 : 06); mod_2 = 0; rm_2 = 05; exp_2 = $1; RELOMOVE(rel_2, relonami); }
+mem	: expr optPLT			{ reg_2 = IS_EXPR | (address_long ? 05 : 06); mod_2 = 0; rm_2 = 05; exp_2 = $1; RELOMOVE(rel_2, relonami); }
 	| bases				{ exp_2.val = 0; exp_2.typ = S_ABS; indexed(); }
 	| expr bases			{ exp_2 = $1; indexed(); RELOMOVE(rel_2, relonami); }
 	| expr '(' RIP ')'		{ if (use32 != 2) serror("bad register"); reg_2 = 5; mod_2 = 0; rm_2 = 05; exp_2.typ = $1.typ; exp_2.val = $1.val - DOTVAL; RELOMOVE(rel_2, relonami); }
+	;
+
+optPLT	: /* empty */
+	| PLT
 	;
 
 bases	: '(' XREG ')'			{ reg_2 = (address_long ? $2 : sr_m[$2]); sib_2 = 0; rm_2 = 0; }
@@ -142,22 +145,22 @@ scale	: /* empty */			{ sib_2 = 0; }
 const	: '$' absexp			{ $$ = $2; }
 	;
 
-ea_2	: mem
-	| R8				{ reg_2 = ($1 | IS_R8) | (address_long ? 0 : 0xc0); rm_2 = 0; }
-	| R16 				{ reg_2 = ($1 | IS_R16 | IS_R32) | (address_long ? 0 : 0xc8); rm_2 = 0; }
-	| R32 				{ if (use32 == 0) serror("bad register"); reg_2 = ($1 | IS_R32) | (address_long ? 0 : 0xc8); rm_2 = 0; }
-	| R32X				{ if (use32 != 2) serror("bad register"); reg_2 = ($1 | IS_R32) | (address_long ? 0 : 0xc8); rm_2 = 0; }
+ea_2	: mem				{ }
+	| R8				{ reg_2 = ($1 | IS_R8) | (address_long ? 0 : 0300); rm_2 = 0; }
+	| R16 				{ reg_2 = ($1 | IS_R16 | IS_R32) | (address_long ? 0 : 0310); rm_2 = 0; }
+	| R32 				{ if (use32 == 0) serror("bad register"); reg_2 = ($1 | IS_R32) | (address_long ? 0 : 0310); rm_2 = 0; }
+	| R32X				{ if (use32 != 2) serror("bad register"); reg_2 = ($1 | IS_R32) | (address_long ? 0 : 0310); rm_2 = 0; }
 	| R64 				{ if (use32 != 2) serror("bad register"); reg_2 = ($1 | IS_R32 | IS_R64); rm_2 = 0; }
-	| RSEG				{ reg_2 = ($1 | IS_RSEG) | (address_long ? 0 : 0x10); rm_2 = 0; }
-	| '$' expr 			{ reg_2 = IS_EXPR | (address_long ? 0 : 0x20); exp_2 = $2; rm_2 = 0; RELOMOVE(rel_2, relonami); }
+	| RSEG				{ reg_2 = ($1 | IS_RSEG) | (address_long ? 0 : 020); rm_2 = 0; }
+	| '$' expr 			{ reg_2 = IS_EXPR | (address_long ? 0 : 040); exp_2 = $2; rm_2 = 0; RELOMOVE(rel_2, relonami); }
 	| RSEG ':' mem			{ static const int prefix[] = { 0x26, 0x2e, 0x36, 0x3e, 0x64, 0x65 }; emit1(prefix[$1]); }
 	;
 
-reg	: R8				{ reg_1 = ($1 | IS_R8) | (address_long ? 0 : 0xc0); rm_1 = 0; $$ = $1; }
+reg	: R8				{ reg_1 = ($1 | IS_R8) | (address_long ? 0 : 0300); rm_1 = 0; $$ = $1; }
 	| R16				{ reg_1 = ($1 | IS_R16 | IS_R32) | (address_long ? 0 : 0xc8); rm_1 = 0; $$ = $1; }
-	| R32				{ if (use32 == 0) serror("bad register"); reg_1 = ($1 | IS_R32) | (address_long ? 0 : 0xc8); rm_1 = 0; $$ = $1; }
-	| R32X				{ if (use32 != 2) serror("bad register"); reg_1 = ($1 | IS_R32) | (address_long ? 0 : 0xc8); rm_1 = 0; $$ = $1; }
-	| R64				{ if (use32 != 2) serror("bad register"); reg_1 = ($1 | IS_R32 | IS_R64) | (address_long ? 0 : 0xc8); rm_1 = 0; $$ = $1; }
+	| R32				{ if (use32 == 0) serror("bad register"); reg_1 = ($1 | IS_R32) | (address_long ? 0 : 0310); rm_1 = 0; $$ = $1; }
+	| R32X				{ if (use32 != 2) serror("bad register"); reg_1 = ($1 | IS_R32) | (address_long ? 0 : 0310); rm_1 = 0; $$ = $1; }
+	| R64				{ if (use32 != 2) serror("bad register"); reg_1 = ($1 | IS_R32 | IS_R64) | (address_long ? 0 : 0310); rm_1 = 0; $$ = $1; }
 	;
 
 ea_1	: ea_2				{ op_1 = op_2; RELOMOVE(rel_1, rel_2); }
