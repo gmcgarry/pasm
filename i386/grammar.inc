@@ -150,7 +150,7 @@ ea_2	: mem
 	| R64 				{ if (use32 != 2) serror("bad register"); reg_2 = ($1 | IS_R32 | IS_R64); rm_2 = 0; }
 	| RSEG				{ reg_2 = ($1 | IS_RSEG) | (address_long ? 0 : 0x10); rm_2 = 0; }
 	| '$' expr 			{ reg_2 = IS_EXPR | (address_long ? 0 : 0x20); exp_2 = $2; rm_2 = 0; RELOMOVE(rel_2, relonami); }
-	| RSEG ':' expr			{ static const int prefix[] = { 0x26, 0x2e, 0x36, 0x3e, 0x64, 0x65 }; emit1(prefix[$1]); reg_2 = (address_long ? 5 : 6); mod_2 = 0; rm_2 = 5; exp_2 = $3; RELOMOVE(rel_2, relonami); }
+	| RSEG ':' mem			{ static const int prefix[] = { 0x26, 0x2e, 0x36, 0x3e, 0x64, 0x65 }; emit1(prefix[$1]); }
 	;
 
 reg	: R8				{ reg_1 = ($1 | IS_R8) | (address_long ? 0 : 0xc0); rm_1 = 0; $$ = $1; }
