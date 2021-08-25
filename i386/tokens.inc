@@ -99,3 +99,4 @@
 %type <y_valu> reg
 %type <y_valu> const
 %type <y_word> XREG
+%type <y_word> ACC

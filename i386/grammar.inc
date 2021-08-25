@@ -57,8 +57,16 @@ oper	: NOOP_1			{ emit1($1); }
 	| JOP expr			{ branch($1,$2); }
 	| JOP2 expr			{ ebranch($1,$2); }
 	| PUSHOP ea_1			{ pushop($1); }
+#if 0
 	| IOOP const 			{ emit1($1); fit(ufitb($2)); emit1((int)$2); }
-	| IOOP XREG			{ if ($2!=2) serror("register error"); emit1($1+010); }
+	| IOOP XREG			{ if ($2 != 2) serror("register error"); emit1($1+010); }
+#else
+	| IOOP ACC ',' '(' R16 ')'	{ if ($5 != 2) serror("register error"); emit1($1+010); }
+	| IOOP '(' R16 ')' ',' ACC	{ if ($3 != 2) serror("register error"); emit1($3+010); }
+	| IOOP const ',' ACC 		{ emit1($1); fit(ufitb($2)); emit1((int)$2); }
+	| IOOP ACC ',' const		{ emit1($1); fit(ufitb($4)); emit1((int)$4); }
+#endif
+
 	| BITTEST ea_ea			{ bittestop($1); }
 	| ADDOP ea_ea			{ rex(); addop($1); }
 	| ROLOP ea_ea			{ rex(); rolop($1); } 
@@ -117,7 +125,7 @@ oper	: NOOP_1			{ emit1($1); }
 st_i	: ST '(' absexp ')'		{ if (!fit3($3)) { serror("illegal index in FP stack"); } $$ = $3; }
 	;
 
-mem	: expr optPLT			{ reg_2 = IS_EXPR | (address_long ? 05 : 06); mod_2 = 0; rm_2 = 05; exp_2 = $1; RELOMOVE(rel_2, relonami); }
+mem	: expr optPLT			{ reg_2 = (address_long ? 05 : 06); mod_2 = 0; rm_2 = 05; exp_2 = $1; RELOMOVE(rel_2, relonami); }
 	| bases				{ exp_2.val = 0; exp_2.typ = S_ABS; indexed(); }
 	| expr bases			{ exp_2 = $1; indexed(); RELOMOVE(rel_2, relonami); }
 	| expr '(' RIP ')'		{ if (use32 != 2) serror("bad register"); reg_2 = 5; mod_2 = 0; rm_2 = 05; exp_2.typ = $1.typ; exp_2.val = $1.val - DOTVAL; RELOMOVE(rel_2, relonami); }
@@ -163,8 +171,14 @@ reg	: R8				{ reg_1 = ($1 | IS_R8) | (address_long ? 0 : 0300); rm_1 = 0; $$ = $
 	| R64				{ if (use32 != 2) serror("bad register"); reg_1 = ($1 | IS_R32 | IS_R64) | (address_long ? 0 : 0310); rm_1 = 0; $$ = $1; }
 	;
 
+ACC	: R8				{ if ($1 != 0) serror("bad register"); $$ = $1; }
+	| R16				{ if ($1 != 0) serror("bad register"); $$ = $1; }
+	| R32				{ if ($1 != 0) serror("bad register"); $$ = $1; }
+	;
+
+
 ea_1	: ea_2				{ op_1 = op_2; RELOMOVE(rel_1, rel_2); }
 	;
 
-ea_ea	: ea_1 ',' ea_2			{ reverse(); /* swapping operand order; intel to MIT format */ }
+ea_ea	: ea_1 ',' ea_2			{ reverse(); /* swapping operand order; Intel to AT&T format */ }
 	;

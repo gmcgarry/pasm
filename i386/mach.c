@@ -501,7 +501,7 @@ void
 callop(int opc)
 {
 	regsize(1);
-	if (is_expr(reg_1)) {
+/*	if (is_expr(reg_1)) { */
 		if (opc == (040+(0351<<8))) {
 			RELOMOVE(relonami, rel_1);
 			ebranch(0353,exp_1);
@@ -511,10 +511,12 @@ callop(int opc)
 			RELOMOVE(relonami, rel_1);
 			adsize_exp(exp_1, RELPC);
 		}
+/*
 	} else {
 		emit1(0xFF);
 		ea_1(opc&070);
 	}
+*/
 }
 
 void
@@ -563,9 +565,7 @@ test(int opc)
 void
 mov(int opc)
 {
-	DPRINTF(("reg1=%x, reg2=%x, rm1=%x, rm2=%x\n", reg_1, reg_2, rm_1, rm_2));
-
-/*		reg1=200, reg2=5, rm1=0, rm2=0 */
+	DPRINTF(("MOV: reg1=%x, reg2=%x, rm1=%x, rm2=%x\n", reg_1, reg_2, rm_1, rm_2));
 
 	regsize(opc);
 	if (is_segreg(reg_1)) {
