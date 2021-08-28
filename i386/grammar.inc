@@ -64,7 +64,7 @@ oper	: NOOP_1			{ emit1($1); }
 	| IOOP xreg			{ if ($2 != 2) serror("register error"); emit1($1+010); }
 #else
 	| IOOP ACC ',' '(' R16 ')'	{ if ($5 != 2) serror("register error"); emit1($1+010); }
-	| IOOP '(' R16 ')' ',' ACC	{ if ($3 != 2) serror("register error"); emit1($3+010); }
+	| IOOP '(' R16 ')' ',' ACC	{ if ($3 != 2) serror("register error"); emit1($1+010); }
 	| IOOP const ',' ACC 		{ emit1($1); fit(ufitb($2)); emit1((int)$2); }
 	| IOOP ACC ',' const		{ emit1($1); fit(ufitb($4)); emit1((int)$4); }
 #endif
