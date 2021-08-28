@@ -24,14 +24,12 @@
  * Please report problems to:  paul@pjrc.com
  */
 
-#define size8		(~0x00ff)
-#define size11		(~0x07ff)
-#define size15		(~0x7fff)
-#define size16		(~0xffff)
-#define isbit8(v)	(!(((v)>=0) ? (v)&size8 : -(v)>=128))
-#define isbit11(v)	(!(((v)>=0) ? (v)&size11 : (-(v))&size10))
-#define isbit16(v)	(!(((v)>=0) ? (v)&size16 : (-(v))&size15))
-#define isbmram(a)	(((a)&0xf0)==0x20)
+#define fitx(x, d)      ((((x) + (1<<(d-1))) & ~((int)(1<<(d))-1)) == 0)
+
+#define isbit8(v)	fitx(v, 8)
+#define isbit11(v)	fitx(v, 11)
+#define isbit16(v)	fitx(v, 16)
+#define isbmram(a)	(((a)&0xf0) == 0x20)
 #define isbmsfr(a)	(((a)&0x80) && !((a)&0x07))
 
 
@@ -242,7 +240,7 @@ addr11		: expr
 		if (pass == PASS_2) {
 			if (!isbit16($1.val))
 				warning("Address greater than 16-bits");
-			if (($1.val & size11) != ((DOTVAL+2) & size11))
+			if (($1.val & ~0x7FF) != ((DOTVAL+2) & ~0x7FF))
 				warning("Address outside current 2K page");
 		}
 		set_md(mode,0);
