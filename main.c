@@ -214,7 +214,7 @@ main(int argc, char **argv)
 static void
 pass_1(int argc, char **argv)
 {
-	printf("------------- start of pass %d (1) -------------\n", pass);
+	DPRINTF(("------------- start of pass %d (1) -------------\n", pass));
 
 	char *p;
 
@@ -266,13 +266,13 @@ pass_1(int argc, char **argv)
 	}
 #endif
 
-	printf("------------- end of pass %d (1) -------------\n", pass);
+	DPRINTF(("------------- end of pass %d (1) -------------\n", pass));
 }
 
 static void
 parse(char *s)
 {
-	printf("--- start of parse of \"%s\" ---\n", s);
+	DPRINTF(("--- start of parse of \"%s\" ---\n", s));
 
 	int i;
 	item_t *ip;
@@ -312,13 +312,13 @@ parse(char *s)
 		fb_ptr[FB_FORW+i] = 0;
 	}
 
-	printf("--- end of parse ---\n");
+	DPRINTF(("--- end of parse ---\n"));
 }
 
 static void
 pass_23(int n)
 {
-	printf("------------- start of pass %d (2/3) -------------\n", n);
+	DPRINTF(("------------- start of pass %d (2/3) -------------\n", n));
 
 	int i;
 	sect_t *sp;
@@ -380,11 +380,11 @@ pass_23(int n)
 	commfinish();
 	machfinish(n);
 
-	printf("----------------------------\n");
-	printf("nsymb = %d\n", nsymb);
-	printf("size = %ld\n", sect[symtab_sectno].s_size);
+	DPRINTF(("----------------------------\n"));
+	DPRINTF(("nsymb = %d\n", nsymb));
+	DPRINTF(("size = %ld\n", sect[symtab_sectno].s_size));
 
-	printf("------------- end of pass %d (2/3) -------------\n", pass);
+	DPRINTF(("------------- end of pass %d (2/3) -------------\n", pass));
 }
 
 void
@@ -533,12 +533,14 @@ outstart(void)
 	if (wr_open(aoutpath, nsect) < 0)
 		fatal("cannot create %s", aoutpath);
 
+#if 0
 	printf("---------------------------------------\n");
 	printf("nsect = %d\n", nsect);
 	printf("nrelo = %d (entsize=%ld)\n", nrelo, sizeof(Elf_Rel));
 	printf("nsymb = %d, size=%ld (entsize=%ld)\n", nsymb, sect[symtab_sectno].s_size, sizeof(Elf_Sym));
 	printf("nstrtab = %d,%d size=%ld,%ld\n", nstrtab, nshstrtab, sect[strtab_sectno].s_size, sect[shstrtab_sectno].s_size);
 	printf("---------------------------------------\n");
+#endif
 
 #if 0
 	assert(sect[symtab_sectno].s_size == sizeof(Elf_Sym) * nsymb);
@@ -591,16 +593,18 @@ outstart(void)
 void
 outfinish()
 {
-	int offset = 0;
 	int i;
 	long off = 0;
 
+#if 0
 	printf("---------------------------------------\n");
+	int offset = 0;
 	for (i = 0; i < nsect; i++) {
 		printf("%d: %s, address=%ld, file-offset=%d, size=%ld\n", i, sect[i].s_item ? sect[i].s_item->i_name : "<null>", sect[i].s_base, offset, sect[i].s_size);
 		offset += sect[i].s_size;
 	}
 	printf("---------------------------------------\n");
+#endif
 
 	/*
 	 * section table generation
@@ -611,7 +615,7 @@ outfinish()
 	for (i = 1; i < nsect; i++) {
 
 		sect_t *sp = &sect[i];
-		printf("SECTION %d: offset=%ld, size=%ld, nameidx=%d, link=%ld, info=%ld\n", i, off, sp->s_size - sp->s_zero, sp->s_item ? sp->s_item->i_type : 0, sp->s_link, sp->s_info);
+		DPRINTF(("SECTION %d: offset=%ld, size=%ld, nameidx=%d, link=%ld, info=%ld\n", i, off, sp->s_size - sp->s_zero, sp->s_item ? sp->s_item->i_type : 0, sp->s_link, sp->s_info));
 
 		Elf_Shdr shdr = {
 			.sh_name = sp->s_item ? sp->s_item->i_type : 0,

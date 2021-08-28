@@ -82,5 +82,6 @@
 
 %token <y_word> AREG
 %token <y_word> SFR
+%token <y_word> PSEUDOOP_AREA
 
 %token BIT

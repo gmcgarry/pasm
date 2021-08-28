@@ -63,7 +63,7 @@ load(const item_t* ip)
 #else
 	if (sct == S_UND || typ == S_COMMON) {
 #if 0
-		printf("!!!! symbol \"%s\" is undefined, needs to be relocated (type=0x%x)\n", ip->i_name, ip->i_type);
+		DPRINTF(("!!!! symbol \"%s\" is undefined, needs to be relocated (type=0x%x)\n", ip->i_name, ip->i_type));
 #endif
 		if (pass == PASS_3) {
 			if (relonami != RELO_UNDEF)
@@ -79,7 +79,7 @@ load(const item_t* ip)
 int
 store(item_t* ip, ADDR_T val)
 {
-	printf("store(%s, type=%x, val=%lx)\n", ip->i_name, ip->i_type, val);
+	DPRINTF(("store(%s, type=%x, val=%lx)\n", ip->i_name, ip->i_type, val));
 
         int sct = ip->i_type & S_SCTMASK;
 #if 0 /* def ASLD */
@@ -92,7 +92,7 @@ store(item_t* ip, ADDR_T val)
 	assert(pass != PASS_3 || (ip->i_type & S_VAR) || ip->i_valu == val);
 	ip->i_valu = val;
 
-	printf("storing 0x%lx into %s\n", val, ip->i_name);
+	DPRINTF(("storing 0x%lx into %s\n", val, ip->i_name));
 
 	return 1;
 }
@@ -129,9 +129,7 @@ remember(const char* s)
 int
 combine(int typ1, int typ2, int op)
 {
-#if 1
-	printf("combine(typ1=0x%x, typ2=0x%x, op='%c' (0x%x)\n", typ1, typ2, op, op);
-#endif
+	DPRINTF(("combine(typ1=0x%x, typ2=0x%x, op='%c' (0x%x)\n", typ1, typ2, op, op));
 
 	switch (op) {
 #ifndef NO_ASR

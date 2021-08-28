@@ -39,9 +39,11 @@
  * No system registers for now ...
  */
 
+	/* some intel compatibility */
 	{ 0,	PSEUDOOP_DATA,	2,		"dw" },
 	{ 0,	PSEUDOOP_DATA,	1,		"db" },
 	{ 0,	PSEUDOOP_CPU,	0,		"cpu" },
+	{ 0,	'=',		0,		"equ" },
 
 	{ 0,	PSEUDOOP_USE16,	0,		".code16" },
 	{ 0,	PSEUDOOP_USE32,	0,		".code32" },
@@ -104,7 +106,7 @@
 	{ 0,	R32X,		14,		"%r14b" },
 	{ 0,	R32X,		15,		"%r15b" },
 
-	{ 0,	R64,		0xff,		"%rip" },
+	{ 0,	RIP,		0,		"%rip" },
 
 	{ 0,	RSYSCR,		0,		"%cr0" },
 	{ 0,	RSYSCR,		2,		"%cr2" },
@@ -128,14 +130,17 @@
 	{ 0,	PREFIX,		0xf3,		"repz" },
 	{ 0,	PREFIX,		0xf0,		"lock" },
 
-#if 0
 	{ 0,	PREFIX,		0x26,		"eseg" },
 	{ 0,	PREFIX,		0x2e,		"cseg" },
 	{ 0,	PREFIX,		0x36,		"sseg" },
 	{ 0,	PREFIX,		0x3e,		"dseg" },
 	{ 0,	PREFIX,		0x64,		"fseg" },
 	{ 0,	PREFIX,		0x65,		"gseg" },
-#endif
+
+	{ 0,	OTOGGLE,	0x66,		"data16" },	/* while in 32-bit mode */
+	{ 0,	ATOGGLE,	0x67,		"addr16" },
+	{ 0,	OTOGGLE,	0x66,		"data32" },	/* while in 16-bit mode */
+	{ 0,	ATOGGLE,	0x67,		"addr32" },
 
 	{ 0,	ADDOP,		000,		"addb" },
 	{ 0,	ADDOP,		001,		"add" },
@@ -187,7 +192,7 @@
 	{ 0,	EXTOP1,		0041,		"smsw" },
 	{ 0,	EXTOP1,		0050,		"verw" },
 	{ 0,	EXTOP1,		0061,		"lmsw" },
-	{ 0,	IMUL,		00,		"imul" },
+	{ 0,	IMUL,		0,		"imul" },
 	{ 0,	IMULB,		050,		"imulb" },
 	{ 0,	INCOP,		000,		"incb" },
 	{ 0,	INCOP,		001,		"inc" },
@@ -257,6 +262,8 @@
 	{ 0,	NOOP_1,		0230,		"cwde" }, /* same opcode as cbw! */
 	{ 0,	NOOP_1,		0231,		"cdq" },	/* same opcode as cwd! */
 	{ 0,	NOOP_1,		0231,		"cwd" },
+
+
 	{ 0,	NOOP_1,		0233,		"wait" },
 	{ 0,	NOOP_1,		0234,		"pushf" },
 	{ 0,	NOOP_1,		0235,		"popf" },
@@ -552,6 +559,7 @@
 	{ 0,	CALLOP,		020+(0350<<8),	"callq" },
 	{ 0,	NOOP_1,		0311,		"leaveq" },
 	{ 0,	RET,		0303,		"retq" },
+	{ 0,	RET,		0303,		"retl" },
 	{ 0,	ROLOP,		051,		"shrl" },
 	{ 0,	NOTOP,		031,		"negl" },
 	{ 0,	IMUL,		00,		"imull" },
@@ -565,5 +573,13 @@
 	{ 0,	LSHFT,		0254,		"shrdl" },
 	{ 0,	ADDOP,		021,		"adcl" },
 	{ 0,	ADDOP,		031,		"sbbl" },
+	{ 0,	ADDOP,		001,		"addw" },
+	{ 0,	PUSHOP,		0,		"pushw" },
+	{ 0,	ADDOP,		051,		"subw" },
+	{ 0,	PUSHOP,		1,		"popw" },
+	{ 0,	ADDOP,		071,		"cmpw" },
+	{ 0,	INCOP,		001,		"incw" },
+	{ 0,	INCOP,		011,		"decw" },
+	{ 0,	NOOP_1,		0231,		"cwtd" },
 
 	{ 0,	FMEM,		FESC+0+(1<<11),		"fmull" }, /* or is this fmuls? */

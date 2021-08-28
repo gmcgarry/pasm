@@ -85,10 +85,10 @@ newident(item_t *ip, int typ)
 	static char genlab[] = GENLAB;
 #endif /* GENLAB */
 
-	printf("newident(%s,type=0x%x)\n", ip->i_name, typ);
+	DPRINTF(("newident(%s,type=0x%x)\n", ip->i_name, typ));
 
 	if (pass == PASS_1) {
-		/* printf("declare %s: %o\n", ip->i_name, typ); */
+		/* DPRINTF(("declare %s: %o\n", ip->i_name, typ)); */
 		if (ip->i_type & ~S_EXTERN)
 			serror("multiple declared");
 		else
@@ -112,7 +112,7 @@ newident(item_t *ip, int typ)
 	if (sflag & flag)
 		newsymb(ip->i_name, ip->i_type & (S_EXTERN|S_TYPEMASK|S_SCTMASK), load(ip));
 
-	printf("done with newident()\n");
+	DPRINTF(("done with newident()\n"));
 }
 
 void
@@ -122,7 +122,7 @@ newlabel(item_t *ip)
 	ADDR_T oldval = ip->i_valu;
 #endif
 
-	printf("newlabel: (%s) lineno=%ld, pass=%d, section=%d oldval=%ld, DOTVAL=%ld, gain=%ld\n", ip->i_name, lineno, pass, DOTSCT, oldval, DOTVAL, sect[DOTSCT].s_gain);
+	DPRINTF(("newlabel: (%s) lineno=%ld, pass=%d, section=%d oldval=%ld, DOTVAL=%ld, gain=%ld\n", ip->i_name, lineno, pass, DOTSCT, oldval, DOTVAL, sect[DOTSCT].s_gain));
 
 	if (DOTSCT == S_UND)
 		nosect();
@@ -131,8 +131,7 @@ newlabel(item_t *ip)
 	if (store(ip, (ADDR_T) DOTVAL) == 0)
 		return;
 #ifdef THREE_PASS
-	if (pass == PASS_2)
-		assert(oldval - (ADDR_T) ip->i_valu == sect[DOTSCT].s_gain);
+	DPRINTF(("oldval = %lu, ip->i_valu = %lu, gain = %lu\n", oldval, (ADDR_T) ip->i_valu, sect[DOTSCT].s_gain));
 	assert(pass != PASS_2 || oldval - (ADDR_T) ip->i_valu == sect[DOTSCT].s_gain);
 #endif
 }
@@ -146,11 +145,11 @@ newsect(item_t *ip, int type, const char* flags)
 #endif
 	sect_t *sp = NULL;
 
-	printf("newsect(%s,)\n", ip->i_name);
+	DPRINTF(("newsect(%s,)\n", ip->i_name));
 /*
-	printf("name=%s, type=%x, valu=%lx\n", ip->i_name, ip->i_type, ip->i_valu);
-	printf("flags=%s\n", flags ? flags : "<none>");
-	printf("type=%d\n", type);
+	DPRINTF(("name=%s, type=%x, valu=%lx\n", ip->i_name, ip->i_type, ip->i_valu));
+	DPRINTF(("flags=%s\n", flags ? flags : "<none>"));
+	DPRINTF(("type=%d\n", type));
 */
 #if 0
 	if (type == 0) 
@@ -279,7 +278,7 @@ newcomm(item_t *ip, ADDR_T val)
 			nosect();
 		if (val == 0)
 			serror("bad size");
-		printf("declare %s in section %d\n", ip->i_name, DOTSCT);
+		DPRINTF(("declare %s in section %d\n", ip->i_name, DOTSCT));
 		if ((ip->i_type & ~S_EXTERN) == S_UND) {
 			--unresolved;
 			ip->i_type = S_COMMON|DOTSCT|(ip->i_type&S_EXTERN);
@@ -298,12 +297,12 @@ switchsect(int sectno)
 {
 	sect_t *sp;
 
-	printf("switchsect(section %d)\n", sectno);
+	DPRINTF(("switchsect(section %d)\n", sectno));
 
 	if (DOTSCT != S_UND) {
 		sp = &sect[DOTSCT];
 		sp->s_size = DOTVAL - sp->s_base;
-		printf("switchsect(): closing section %d at %ld (pass=%d)\n", DOTSCT, sp->s_size, pass);
+		DPRINTF(("switchsect(): closing section %d at %ld (pass=%d)\n", DOTSCT, sp->s_size, pass));
 	}
 	if (sectno == S_UND) {
 		DOTSCT = S_UND;
@@ -312,7 +311,7 @@ switchsect(int sectno)
 	sp = &sect[sectno];
 	DOTVAL = sp->s_size + sp->s_base;
 	DOTSCT = sectno;
-	printf("switchsect(): starting section %d at %ld (size=%ld,base=%ld,pass=%d)\n", DOTSCT, DOTVAL, sp->s_size, sp->s_base, pass);
+	DPRINTF(("switchsect(): starting section %d at %ld (size=%ld,base=%ld,pass=%d)\n", DOTSCT, DOTVAL, sp->s_size, sp->s_base, pass));
 }
 
 void
@@ -355,6 +354,7 @@ align(ADDR_T bytes)
 	DOTVAL += gap;
 	sp->s_zero += gap;
 }
+
 
 static void
 new_common(item_t *ip)

@@ -41,12 +41,6 @@
 
 #include "y.tab.h"
 
-#ifdef _DEBUG
-#define DPRINTF(x)	printf(x)
-#else
-#define DPRINTF(x)	/* no debug */
-#endif
-
 extern sect_t sect[]; /* XXXGJM remove */
 
 int use32  = 1;
@@ -132,7 +126,7 @@ ea_1_16(int param)
 void
 ea_1(int param)
 {
-	DPRINTF(("ea_1: param=0x%x (opcode), reg_1=0x%x, rm_1=0x%x, mod_1=0x%x, sib_1=0x%x, exp_1.val=0x%llx\n", param, reg_1, rm_1, mod_1, sib_1, exp_1.val));
+	DPRINTF(("ea_1: param=%o (reg/opcode), reg_1=0x%x, rm_1=0x%x, mod_1=0x%x, sib_1=0x%x, exp_1.val=0x%llx\n", param, reg_1, rm_1, mod_1, sib_1, exp_1.val));
 
 	/* ea_1: param=0x20 (opcode), reg_1=0x5, rm_1=0x0, mod_1=0x2, sib_1=0x0, exp_1.val=0xfffffffc */
 
@@ -140,32 +134,37 @@ ea_1(int param)
 		ea_1_16(param);
 		return;
 	}
+
 	if (is_expr(reg_1)) {
 		serror("bad operand");
 		return;
 	}
+
+	/* register addressing first */
 	if (is_reg(reg_1)) {
-		DPRINTF(("using reg_1 as target\n"));
 		emit1(0300 | param | (reg_1&07));
 		return;
 	}
+
+	/* sib or not */
 	if (rm_1 == 04) {
 		/* sib field use here */
-		DPRINTF(("using sib at target\n"));
 		emit1(mod_1 << 6 | param | 04);
 		emit1(sib_1 | reg_1);
 	} else {
-		DPRINTF(("using reg_1 masked\n"));
 		emit1(mod_1<<6 | param | (reg_1&07));
 	}
 
+	/* and displacement */
 	if ((mod_1 == 0 && reg_1 == 5) || mod_1 == 2) {
-		/* ??? should this be protected by a call to "small" ??? */
+		/* 32-bit displacement follows */
 		DPRINTF(("target is [ebp+offset], assuming 32-bit offset)\n"));
+		/* ??? should this be protected by a call to "small" ??? */
 		RELOMOVE(relonami, rel_1);
 		newrelo(exp_1.typ, RELO4);
 		emit4((long)(exp_1.val));
 	} else if (mod_1 == 1) {
+		/* 8-bit displacement */
 		emit1((int)(exp_1.val));
 	}
 }
@@ -247,7 +246,7 @@ indexed(void)
 		if (sib_2 == -1)
 			serror("register error");
 		if (rm_2 == 0 && reg_2 == 4) {
-			/*  base register sp, no index register; use  indexed mode without index register */
+			/*  base register sp, no index register; use indexed mode without index register */
 			rm_2 = 04;
 			sib_2 = 044;
 		}
@@ -293,16 +292,18 @@ ebranch(int opc,expr_t exp)
 	long dist;
 	int saving = address_long ? 4 : 2;
 
-	if (opc == 0353) /* 0xeb */
+	if (opc == 0xeb) /* 0xeb = callop */
 		saving--;
 	dist = exp.val - (DOTVAL + 2);
 	if (pass == PASS_2 && dist > 0 && !(exp.typ & S_DOT))
 		dist -= sect[DOTSCT].s_gain;
 	sm = dist > 0 ? fitb(dist - saving) : fitb(dist);
-	if ((exp.typ & ~S_DOT) != DOTSCT)
+	printf("ebranch: %ld does %s fit in a byte\n", dist, (sm ? "" : "not"));
+	if ((exp.typ & S_SCTMASK) != DOTSCT)
 		sm = 0;
 	if ((sm = small(sm, saving)) == 0) {
-		if (opc == 0353) {
+		printf("ebranch: no saving dist = %ld\n", dist);
+		if (opc == 0xeb) {
 			emit1(0xe9);
 		} else {
 			emit1(0xF);
@@ -312,7 +313,7 @@ ebranch(int opc,expr_t exp)
 		exp.val = dist;
 		adsize_exp(exp, RELPC);
 	} else {
-		if (opc == 0353)
+		if (opc == 0xeb)
 			emit1(opc);
 		else
 			emit1(opc | 0x70);
@@ -483,20 +484,22 @@ void
 callop(int opc)
 {
 	regsize(1);
-	if (is_expr(reg_1)) {
+/*	if (is_expr(reg_1)) { */
 		if (opc == (040+(0351<<8))) {
 			RELOMOVE(relonami, rel_1);
-			ebranch(0353,exp_1);
+			ebranch(0xeb, exp_1);
 		} else {
 			exp_1.val -= (DOTVAL+3 + (address_long ? 2 : 0));
 			emit1(opc>>8);
 			RELOMOVE(relonami, rel_1);
 			adsize_exp(exp_1, RELPC);
 		}
+/*
 	} else {
 		emit1(0xFF);
 		ea_1(opc&070);
 	}
+*/
 }
 
 void
@@ -545,9 +548,7 @@ test(int opc)
 void
 mov(int opc)
 {
-	DPRINTF(("reg1=%x, reg2=%x, rm1=%x, rm2=%x\n", reg_1, reg_2, rm_1, rm_2));
-
-/*		reg1=200, reg2=5, rm1=0, rm2=0 */
+	DPRINTF(("MOV: reg1=%x, reg2=%x, rm1=%x, rm2=%x\n", reg_1, reg_2, rm_1, rm_2));
 
 	regsize(opc);
 	if (is_segreg(reg_1)) {
@@ -700,19 +701,32 @@ imul(int reg)
 void
 argprefix()
 {
-	if (!use32 && address_long)
-		emit1(0xe7);
-	else if (use32 && !address_long)
+	if ((!use32 && address_long) || (use32 && !address_long))
 		emit1(0x67);
 }
 		
 void
 opprefix()
 {
-	if (!use32 && operand_long)
-		emit1(0xe6);
-	else if (use32 && !operand_long)
+	if ((!use32 && operand_long) || (use32 && !operand_long))
 		emit1(0x66);
+
+	if ((!use32 && address_long) || (use32 && !address_long))
+		emit1(0x67);
+
+#if 0
+	printf("reg_1 = %x, reg_2 = %x\n", reg_1, reg_2);
+#endif
+
+	int rex = 0x00;
+	if (is_reg64(reg_1))
+		rex |= 0x48 | (reg_1 & 0x08 ? REXW : 0);
+#if 0
+	if (is_reg64(reg_2))
+		rex |= 0x48 | (reg_2 & 0x08 ? REXR : 0);
+#endif
+	if (rex)
+		emit1(rex);
 }
 
 /*
@@ -724,8 +738,8 @@ opprefix()
  * Note that explicit opcodes for byte operands are provided in all modes.
  *
  * in x86 mode: (16-bit)
- *	0xe6: word operand
- *	0xe7: word address
+ *	0x66: changes the size of the data to 32-bit
+ *	0x67: changes the size of the address to 32-bit
  * in 386 mode: (32-bit)
  *	0x66: changes the size of the data to 16-bit			mov %dx, (%ebx), movw $1,(%ebx)
  *	0x67: changes the size of the address to 16-bit			mov %edx,(%bp,%di) - invoked with '.code16' directive
@@ -737,4 +751,71 @@ opprefix()
  *		R : REX.R extends the reg value of MODRM		mov %r9b,(%rbx)
  *		X : REX.X extends the index register			mov %rax,0x40(%r8)
  *		B : REX.B extends the RM register			mov %rdx,%r9, mov $0x1,%r9b
+ */
+
+/*
+ * MOD R/M Addressing Mode
+ * === === ================================
+ *  00 000 [ eax ]
+ *  01 000 [ eax + disp8 ]
+ *  10 000 [ eax + disp32 ]
+ *  11 000 register  ( al / ax / eax )
+ *  00 001 [ ecx ]
+ *  01 001 [ ecx + disp8 ]
+ *  10 001 [ ecx + disp32 ]
+ *  11 001 register  ( cl / cx / ecx )
+ *  00 010 [ edx ]
+ *  01 010 [ edx + disp8 ]
+ *  10 010 [ edx + disp32 ]
+ *  11 010 register  ( dl / dx / edx )
+ *  00 011 [ ebx ]
+ *  01 011 [ ebx + disp8 ]
+ *  10 011 [ ebx + disp32 ]
+ *  11 011 register  ( bl / bx / ebx )
+ *  00 100 SIB Mode
+ *  01 100 SIB + disp8 Mode
+ *  10 100 SIB + disp32 Mode
+ *  11 100 register  ( ah / sp / esp )
+ *  00 101 32-bit Displacement-Only Mode (%rip-relative in 64-bit mode)
+ *  01 101 [ ebp + disp8 ]
+ *  10 101 [ ebp + disp32 ]
+ *  11 101 register  ( ch / bp / ebp )
+ *  00 110 [ esi ]
+ *  01 110 [ esi + disp8 ]
+ *  10 110 [ esi + disp32 ]
+ *  11 110 register  ( dh / si / esi )
+ *  00 111 [ edi ]
+ *  01 111 [ edi + disp8 ]
+ *  10 111 [ edi + disp32 ]
+ *  11 111 register  ( bh / di / edi )
+ *
+ * Scale
+ * =====
+ * 00 index*1
+ * 01 index*2
+ * 10 index*4
+ * 11 index*4
+ *  
+ * Index
+ * =====
+ * 000 EAX
+ * 001 ECX
+ * 010 EDX
+ * 011 EBX
+ * 100 illegal (32-bit mode), (displacement-only mode in 64-bit mode)
+ * 101 EBP
+ * 110 ESI
+ * 111 EDI
+ *
+ * Base
+ * ====
+ * 000 EAX
+ * 001 ECX
+ * 010 EDX
+ * 011 EBX
+ * 100 ESP
+ * 101 EBP (displacement-only if MOD=00)
+ * 110 ESI
+ * 111 EDI
+ * 
  */
