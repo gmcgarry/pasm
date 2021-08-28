@@ -41,6 +41,9 @@
 %token PSEUDOOP_USE16
 %token PSEUDOOP_USE32
 %token PSEUDOOP_USE64
+
+%token <y_word> ATOGGLE OTOGGLE
+
 %token <y_word> R64
 %token <y_word> R32X
 %token <y_word> R32
@@ -98,5 +101,6 @@
 
 %type <y_valu> reg
 %type <y_valu> const
-%type <y_word> XREG
+%type <y_word> xreg
+%type <y_word> ireg
 %type <y_word> ACC

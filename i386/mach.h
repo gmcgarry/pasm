@@ -129,4 +129,3 @@ void imul(int reg);
 
 void opprefix(void);
 void argprefix(void);
-void rex(void);

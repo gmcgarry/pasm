@@ -240,24 +240,6 @@ regsize(int sz)
 }
 
 void
-rex()
-{
-#if 0
-	printf("reg_1 = %x, reg_2 = %x\n", reg_1, reg_2);
-#endif
-
-	int rex = 0x00;
-	if (is_reg64(reg_1))
-		rex |= 0x48 | (reg_1 & 0x08 ? REXW : 0);
-#if 0
-	if (is_reg64(reg_2))
-		rex |= 0x48 | (reg_2 & 0x08 ? REXR : 0);
-#endif
-	if (rex)
-		emit1(rex);
-}
-
-void
 indexed(void)
 {
 	if (address_long) {
@@ -311,16 +293,18 @@ ebranch(int opc,expr_t exp)
 	long dist;
 	int saving = address_long ? 4 : 2;
 
-	if (opc == 0353) /* 0xeb */
+	if (opc == 0xeb) /* 0xeb = callop */
 		saving--;
 	dist = exp.val - (DOTVAL + 2);
 	if (pass == PASS_2 && dist > 0 && !(exp.typ & S_DOT))
 		dist -= sect[DOTSCT].s_gain;
 	sm = dist > 0 ? fitb(dist - saving) : fitb(dist);
-	if ((exp.typ & ~S_DOT) != DOTSCT)
+	printf("ebranch: %ld does %s fit in a byte\n", dist, (sm ? "" : "not"));
+	if ((exp.typ & S_SCTMASK) != DOTSCT)
 		sm = 0;
 	if ((sm = small(sm, saving)) == 0) {
-		if (opc == 0353) {
+		printf("ebranch: no saving dist = %ld\n", dist);
+		if (opc == 0xeb) {
 			emit1(0xe9);
 		} else {
 			emit1(0xF);
@@ -330,7 +314,7 @@ ebranch(int opc,expr_t exp)
 		exp.val = dist;
 		adsize_exp(exp, RELPC);
 	} else {
-		if (opc == 0353)
+		if (opc == 0xeb)
 			emit1(opc);
 		else
 			emit1(opc | 0x70);
@@ -504,7 +488,7 @@ callop(int opc)
 /*	if (is_expr(reg_1)) { */
 		if (opc == (040+(0351<<8))) {
 			RELOMOVE(relonami, rel_1);
-			ebranch(0353,exp_1);
+			ebranch(0xeb, exp_1);
 		} else {
 			exp_1.val -= (DOTVAL+3 + (address_long ? 2 : 0));
 			emit1(opc>>8);
@@ -718,19 +702,32 @@ imul(int reg)
 void
 argprefix()
 {
-	if (!use32 && address_long)
-		emit1(0xe7);
-	else if (use32 && !address_long)
+	if ((!use32 && address_long) || (use32 && !address_long))
 		emit1(0x67);
 }
 		
 void
 opprefix()
 {
-	if (!use32 && operand_long)
-		emit1(0xe6);
-	else if (use32 && !operand_long)
+	if ((!use32 && operand_long) || (use32 && !operand_long))
 		emit1(0x66);
+
+	if ((!use32 && address_long) || (use32 && !address_long))
+		emit1(0x67);
+
+#if 0
+	printf("reg_1 = %x, reg_2 = %x\n", reg_1, reg_2);
+#endif
+
+	int rex = 0x00;
+	if (is_reg64(reg_1))
+		rex |= 0x48 | (reg_1 & 0x08 ? REXW : 0);
+#if 0
+	if (is_reg64(reg_2))
+		rex |= 0x48 | (reg_2 & 0x08 ? REXR : 0);
+#endif
+	if (rex)
+		emit1(rex);
 }
 
 /*
@@ -742,8 +739,8 @@ opprefix()
  * Note that explicit opcodes for byte operands are provided in all modes.
  *
  * in x86 mode: (16-bit)
- *	0xe6: word operand
- *	0xe7: word address
+ *	0x66: changes the size of the data to 32-bit
+ *	0x67: changes the size of the address to 32-bit
  * in 386 mode: (32-bit)
  *	0x66: changes the size of the data to 16-bit			mov %dx, (%ebx), movw $1,(%ebx)
  *	0x67: changes the size of the address to 16-bit			mov %edx,(%bp,%di) - invoked with '.code16' directive

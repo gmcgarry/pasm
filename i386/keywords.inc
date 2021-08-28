@@ -48,6 +48,7 @@
 	{ 0,	PSEUDOOP_USE16,	0,		".code16" },
 	{ 0,	PSEUDOOP_USE32,	0,		".code32" },
 	{ 0,	PSEUDOOP_USE64,	0,		".code64" },
+
 	{ 0,	R16,		0,		"%ax" },
 	{ 0,	R16,		1,		"%cx" },
 	{ 0,	R16,		2,		"%dx" },
@@ -136,6 +137,11 @@
 	{ 0,	PREFIX,		0x64,		"fseg" },
 	{ 0,	PREFIX,		0x65,		"gseg" },
 
+	{ 0,	OTOGGLE,	0x66,		"data16" },	/* while in 32-bit mode */
+	{ 0,	ATOGGLE,	0x67,		"addr16" },
+	{ 0,	OTOGGLE,	0x66,		"data32" },	/* while in 16-bit mode */
+	{ 0,	ATOGGLE,	0x67,		"addr32" },
+
 	{ 0,	ADDOP,		000,		"addb" },
 	{ 0,	ADDOP,		001,		"add" },
 	{ 0,	ADDOP,		010,		"orb" },
@@ -186,7 +192,7 @@
 	{ 0,	EXTOP1,		0041,		"smsw" },
 	{ 0,	EXTOP1,		0050,		"verw" },
 	{ 0,	EXTOP1,		0061,		"lmsw" },
-	{ 0,	IMUL,		00,		"imul" },
+	{ 0,	IMUL,		0,		"imul" },
 	{ 0,	IMULB,		050,		"imulb" },
 	{ 0,	INCOP,		000,		"incb" },
 	{ 0,	INCOP,		001,		"inc" },
@@ -256,6 +262,8 @@
 	{ 0,	NOOP_1,		0230,		"cwde" }, /* same opcode as cbw! */
 	{ 0,	NOOP_1,		0231,		"cdq" },	/* same opcode as cwd! */
 	{ 0,	NOOP_1,		0231,		"cwd" },
+
+
 	{ 0,	NOOP_1,		0233,		"wait" },
 	{ 0,	NOOP_1,		0234,		"pushf" },
 	{ 0,	NOOP_1,		0235,		"popf" },
@@ -570,5 +578,8 @@
 	{ 0,	ADDOP,		051,		"subw" },
 	{ 0,	PUSHOP,		1,		"popw" },
 	{ 0,	ADDOP,		071,		"cmpw" },
+	{ 0,	INCOP,		001,		"incw" },
+	{ 0,	INCOP,		011,		"decw" },
+	{ 0,	NOOP_1,		0231,		"cwtd" },
 
 	{ 0,	FMEM,		FESC+0+(1<<11),		"fmull" }, /* or is this fmuls? */
