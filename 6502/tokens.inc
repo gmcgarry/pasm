@@ -37,6 +37,8 @@
  * Mostek 6500 tokens.
  */
 
+%token PSEUDOOP_SCR
+
 %token <y_word> A
 %token <y_word> X
 %token <y_word> Y
