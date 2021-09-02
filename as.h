@@ -1,4 +1,7 @@
+/*
+#define ELF
 #define ELF64
+*/
 
 /*
  * Copyright (c) 1987, 1990, 1993, 2005 Vrije Universiteit, Amsterdam, The Netherlands.
@@ -340,7 +343,7 @@ void	 newcomm(item_t *, ADDR_T);
 void	 switchsect(int);
 void	 align(ADDR_T);
 void	 newrelo(int, int);
-long	 new_string(int sectno, const char *);
+long	 new_string(const char *);
 void	 newsymb(const char *, int, ADDR_T);
 
 /* misc.c */

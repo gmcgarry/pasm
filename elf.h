@@ -2313,3 +2313,8 @@ typedef struct {
 } Elf_GNU_Hash_Header;
 
 #endif	/* _SYS_ELFDEFINITIONS_H_ */
+
+
+void elfstart();
+void elffinish();
+

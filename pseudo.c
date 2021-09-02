@@ -42,16 +42,6 @@
 
 sect_t sect[SECTMAX];
 int nsect = 1;		/* skip S_UND */
-#if 0
-int nsymb = 1;		/* skip S_UND */
-int nrelo = 0;
-int nstrtab = 0;
-int nshstrtab = 0;
-
-int strtab_sectno;
-int shstrtab_sectno;
-int symtab_sectno;
-#endif
 
 static void new_common(item_t *);
 
@@ -140,52 +130,9 @@ void
 newsect(item_t *ip, int type, const char* flags)
 {
 	int sectno;
-#if 0
-	int eflags = 0;
-#endif
 	sect_t *sp = NULL;
 
 	DPRINTF(("newsect(%s,)\n", ip->i_name));
-/*
-	DPRINTF(("name=%s, type=%x, valu=%lx\n", ip->i_name, ip->i_type, ip->i_valu));
-	DPRINTF(("flags=%s\n", flags ? flags : "<none>"));
-	DPRINTF(("type=%d\n", type));
-*/
-#if 0
-	if (type == 0) 
-		type = SHT_PROGBITS;
-
-	if (flags) {
-		while (*flags) {
-			switch (*flags) {
-				case 'a': eflags |= SHF_ALLOC; break;
-				case 'w': eflags |= SHF_WRITE; break;
-				case 'x': eflags |= SHF_EXECINSTR; break;
-				case 'M': eflags |= SHF_MERGE; break;
-				case 'S': eflags |= SHF_STRINGS; break;
-				case 'T': eflags |= SHF_TLS; break;
-				default: fatal("unrecognised section flag '%s'", *flags); break;
-			}
-			flags++;
-		}
-	} else {
-		static const struct {
-			const char *name;
-			int flags;
-		} DefaultSectionFlags[] = {
-			{ ".text", SHF_ALLOC | SHF_EXECINSTR },
-			{ ".data", SHF_ALLOC | SHF_WRITE },
-			{ ".rodata", SHF_ALLOC },
-		};
-		int i;
-		for (i = 0; i < (int)(sizeof(DefaultSectionFlags)/sizeof(DefaultSectionFlags[0])); i++) {
-			if (strcmp(DefaultSectionFlags[i].name, ip->i_name) == 0) {
-				eflags |= DefaultSectionFlags[i].flags;
-				break;
-			}
-		}
-	}
-#endif
 
 	sectno = ip->i_type & S_SCTMASK;
 	if (sectno == S_UND) {
@@ -207,34 +154,6 @@ newsect(item_t *ip, int type, const char* flags)
 		ip->i_type = S_SECTION | sectno;
 #endif
 		ip->i_valu = 0;
-#if 0
-		sp->s_eflags = eflags;
-		/* create relocation table for section */
-		if (eflags & SHF_ALLOC) {
-			static char tmp[256];
-#ifdef ELF64
-			strcpy(tmp, ".rela");
-#else
-			strcpy(tmp, ".rel");
-#endif
-			strcat(tmp, ip->i_name);
-			sp = &sect[nsect];
-#ifdef ELF64
-			sp->s_type = SHT_RELA;
-#else
-			sp->s_type = SHT_REL;
-#endif
-			sp->s_eflags = SHF_INFO_LINK;
-			sp->s_flag = 0;
-			sp->s_entsize = sizeof(Elf_Rel);
-			sp->s_link = symtab_sectno;
-			sp->s_info = sectno;
-			sp->s_align = ALIGNSECT;
-			sp->s_item = item_alloc(S_SECTION|nsect);
-			sp->s_item->i_name = remember(tmp);
-			nsect++;
-		}
-#endif
 	} else {
 		sp = &sect[sectno];
 		if (sp->s_item != ip)

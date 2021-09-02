@@ -11,6 +11,7 @@ YFLAGS	= -d
 LDFLAGS	= $(LDOPTIONS)
 
 CSRC	= \
+	elf.c \
 	emitter.c \
 	error.c \
 	file.c \

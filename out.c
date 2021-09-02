@@ -15,15 +15,23 @@ extern sect_t sect[];
 void
 outstart()
 {
+#ifdef ELF
+	elfstart();
+#else
 	int rc = emitopen(aoutpath, "bin", NULL);
 	if (rc)
 		fatal("cannot open output file");
+#endif
 }
 
 void
 outfinish()
 {
+#ifdef ELF
+	elffinish();
+#else
 	emitclose();
+#endif
 }
 
 

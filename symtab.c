@@ -5,15 +5,13 @@
 #include "as.h"
 #include "error.h"
 
+/*
 extern sect_t sect[SECTMAX];
-extern int nsect;		/* skip S_UND */
-int nsymb = 1;		/* skip S_UND */
+extern int nsect;
+*/
+int nsymb = 0;
 int nstrtab = 0;
 int nshstrtab = 0;
-
-int strtab_sectno;
-int shstrtab_sectno;
-int symtab_sectno;
 
 struct sym {
 	struct sym* s_next;
@@ -25,32 +23,44 @@ sym_t *symbols = NULL;
 
 struct strtab {
 	struct strtab *next;
-	char buf[MEMINCR - sizeof(struct strtab *)];
+	char buf[MEMINCR];
 	int nleft;
 };
 typedef struct strtab strtab_t;
 
-strtab_t strtab;
+strtab_t _strtab;
+strtab_t *strtab = &_strtab;
+static char *p = _strtab.buf;
 
 
 long
-new_string(int sectno, const char *s)
+new_string(const char *s)
 {
 	long r = 0;
-#if 0
 
 	if (s) {
-		long len = strlen(s) + 1;
-		r = sect[sectno].s_size;
-		if (pass == PASS_3)
-			wr_write(sectno, s, len);
-		nstrtab += len;
-		sect[sectno].s_size += len;
-	}
+		int len = strlen(s) + 1;
+		r = nstrtab;
+		if (pass == PASS_3) {
 #if 0
-	printf("wrote \"%s\" into %s at index %ld\n", s, sect[sectno].s_item->i_name, r);
+			wr_write(sectno, s, len);
+#else
+			if (len > strtab->nleft) {
+	       	         	strtab_t *n = (strtab_t*) malloc(sizeof(strtab));
+				n->nleft = MEMINCR;
+				n->next = strtab;
+				strtab = n;
+				p = strtab->buf;
+			}
+			strncpy(strtab->buf, s, len);
+			strtab->nleft -= len;
 #endif
-#endif
+		}
+		nstrtab += len;
+	}
+
+	printf("wrote \"%s\" at index %ld\n", s, r);
+
 	return r;
 }
 
@@ -63,15 +73,13 @@ newsymb(const char *name, int type, ADDR_T valu)
 		name = 0;
 	assert(PASS_SYMB);
 	if (pass != PASS_3) {
-		if ((type & S_TYPEMASK) == S_SECTION)
-			new_string(shstrtab_sectno, name);
-		else
-			new_string(strtab_sectno, name);
-		nsymb++;
 #if 0
-		sect[symtab_sectno].s_info++;
-		sect[symtab_sectno].s_size += sizeof(Elf_Sym);
+		if ((type & S_TYPEMASK) == S_SECTION)
+			new_string(name);
+		else
 #endif
+			new_string(name);
+		nsymb++;
 		return;
 	}
 	nsymb++;
@@ -102,25 +110,4 @@ newsymb(const char *name, int type, ADDR_T valu)
 	sect[symtab_sectno].s_info++;
 	sect[symtab_sectno].s_size += sizeof(Elf_Sym);
 #endif
-}
-
-
-static void
-new_common(item_t *ip)
-{
-        common_t *cp;
-        static int nleft = 0;
-        static common_t *next;
-
-        if (--nleft < 0) {
-                next = (common_t *) malloc(MEMINCR);
-                if (next == 0) {
-                        fatal("out of memory");
-                }
-                nleft += (MEMINCR / sizeof (common_t));
-        }
-        cp = next++;
-        cp->c_next = commons;
-        cp->c_it = ip;
-        commons = cp;
 }
