@@ -39,6 +39,9 @@
 
 {0,	PSEUDOOP_ORG,	0,		"org"},
 
+/* C64-specific */
+{0,	PSEUDOOP_SCR,	0,		".scr"},
+
 {0,	EXTENSION,	0,		".l"},
 {0,	EXTENSION,	8,		".h"},
 {0,	A,		0,		"a"},

@@ -46,3 +46,4 @@
 
 void branch(register int opc, expr_t exp);
 void code(expr_t exp, register int opc1, register int opc2);
+void machscr(void);

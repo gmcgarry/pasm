@@ -69,6 +69,7 @@ expr: expr EXTENSION		{
 	;
 
 operation: optlabel instr
+	| PSEUDOOP_SCR STRING	{ machscr(); }
 	;
 
 /* for compatibility with asl assembler */
