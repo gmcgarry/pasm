@@ -69,8 +69,10 @@ newequate(item_t *ip, int typ)
 	else if (pass == PASS_2 && (ip->i_type & S_SCTMASK) == S_UND)
 		ip->i_type |= typ;
 #endif /* THREE_PASS */
-	if (typ == S_UND)
+#ifdef RELOCATION
+	if ((typ & S_SCTMASK) == S_UND)
 		serror("illegal equate");
+#endif
 	if (pass == PASS_3)
 		assert((ip->i_type & S_SCTMASK) == (typ & S_SCTMASK));
 	newident(ip, typ);
