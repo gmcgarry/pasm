@@ -33,26 +33,10 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#define COMPAT_C64
+
 /*
  * Mostek 6500 parsing tables.
- */
-
-/* From the READ_ME file - translation by Albert Koelmans:
- * ________________
- *
- * The .h and .l extensions of expressions are vital.  However, they prevent
- * relocatable code from being generated.  Consider the following example:
- *
- * (file 1)
- * .sect .text			! 1
- * lda #[endbss].l		! 2
- * ldx #[endbss].h		! 3
- *
- * (file 2)
- * .sect .bss			! 4
- * endbss:			! 5
- *
- * What kind of relocation structure needs to be generated for the instruction in line 3?
  */
 
 expr: expr EXTENSION		{
@@ -83,17 +67,27 @@ instr	:	/* empty */
 	| JMPOP '(' expr ')'	{ emit1($1+0x20); newrelo($3.typ, RELO2); emit2($3.val); }
 	| JSROP expr		{ emit1($1); newrelo($2.typ, RELO2); emit2($2.val); }
 	| LDXOP '#' expr	{ emit1(0xA2); newrelo($3.typ, RELO1); emit1($3.val); }
+#ifdef COMPAT_C64
+	| LDXOP '#' '<' expr	{ emit1(0xA2); newrelo($4.typ, RELO1); emit1($4.val); }
+	| LDXOP '#' '>' expr	{ emit1(0xA2); newrelo($4.typ, RELO1); emit1($4.val>>8); }
+#endif
 	| LDXOP expr		{ code($2,0xA6,0xAE); }
 	| LDXOP expr ',' Y	{ code($2,0xB6,0xBE); }
 	| LDYOP	'#' expr	{ emit1(0xA0); newrelo($3.typ, RELO1); emit1($3.val); }
+#ifdef COMPAT_C64
+	| LDYOP	'#' '<' expr	{ emit1(0xA0); newrelo($4.typ, RELO1); emit1($4.val); }
+	| LDYOP	'#' '>' expr	{ emit1(0xA0); newrelo($4.typ, RELO1); emit1($4.val>>8); }
+#endif
 	| LDYOP	expr		{ code($2,0xA4,0xAC); }
 	| LDYOP	expr ',' X	{ code($2,0xB4,0xBC); }
 	| STXOP	expr		{ code($2,$1+0x06,$1+0x0E); }
 	| STXOP	expr ',' Y	{ emit1($1+0x16); newrelo($2.typ, RELO1); emit1(lowb($2.val)); }
 	| STYOP	expr		{ code($2,$1+0x04,$1+0x0C); }
 	| STYOP	expr ',' X	{ emit1($1+0x14); newrelo($2.typ, RELO1); emit1(lowb($2.val)); }
+#ifdef COMPAT_C64
 	| addop '#' '<' expr	{ if ($1 == 0x80) serror("no store immediate"); emit1($1+0x09); emit1($4.val); }
 	| addop '#' '>' expr	{ if ($1 == 0x80) serror("no store immediate"); emit1($1+0x09); emit1($4.val >> 8); }
+#endif
 	| addop	'#' expr	{
 				if ($1==0x80)
 					serror("no store immediate");
