@@ -113,7 +113,12 @@ yylex(void)
 #ifdef HEXPREFIX
 				case HEXPREFIX:
 					c = innumber(c);
-					break;;
+					break;
+#endif
+#ifdef BINPREFIX
+				case BINPREFIX:
+					c = innumber(c);
+					break;
 #endif
 				case CTRL('A'):
 					c = CODE1;
@@ -507,6 +512,11 @@ innumber(int c)
 #ifdef HEXPREFIX
 		} else if (*p == HEXPREFIX) {
 			radix = 16;
+			p++;
+#endif
+#ifdef BINPREFIX
+		} else if (*p == BINPREFIX) {
+			radix = 2;
 			p++;
 #endif
 		}
