@@ -76,7 +76,8 @@ operation: optlabel instr
 optlabel:	/* empty */
 	| IDENT			{ newident($1, DOTSCT); newlabel($1); }
 
-instr	: NOPOP			{ emit1($1); }
+instr	:	/* empty */
+	| NOPOP			{ emit1($1); }
 	| BITOP expr		{ code($2,$1,$1+8); }
 	| JMPOP expr		{ emit1($1); newrelo($2.typ, RELO2); emit2($2.val); }
 	| JMPOP '(' expr ')'	{ emit1($1+0x20); newrelo($3.typ, RELO2); emit2($3.val); }
@@ -91,6 +92,8 @@ instr	: NOPOP			{ emit1($1); }
 	| STXOP	expr ',' Y	{ emit1($1+0x16); newrelo($2.typ, RELO1); emit1(lowb($2.val)); }
 	| STYOP	expr		{ code($2,$1+0x04,$1+0x0C); }
 	| STYOP	expr ',' X	{ emit1($1+0x14); newrelo($2.typ, RELO1); emit1(lowb($2.val)); }
+	| addop '#' '<' expr	{ if ($1 == 0x80) serror("no store immediate"); emit1($1+0x09); emit1($4.val); }
+	| addop '#' '>' expr	{ if ($1 == 0x80) serror("no store immediate"); emit1($1+0x09); emit1($4.val >> 8); }
 	| addop	'#' expr	{
 				if ($1==0x80)
 					serror("no store immediate");
