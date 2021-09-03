@@ -41,6 +41,8 @@
 
 /* C64-specific */
 {0,	PSEUDOOP_SCR,	0,		".scr"},
+{0,	PSEUDOOP_EQU,	0,		".const"},
+{0,	PSEUDOOP_ASCII,	1,		".text"},
 
 {0,	EXTENSION,	0,		".l"},
 {0,	EXTENSION,	8,		".h"},
