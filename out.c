@@ -63,7 +63,7 @@ emit1(int arg)
 			break;
 		case PASS_3:
 			while (sect[DOTSCT].s_zero) {
-				wr_putc(DOTSCT, 0);
+				emitbyte(0);
 				sect[DOTSCT].s_zero--;
 			}
 			/* wr_putc(DOTSCT, arg); */
