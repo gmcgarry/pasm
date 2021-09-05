@@ -282,6 +282,10 @@
 
 { 0,	FORMAT_RRRN_S,		0xF02D,		"break.n" },	/* Fs2D		0..15 - XXX S=immediate */
 
+{ 0,	FORMAT_RRR,		0x002080,	"excw" },	/* 002080	-		*/
+{ 0,	FORMAT_RRR,		0x0020c0,	"memw" },	/* 0020C0	-		*/
+{ 0,	FORMAT_RRR,		0x0020D0,	"extw" },	/* 0020D0	-		*/
+
 #if 0
 
 { 0,	FORMAT_RRI8_SIx4,	0x007062,	"dhi" },	/* ii7s62	as,4*(0..255)	*/
@@ -359,9 +363,6 @@
 { 0,	FORMAT_RRR,		0x002020,	"esync" },	/* 002020	-		*/
 { 0,	FORMAT_RRR,		0x002030,	"dsync" },	/* 002030	-		*/
 
-{ 0,	FORMAT_RRR,		0x002080,	"excw" },	/* 002080	-		*/
-{ 0,	FORMAT_RRR,		0x0020c0,	"memw" },	/* 0020C0	-		*/
-{ 0,	FORMAT_RRR,		0x0020D0,	"extw" },	/* 0020D0	-		*/
 
 { 0,	FORMAT_RRR,		0x0020F0,	"nop" },	/* 0020F0	-		*/
 
