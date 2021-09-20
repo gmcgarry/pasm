@@ -86,11 +86,11 @@ insn24	: FORMAT_RRR					{ $$ = encodeRRR($1, 0, 0, 0); }			/*_______ */
 	| FORMAT_RRI8_STI	REG ',' REG ',' imm8	{ $$ = encodeRRR($1, 0, $2, $4) | ($6 << 16); }		/* ii_st_ */
 	| FORMAT_RRR_STmm	REG ',' REG ',' imm5 ',' imm4_p1	{ $$ = encodeRRR($1, $2, $6&0xf, $4) | (($6&0x10)<<12) | ($8<<20); }	/* o_rst_ */
 
+	| FORMAT_RRI8_ST5I	REG ',' imm5 ',' imm8	{ $$ =encodeRRR($1, $4>>4, $2, $4) | ($6  << 16); }	/* ii(E,F)st7 */
 
 	| FORMAT_BRI12		REG ',' imm12_x8	{ $$ = encodeRRR($1, $4>>8, $2, 0) | (($4 & 0xff) << 16); }	/* iixs__ */
 	| FORMAT_RRI8_TSIx256	REG ',' REG ',' imm8_x256	{ $$ = encodeRRR($1, 0, $4, $2) | ($6 << 16); }	/* ii_st_ */
 	| CALLXOP		REG			{ $$ = encodeRRR($1, 0, $2, 0);	}			/* ___s__ */
-
 
 	| CALLOP		expr			{
 		int rel = $2.val - (DOTVAL + 4);
