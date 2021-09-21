@@ -19,10 +19,11 @@ operation
 	| label instr
 	| instr
 	| PSEUDOOP_DEVICE IDENT			{ setdevice($2->i_name); }
-	| PSEUDOOP_CONFIG IDENT '=' IDENT	{ config($2->i_name, $4->i_name); }
+	| PSEUDOOP_CONFIG IDENT '=' IDENT	{ setconfig($2->i_name, $4->i_name); }
 	| PSEUDOOP_MAXRAM NUMBER8
 	| PSEUDOOP_BADRAM NUMBER8
 	| PSEUDOOP_BADRAM NUMBER8 '-' NUMBER8
+	| PSEUDOOP_BANKSEL absexp		{ banksel($2); }
 	;
 
 label	: IDENT			{ newident($1, DOTSCT); newlabel($1); }
@@ -30,6 +31,7 @@ label	: IDENT			{ newident($1, DOTSCT); newlabel($1); }
 
 instr	: NOOP			{ emit2($1); }
 	| BYTEOP f ',' D	{ emit2($1 | $4 | $2); }
+	| BYTEOP f		{ emit2($1 | 0x80 | $2); }
 	| ONEOP f 		{ emit2($1 | $2); }
 	| BITOP f ',' b		{ emit2($1 | $4 | $2); }
 	| LITOP k8		{ emit2($1 | $2); }

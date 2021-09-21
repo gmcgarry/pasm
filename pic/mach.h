@@ -19,4 +19,5 @@
 #define DEVICE_PIC16F84A	2
 
 void setdevice(const char *id);
-void config(const char *s, const char *v);
+void setconfig(const char *s, const char *v);
+void banksel(int regno);
