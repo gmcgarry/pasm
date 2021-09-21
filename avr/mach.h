@@ -28,4 +28,4 @@
 
 void branch(int opc, expr_t exp);
 void jump(int opc, expr_t exp);
-void setdevice(const char* id);
+void setdevice(const char* name);
