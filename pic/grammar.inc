@@ -18,7 +18,8 @@ operation
 	: label
 	| label instr
 	| instr
-	| PSEUDOOP_CONFIG IDENT '=' IDENT	{ config($2,$4); }
+	| PSEUDOOP_DEVICE IDENT			{ setdevice($2->i_name); }
+	| PSEUDOOP_CONFIG IDENT '=' IDENT	{ config($2->i_name, $4->i_name); }
 	| PSEUDOOP_MAXRAM NUMBER8
 	| PSEUDOOP_BADRAM NUMBER8
 	| PSEUDOOP_BADRAM NUMBER8 '-' NUMBER8

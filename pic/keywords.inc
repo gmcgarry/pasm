@@ -14,10 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-{ 0,	PSEUDOOP_ORG,		0,	"ORG" },
-{ 0,	'=',			0,	"EQU" },
+{ 0,	PSEUDOOP_DEVICE,	0,	".device" },
 
 /* mpasm compatibility */
+{ 0,	PSEUDOOP_ORG,		0,	"ORG" },
+{ 0,	'=',			0,	"EQU" },
 { 0,	PSEUDOOP_CONFIG,	0,	"CONFIG" },
 { 0,	PSEUDOOP_MAXRAM,	0,	"__MAXRAM" },
 { 0,	PSEUDOOP_BADRAM,	0,	"__BADRAM" },

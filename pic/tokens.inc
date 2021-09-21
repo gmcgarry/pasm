@@ -26,5 +26,6 @@
 %token <y_word> PSEUDOOP_CONFIG
 %token <y_word> PSEUDOOP_MAXRAM
 %token <y_word> PSEUDOOP_BADRAM
+%token <y_word> PSEUDOOP_DEVICE
 
 %type <y_word> b f k8 k11

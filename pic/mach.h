@@ -14,4 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define DEVICE_UNDEF	0
+#define DEVICE_PIC16F84	1
+#define DEVICE_PIC16F84A	2
+
+void setdevice(const char *id);
 void config(const char *s, const char *v);
