@@ -31,7 +31,7 @@
 
 	/* literal operations */
 	{ 0,	LITOP,		0x3e00, "ADDLW" },	/* 11 111x kkkk kkkk */
-	{ 0,	LITOP,		0xe900, "ANDLW" },	/* 11 1001 kkkk kkkk */
+	{ 0,	LITOP,		0x3900, "ANDLW" },	/* 11 1001 kkkk kkkk */
 	{ 0,	LITOP,		0x3800, "IORLW" },	/* 11 1000 kkkk kkkk */
 	{ 0,	LITOP,		0x3000, "MOVLW" },	/* 11 00xx kkkk kkkk */
 	{ 0,	LITOP,		0x3600, "RETLW" },	/* 11 01xx kkkk kkkk */

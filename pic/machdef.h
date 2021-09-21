@@ -9,7 +9,6 @@
 #endif
 
 #define IGNORECASE
-#define BYTES_REVERSED
 
 /* ========== Machine independent type declarations ========== */
 
