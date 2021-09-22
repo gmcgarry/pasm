@@ -98,8 +98,8 @@ banksel(int regno)
 }
 
 static const struct { int id; const char* name; } devices[] = {
-	{ DEVICE_PIC16F84, "pic16f84" },
-	{ DEVICE_PIC16F84A, "pic16f84a" },
+	{ DEVICE_PIC16F84, "p16f84" },
+	{ DEVICE_PIC16F84A, "p16f84a" },
 };
 
 #ifndef __TABLE_SIZE
@@ -143,7 +143,10 @@ machstart(int pass)
 void
 machfinish(int pass)
 {
+#if 0
+	/* XXXGJM: called too late afte rthe sections have been cleared */
 	/* write config */
 	DOTVAL = config_addr;
 	emit2(config);
+#endif
 }

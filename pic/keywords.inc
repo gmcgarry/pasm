@@ -18,6 +18,7 @@
 
 /* mpasm compatibility */
 { 0,	PSEUDOOP_ORG,		0,	"ORG" },
+{ 0,	PSEUDOOP_END,		0,	"END" },
 { 0,	PSEUDOOP_DATA,		1,	"DS" },
 { 0,	'=',			0,	"EQU" },
 { 0,	PSEUDOOP_DEVICE,	0,	"PROCESSOR" },
