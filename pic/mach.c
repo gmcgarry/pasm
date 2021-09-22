@@ -29,26 +29,60 @@ extern int hash(const char *);
 static item_t cseg = { 0, 0, S_UND, ".cseg" };
 
 
-void
-mflag(const char *flag)
-{
-	if (strncasecmp(flag, "cpu=", 4) == 0)
-		setdevice(&flag[4]);
-}
+static int config_addr = 0x2007;
+static int config = 0x3fff;
+
+#define CFG_FOSC_LP		0x0000		/* low-power crystal */
+#define CFG_FOSC_XT		0x0001		/* crystal/resonator */
+#define CFG_FOSC_HS		0x0002		/* high-speed crystal/resonator */
+#define CFG_FOSC_RC		0x0003		/* resistor/capacitor */
+#define CFG_WDTE		0x0004
+#define CFG_PWRTE		0x0008
+#define CFG_CP			0x3ff0
+#define CFG_MCLRE		3
+#define CFG_CPD			5
+#define CFG_BOREN		6
+#define CFG_IESO		7
+#define CFG_FCMEN		8
 
 void
-machstart(int pass)
+setconfig(const char *s, const char *v)
 {
-	if (pass == PASS_1) {
-		item_insert(&cseg, hash(cseg.i_name));
-		unresolved++;
+#define ISTRUE(v) (strcasecmp(v, "ON") == 0 || strcasecmp(v, "TRUE") == 0 || strcasecmp(v, "ENABLED") == 0)
+
+	DPRINTF(("%s = %s\n", s, v));
+	if (strcasecmp(s, "FOSC") == 0) {		/* Oscillator Selection bits */
+		if (strcasecmp(v, "LP") == 0)
+			config |= CFG_FOSC_LP;
+		else if (strcasecmp(v, "XT") == 0)
+			config |= CFG_FOSC_XT;
+		else if (strcasecmp(v, "HS") == 0)
+			config |= CFG_FOSC_HS;
+		else if (strcasecmp(v, "RC") == 0)
+			config |= CFG_FOSC_RC;
+		else
+			fatal("unrecognised FOSC value \"%s\"", v);
+	} else if (strcasecmp(s, "WDTE") == 0) {	/* Watchdog Timer Enable bit */
+		config |= ISTRUE(v) ? 0 : CFG_WDTE;
+	} else if (strcasecmp(s, "PWRTE") == 0) {	/* Power-up Timer Enable bit */
+		config |= ISTRUE(v) ? 0 : CFG_PWRTE;
+	} else if (strcasecmp(s, "MCLRE") == 0) {	/* MCLR Pin Function Select bit* /
+		config |= ISTRUE(v) ? 0 : CFG_MCLRE;
+	} else if (strcasecmp(s, "CP") == 0) {		/* Program Memory Code Protection bit */
+		config |= ISTRUE(v) ? 0 : CFG_CP;
+	} else if (strcasecmp(s, "CPD") == 0) {		/* Data Memory Code Protection bit */
+		config |= ISTRUE(v) ? 0 : CFG_CPD;
+	} else if (strcasecmp(s, "BOREN") == 0) {	/* Brown-out Reset Selection bits */
+		config |= ISTRUE(v) ? 0 : CFG_BOREN;
+	} else if (strcasecmp(s, "IESO") == 0) {	/* Internal External Switchover bit */
+		config |= ISTRUE(v) ? 0 : CFG_IESO;
+	} else if (strcasecmp(s, "FCMEN") == 0) {	/* Fail-Safe Clock Monitor Enabled bit */
+		config |= ISTRUE(v) ? 0 : CFG_FCMEN;
+	} else {
+		fatal("unrecognise config option \"%s\"", s);
 	}
-	newsect(&cseg, 0, NULL);
-}
 
-void
-machfinish(int pass)
-{
+#undef ISTRUE
 }
 
 void
@@ -89,58 +123,27 @@ setdevice(const char *name)
 		fatal("unrecognised device \"%s\"", name);
 }
 
-
-static int config = 0;
-
-#define CFG_FOSC_INTRCIO	0
-#define CFG_WDTE		1
-#define CFG_PWRTE		2
-#define CFG_MCLRE		3
-#define CFG_CP			4
-#define CFG_CPD			5
-#define CFG_BOREN		6
-#define CFG_IESO		7
-#define CFG_FCMEN		8
+void
+mflag(const char *flag)
+{
+	if (strncasecmp(flag, "cpu=", 4) == 0)
+		setdevice(&flag[4]);
+}
 
 void
-setconfig(const char *s, const char *v)
+machstart(int pass)
 {
-#define ISTRUE(v) (strcasecmp(v, "ON") == 0 || strcasecmp(v, "TRUE") == 0)
-
-	DPRINTF(("%s = %s\n", s, v));
-	if (strcasecmp(s, "FOSC") == 0) {
-		/* Oscillator Selection bits (INTOSCIO oscillator: I/O function on RA4/OSC2/CLKOUT pin, I/O function on RA5/OSC1/CLKIN) */
-		if (strcasecmp(v, "INTRCIO") == 0)
-			config |= CFG_FOSC_INTRCIO;
-		else
-			fatal("unrecognised FOSC value \"%s\"", v);
-	} else if (strcasecmp(s, "WDTE") == 0) {
-		/* Watchdog Timer Enable bit */
-		config |= ISTRUE(v) ? CFG_WDTE : 0;
-	} else if (strcasecmp(s, "PWRTE") == 0) {
-		/* Power-up Timer Enable bit */
-		config |= ISTRUE(v) ? CFG_PWRTE : 0;
-	} else if (strcasecmp(s, "MCLRE") == 0) {
-		/* MCLR Pin Function Select bit*/
-		config |= ISTRUE(v) ? CFG_MCLRE : 0;
-	} else if (strcasecmp(s, "CP") == 0) {
-		/* Program Memory Code Protection bit */
-		config |= ISTRUE(v) ? CFG_CP : 0;
-	} else if (strcasecmp(s, "CPD") == 0) {
-		/* Data Memory Code Protection bit */
-		config |= ISTRUE(v) ? CFG_CPD : 0;
-	} else if (strcasecmp(s, "BOREN") == 0) {
-		/* Brown-out Reset Selection bits (BOR enabled) */
-		config |= ISTRUE(v) ? CFG_BOREN : 0;
-	} else if (strcasecmp(s, "IESO") == 0) {
-		/* Internal External Switchover bit */
-		config |= ISTRUE(v) ? CFG_IESO : 0;
-	} else if (strcasecmp(s, "FCMEN") == 0) {
-		/* Fail-Safe Clock Monitor Enabled bit */
-		config |= ISTRUE(v) ? CFG_FCMEN : 0;
-	} else {
-		fatal("unrecognise config option \"%s\"", s);
+	if (pass == PASS_1) {
+		item_insert(&cseg, hash(cseg.i_name));
+		unresolved++;
 	}
+	newsect(&cseg, 0, NULL);
+}
 
-#undef ISTRUE
+void
+machfinish(int pass)
+{
+	/* write config */
+	DOTVAL = config_addr;
+	emit2(config);
 }
