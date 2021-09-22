@@ -29,4 +29,4 @@
 %token <y_word> PSEUDOOP_BANKSEL
 %token <y_word> PSEUDOOP_DEVICE
 
-%type <y_word> b f k8 k11
+%type <y_word> b d f k8 k11

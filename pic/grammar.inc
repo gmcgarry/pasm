@@ -30,12 +30,16 @@ label	: IDENT			{ newident($1, DOTSCT); newlabel($1); }
 	;
 
 instr	: NOOP			{ emit2($1); }
-	| BYTEOP f ',' D	{ emit2($1 | $4 | $2); }
+	| BYTEOP f ',' d	{ emit2($1 | $4 | $2); }
 	| BYTEOP f		{ emit2($1 | 0x80 | $2); }
 	| ONEOP f 		{ emit2($1 | $2); }
 	| BITOP f ',' b		{ emit2($1 | $4 | $2); }
 	| LITOP k8		{ emit2($1 | $2); }
 	| JMPOP k11		{ emit2($1 | $2); }
+	;
+
+d	: expr			{ $$ = $1.val ? 0x80 : 0; }
+	| D			{ $$ = $1; }
 	;
 
 b	: expr			{ $$ = ($1.val & 0x07) << 7; }
