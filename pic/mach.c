@@ -19,6 +19,8 @@
 #include <strings.h> /* strncasecmp() */
 
 #include "as.h"
+#include "error.h"
+
 #include "mach.h"
 
 extern sect_t sect[];
@@ -53,10 +55,10 @@ void
 banksel(int regno)
 {
 	if (regno & ~0x7F) {
-		// bsf STATUS, 5: 01 01bb bfff ffff
+		/* bsf STATUS, 5: 01 01bb bfff ffff */
 		emit2(0x1683);
 	} else {
-		// bcf STATUS, 5: 01 00bb bfff ffff
+		/* bcf STATUS, 5: 01 00bb bfff ffff */
 		emit2(0x1283);
 	}
 }
@@ -105,7 +107,7 @@ setconfig(const char *s, const char *v)
 {
 #define ISTRUE(v) (strcasecmp(v, "ON") == 0 || strcasecmp(v, "TRUE") == 0)
 
-	printf("%s = %s\n", s, v);
+	DPRINTF(("%s = %s\n", s, v));
 	if (strcasecmp(s, "FOSC") == 0) {
 		/* Oscillator Selection bits (INTOSCIO oscillator: I/O function on RA4/OSC2/CLKOUT pin, I/O function on RA5/OSC1/CLKIN) */
 		if (strcasecmp(v, "INTRCIO") == 0)

@@ -18,9 +18,12 @@
 
 /* mpasm compatibility */
 { 0,	PSEUDOOP_ORG,		0,	"ORG" },
+{ 0,	PSEUDOOP_DATA,		1,	"DS" },
 { 0,	'=',			0,	"EQU" },
+{ 0,	PSEUDOOP_DEVICE,	0,	"PROCESSOR" },
 { 0,	PSEUDOOP_BANKSEL,	0,	"BANKSEL" },
 { 0,	PSEUDOOP_CONFIG,	0,	"CONFIG" },
+{ 0,	PSEUDOOP_GLOBAL,	0,	"GLOBAL" },
 { 0,	PSEUDOOP_MAXRAM,	0,	"__MAXRAM" },
 { 0,	PSEUDOOP_BADRAM,	0,	"__BADRAM" },
 { 0,    PSEUDOOP_LIST,	  	0,      "NOLIST" },
@@ -49,9 +52,6 @@
 
 { 0,	ONEOP,			0x0180, "CLRF" },	/* 00 0001 1fff ffff */
 { 0,	ONEOP,			0x0080, "MOVWF" },	/* 00 0000 1fff ffff */
-
-
-
 
 /* bit-oriented */
 { 0,	BITOP,			0x1000, "BCF" },	/* 01 00bb bfff ffff */

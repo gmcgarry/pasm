@@ -23,7 +23,7 @@ operation
 	| PSEUDOOP_MAXRAM NUMBER8
 	| PSEUDOOP_BADRAM NUMBER8
 	| PSEUDOOP_BADRAM NUMBER8 '-' NUMBER8
-	| PSEUDOOP_BANKSEL absexp		{ banksel($2); }
+	| PSEUDOOP_BANKSEL expr		{ banksel($2.val); }
 	;
 
 label	: IDENT			{ newident($1, DOTSCT); newlabel($1); }
