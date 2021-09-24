@@ -59,7 +59,7 @@ new_string(const char *s)
 		nstrtab += len;
 	}
 
-	printf("wrote \"%s\" at index %ld\n", s, r);
+	DPRINTF(("wrote \"%s\" at index %ld\n", s, r));
 
 	return r;
 }
@@ -67,7 +67,7 @@ new_string(const char *s)
 void
 newsymb(const char *name, int type, ADDR_T valu)
 {
-	printf("new symbol: name=%s, type=%04x, value=%04lx\n", name, type, valu);
+	DPRINTF(("new symbol: name=%s, type=%04x, value=%04lx\n", name, type, valu));
 
 	if (name && *name == 0)
 		name = 0;
@@ -105,7 +105,7 @@ newsymb(const char *name, int type, ADDR_T valu)
 		.st_other = 0,					/* visibility */
 		.st_shndx = shndx,				/* index of related section */
 	};
-	printf("writing symbol %s=%d into %s\n", name, sym.st_name, sect[symtab_sectno].s_item->i_name);
+	DPRINTF(("writing symbol %s=%d into %s\n", name, sym.st_name, sect[symtab_sectno].s_item->i_name));
 	wr_write(symtab_sectno, &sym, sizeof(Elf_Sym));
 	sect[symtab_sectno].s_info++;
 	sect[symtab_sectno].s_size += sizeof(Elf_Sym);

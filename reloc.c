@@ -19,11 +19,11 @@ newrelo(int s, int typ)
 	int iscomm;
 
 	if (PASS_RELO == 0) {
-		printf("newrelo: wrong pass, ignoring relocation\n");
+		DPRINTF(("newrelo: wrong pass, ignoring relocation\n"));
 		return;
 	}
 
-	printf("--- newrelo(s=0x%x,n=%d) ---\n", s, typ);
+	DPRINTF(("--- newrelo(s=0x%x,n=%d) ---\n", s, typ));
 
 	s &= ~S_DOT;
 	assert((s & ~(S_TYPEMASK|S_VAR|S_SCTMASK)) == 0);
@@ -38,21 +38,21 @@ newrelo(int s, int typ)
 	iscomm = ((s & S_TYPEMASK) == S_COMMON);
 	s &= ~S_TYPEMASK;
 	if ((typ & RELPC) == 0 && ((s & ~S_VAR) == S_ABS)) {
-		printf("newrelo: skipping constant relocation\n");
+		DPRINTF(("newrelo: skipping constant relocation\n"));
 		return;
 	}
 	if ((typ & RELPC) != 0 && s == DOTSCT && !iscomm) {
-		printf("newrelo: skipping this too\n");
+		DPRINTF(("newrelo: skipping this too\n"));
 		return;
 	}
 	if (pass != PASS_3) {
-		printf("newrelo: not the last pass, reserving space and returning\n");
+		DPRINTF(("newrelo: not the last pass, reserving space and returning\n"));
 		nrelo++;
 		return;
 	}
 
 	s &= ~S_VAR;
-	printf("newrelo: s=%x\n", s);
+	DPRINTF(("newrelo: s=%x\n", s));
 	if (s == S_UND || iscomm) {
 		assert(relonami != RELO_UNDEF);
 #if 0
@@ -67,7 +67,7 @@ newrelo(int s, int typ)
 #if 0
 		or_nami = nsymb;
 #endif
-		printf("using first non-existing entry\n");
+		DPRINTF(("using first non-existing entry\n"));
 	} else {
 		/*
 		 * section symbols are at the end
@@ -77,7 +77,7 @@ newrelo(int s, int typ)
 		or_nami = nsymb - nsect + s;
 		or_nami = 8;
 #endif
-		printf("using section entry\n");
+		DPRINTF(("using section entry\n"));
 	}
 
 #if 0
@@ -97,7 +97,7 @@ newrelo(int s, int typ)
 	sect[DOTSCT+1].s_size += sizeof(Elf_Rel);
 #endif
 
-	printf("--- newrelo() ---\n");
+	DPRINTF(("--- newrelo() ---\n"));
 
 #endif
 }
