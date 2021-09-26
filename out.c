@@ -7,6 +7,9 @@
 
 #include "emitter.h"
 
+#ifdef mach_pic
+#define OUTPUT_FORMAT "hex"
+#endif
 
 extern char *aoutpath;
 extern sect_t sect[];
@@ -18,7 +21,10 @@ outstart()
 #ifdef ELF
 	elfstart();
 #else
-	int rc = emitopen(aoutpath, "bin", NULL);
+#ifndef OUTPUT_FORMAT
+#define OUTPUT_FORMAT "bin"
+#endif
+	int rc = emitopen(aoutpath, OUTPUT_FORMAT, NULL);
 	if (rc)
 		fatal("cannot open output file");
 #endif

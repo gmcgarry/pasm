@@ -415,9 +415,10 @@ typedef Elf32_Sym Elf_Sym;
 #include "mach.h"
 
 
-#ifdef YYDEBUG
+#if YYDEBUG
 extern int yydebug;
 #define DPRINTF(x)	if (yydebug) printf x
 #else
 #define DPRINTF(x)	/* nothing */
+#error
 #endif

@@ -1,12 +1,16 @@
-COPTIONS = -Wall -Wunused -DDEBUG=1 -DYYDEBUG=1 --std=c89 -g
+CC = pcc
+
+COPTIONS = -Wall -Wunused -DYYDEBUG=1 -g
 LDOPTIONS =
+
+#COPTIONS += --std=c89
 
 MACH ?= i386
 
 LIBOBJ	=
 
 INCL	= -I. -I./$(MACH)
-CFLAGS	= $(INCL) $(COPTIONS) -DMACH=$(MACH)
+CFLAGS	= $(INCL) $(COPTIONS) -Dmach_$(MACH)
 YFLAGS	= -d
 LDFLAGS	= $(LDOPTIONS)
 

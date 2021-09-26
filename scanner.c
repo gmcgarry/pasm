@@ -411,10 +411,8 @@ inident(int c)
 	*p = '\0';
 	peekc = c;
 	ip = item_search(name);
-#if 0
 	DPRINTF(("looking up identifier \"%s\"\n", name));
 	DPRINTF(("%s ip=%p\n", name, ip));
-#endif
 	if (ip == 0) {
 		ip = item_alloc(S_UND);
 		ip->i_name = remember(name);
