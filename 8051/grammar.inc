@@ -25,8 +25,9 @@
  */
 
 #define fitx(x, d)      ((((x) + (1<<(d-1))) & ~((int)(1<<(d))-1)) == 0)
+#define fitu(x, d)	(((x) & ~((int)(1<<(d))-1)) == 0)
 
-#define isbit8(v)	fitx(v, 8)
+#define isbit8(v)	fitu(v, 8)
 #define isbit11(v)	fitx(v, 11)
 #define isbit16(v)	fitx(v, 16)
 #define isbmram(a)	(((a)&0xf0) == 0x20)
