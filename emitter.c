@@ -246,6 +246,8 @@ static void close_hex(void)
 
 static void addr_hex(unsigned long a)
 {
+	if (a == addr+pos)
+		return;
 	if (pos > 0) hexdump();
 	addr = a;
 }

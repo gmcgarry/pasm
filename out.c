@@ -68,6 +68,7 @@ emit1(int arg)
 			sect[DOTSCT].s_zero = 0;
 			break;
 		case PASS_3:
+			emitaddr(DOTVAL);
 			while (sect[DOTSCT].s_zero) {
 				emitbyte(0);
 				sect[DOTSCT].s_zero--;
