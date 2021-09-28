@@ -81,7 +81,7 @@ operation	: NOP			{ emit1($1); }
 		| JB two_op4		{ emitop($1); }
 		| JNB two_op4		{ emitop($1); }
 		| JBC two_op4		{ emitop($1); }
-		| DJNZ two_op5		{ emitop($1); }
+		| DJNZ two_op5		{ djnzop(0); }
 		| MOV two_op1		{ movop(0); }
 		| MOV two_op2		{ movop(4); }
 		| MOV two_op6		{ movop(6); }
