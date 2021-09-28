@@ -178,7 +178,7 @@ cplop(int add)
 void
 setbop(int add)
 {
-	static unsigned char opcodes[] = { 0x00, 0xd3, 0xd2 };
+	static unsigned char opcodes[] = { 0xd3, 0xd2 };
 	unsigned int newop = opcodes[ get_md(mode) + add ];
 	emitop(newop);
 }

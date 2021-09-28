@@ -23,6 +23,7 @@
 #define ALIGNWORD	1
 #define ALIGNSECT	1
 
+#define BYTES_REVERSED
 #define IGNORECASE
 
 /* ========== Machine independent type declarations ========== */

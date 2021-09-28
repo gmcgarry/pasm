@@ -161,7 +161,7 @@ single_op1	: A				{ set_md(mode,0); set_ov(mode,0); set_sz(mode,0); }
 
 single_op2	: A				{ set_md(mode,0); set_ov(mode,0); set_sz(mode,0); }
 		| C				{ set_md(mode,1); set_ov(mode,0); set_sz(mode,0); }
-		| bit				{ set_md(mode,2); set_ov(mode,0); set_sz(mode,2); set_b1(mode,$1); }
+		| bit				{ set_md(mode,2); set_ov(mode,0); set_sz(mode,1); set_b1(mode,$1); }
 		;
 
 three_op1	: A ',' data8 ',' rel		{ set_md(mode,0); set_ov(mode,0); set_sz(mode,2); set_b1(mode,$3); set_b2(mode,$5); }
