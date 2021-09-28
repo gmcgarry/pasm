@@ -224,8 +224,9 @@ data8		: expr		{ if (pass == PASS_2) { if (!isbit8($1.val)) warning("Expression 
 data16		: expr		{ if (pass == PASS_2) { if (!isbit16($1.val)) warning("Expression greater than 16-bits"); } $$ = $1.val; }
 		;
 
-const8		: '#' expr	{ $$ = $2.val; }
-		| expr		{ if (pass == PASS_2 && $1.typ != S_ABS) serror("non-const expressions"); $$ = $1.val; }
+const8		: '#' expr			{ $$ = $2.val; }
+		| expr				{ if (pass == PASS_2 && $1.typ != S_ABS) serror("non-const expressions"); $$ = $1.val; }
+		| '#' SHIFTFUNC expr 		{ $$ = ($3.val >> $2) & 0xff; }
 		;
 
 const16		: '#' expr	{ $$ = $2.val; }

@@ -51,6 +51,8 @@
 { 0,	PSEUDOOP_AREA,		0,		".area" },
 { 0,	PSEUDOOP_FILE,		0,		".module" },
 
+{ 0,	SHIFTFUNC,		0,		"low" },
+{ 0,	SHIFTFUNC,		8,		"high" },
 
 { 0,	BITPOS,			0,		".0"	},
 { 0,	BITPOS,			1,		".1"	},

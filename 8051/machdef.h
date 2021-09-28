@@ -16,7 +16,9 @@
 
 #define	THREE_PASS	/* branch and offset optimization */
 #define	LISTING		/* enable listing facilities */
+#if 0
 #define ASLD		1
+#endif
 
 #define ADDR_T		int
 

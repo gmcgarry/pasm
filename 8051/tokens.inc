@@ -79,6 +79,7 @@
 %token <y_word> PC
 %token <y_word> DPTR
 %token <y_word> BITPOS
+%token <y_word> SHIFTFUNC
 
 %token <y_word> AREG
 %token <y_word> SFR
