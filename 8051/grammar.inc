@@ -50,7 +50,7 @@ operation	: NOP			{ emit1($1); }
 		| ORL two_op3		{ orlop(6); }
 		| XCH two_op1		{ if (get_md(mode) == 3) warning("Immediate mode is illegal"); xchop(0); }
 		| INC single_op1	{ incop(0); }
-		| INC DPTR		{ incop(4); }
+		| INC DPTR		{ emit1(0xa3); }
 		| DEC single_op1	{ decop(0); }
 		| DA A			{ emit1($1); }
 		| DIV AB		{ emit1($1); }
