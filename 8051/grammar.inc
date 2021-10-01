@@ -39,7 +39,7 @@ operation	: NOP			{ emit1($1); }
 		| AJMP addr11		{ emitop($1); }
 		| ADD two_op1		{ addop(0); }
 		| ADDC two_op1		{ addcop(0); }
-		| SUBB two_op1		{ xrlop(0); }
+		| SUBB two_op1		{ subbop(0); }
 		| XRL two_op1		{ xrlop(0); }
 		| XRL two_op2		{ xrlop(4); }
 		| ANL two_op1		{ anlop(0); }
