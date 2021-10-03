@@ -1,4 +1,4 @@
-CC = pcc
+CC = gcc
 
 COPTIONS = -Wall -Wunused -DYYDEBUG=1 -g
 LDOPTIONS =
@@ -10,7 +10,7 @@ MACH ?= i386
 LIBOBJ	=
 
 INCL	= -I. -I./$(MACH)
-CFLAGS	= $(INCL) $(COPTIONS) -Dmach_$(MACH)
+CFLAGS	= $(INCL) $(COPTIONS) -Dmach_$(MACH) -DMACH=$(MACH)
 YFLAGS	= -d
 LDFLAGS	= $(LDOPTIONS)
 
