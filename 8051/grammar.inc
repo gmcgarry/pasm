@@ -93,13 +93,22 @@ operation	: NOP			{ emit1($1); }
 		| MOVX A ',' '@' DPTR		{ movxop(2); }
 		| MOVX '@' regi ',' A		{ movxop($3+3); }
 		| MOVX '@' DPTR ',' A		{ movxop(5); }
-		| IDENT BIT bit			{ newequate($1, S_ABS); store($1, $3); }
-		| PSEUDOOP_AREA IDENT '(' flags ')'	{ newsect($2, 0, NULL); }
+		| IDENT '=' bit			{ newequate($1, S_ABS); store($1, $3); }
+#ifdef COMPAT_SDCC
+		| PSEUDOOP_MODULE IDENT 	{ if ((sflag & SYM_LIN) && PASS_SYMB) newsymb($2->i_name, (S_ABS | S_FILE), DOTVAL); }
+		| PSEUDOOP_AREA IDENT optflags	{ newsect($2, 0, NULL); }
+#endif
+		;
+
+#ifdef COMPAT_SDCC
+optflags	: /* empty */
+		| '(' flags ')'			{ }
 		;
 
 flags		: IDENT			{ }
 		| flags ',' IDENT	{ }
 		;
+#endif
 
 two_op1		: A ',' reg		{ set_md(mode,0); set_ov(mode, $3); set_sz(mode, 0); }
 		| A ',' data8		{ set_md(mode,1); set_ov(mode,0); set_sz(mode,1); set_b1(mode,$3); }
@@ -205,11 +214,26 @@ bit		: bitv BITPOS
 	else
 		warning("Invalid bit addressable RAM location");
 }
-		| bitv		{ if( pass == PASS_2 ) { if (!isbit8($1) ) warning("Bit address exceeds 8-bits"); } $$ = $1; }
+#ifdef COMPAT_SDCC
+		| bitv '[' NUMBER8 ']'		/* for compatibility with SDCC */
+{
+	if (pass == PASS_2) {
+		if (!isbit8($1))
+			warning("Bit address exceeds 8-bits");
+	}
+	if (isbmram($1))
+		$$ = ($1 - 0x20)*8 + $3;
+	else if (isbmsfr($1))
+		$$ = $1 + $3;
+	else
+		warning("Invalid bit addressable RAM location");
+}
+#endif
+		| bitv			{ if( pass == PASS_2 ) { if (!isbit8($1) ) warning("Bit address exceeds 8-bits"); } $$ = $1; }
 		;
 
 bitv		: SFR		{ $$ = $1; }
-		| absexp	{ $$ = $1; }
+		| expr		{ $$ = $1.val; }
 		;
 
 reg		: AREG		{ $$ = $1; }

@@ -38,18 +38,23 @@
 #define P0(a)		(0x80+(a))
 
 /* intel syntax compatibility */
+#ifdef COMPAT_INTEL
 { 0,	PSEUDOOP_ORG,		0,		"org"	},
 { 0,	PSEUDOOP_END,		0,		"end"	},
 { 0,	'=',			0,		"equ"	},
-{ 0,	BIT,			0,		"bit"	},
+{ 0,	'=',			0,		"bit"	},
 { 0,	PSEUDOOP_DATA,		1,		"db"	},
 { 0,	DOT,			0,		"$"	},
+#endif
 
+/* sdcc synax compatibility */
+#ifdef COMPAT_SDCC
 { 0,	PSEUDOOP_DATA,		1,		".db"	},
 { 0,	PSEUDOOP_DATA,		2,		".dw"	},
 { 0,	PSEUDOOP_DATA,		2,		".ds"	},
 { 0,	PSEUDOOP_AREA,		0,		".area" },
-{ 0,	PSEUDOOP_FILE,		0,		".module" },
+{ 0,	PSEUDOOP_MODULE,	0,		".module" },
+#endif
 
 { 0,	SHIFTFUNC,		0,		"low" },
 { 0,	SHIFTFUNC,		8,		"high" },
