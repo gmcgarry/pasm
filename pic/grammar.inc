@@ -24,6 +24,9 @@ operation
 	| PSEUDOOP_BADRAM NUMBER8
 	| PSEUDOOP_BADRAM NUMBER8 '-' NUMBER8
 	| PSEUDOOP_BANKSEL expr		{ banksel($2.val); }
+	| PSEUDOOP_PAGESEL expr		{ }
+	| PSEUDOOP_PSECT IDENT optflags		{ newsect($2, 0, NULL); }
+	| PSEUDOOP_END IDENT		{ }
 	;
 
 label	: IDENT			{ newident($1, DOTSCT); newlabel($1); }
@@ -46,6 +49,7 @@ b	: expr			{ $$ = ($1.val & 0x07) << 7; }
 	;
 
 f	: expr			{ $$ = $1.val & 0x7f; }
+	| PSEUDOOP_BANKMASK '(' f ')'	{ $$ = $3; }
 	;
 
 k8	: expr			{ $$ = $1.val & 0xff; }
@@ -55,4 +59,17 @@ k11	: expr 			{ $$ = ($1.val >> 1) & 0x7ff; }
 	;
 
 expr	: '$' absexp		{ $$.typ = S_ABS; $$.val = $2; }
+	;
+
+optflags: /* empty */		{ }
+	| ',' flags		{ }
+	;
+
+flags	: flag optflags		{ }
+	;
+
+flag	: IDENT			{ $1->i_type = S_ABS; }
+	| IDENT '=' expr	{ $1->i_type = S_ABS; $3.typ = S_ABS; }
+	| PSEUDOOP_GLOBAL	{ }
+	| PSEUDOOP_LOCAL	{ }
 	;

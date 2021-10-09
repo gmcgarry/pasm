@@ -24,9 +24,10 @@
 %token <y_word> JMPOP
 %token <y_word> D
 %token <y_word> PSEUDOOP_CONFIG
-%token <y_word> PSEUDOOP_MAXRAM
-%token <y_word> PSEUDOOP_BADRAM
-%token <y_word> PSEUDOOP_BANKSEL
+%token <y_word> PSEUDOOP_MAXRAM PSEUDOOP_BADRAM
+%token <y_word> PSEUDOOP_BANKSEL PSEUDOOP_BANKMASK
+%token <y_word> PSEUDOOP_PAGESEL
 %token <y_word> PSEUDOOP_DEVICE
+%token <y_word> PSEUDOOP_PSECT
 
 %type <y_word> b d f k8 k11

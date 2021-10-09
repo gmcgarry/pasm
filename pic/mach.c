@@ -66,7 +66,7 @@ setconfig(const char *s, const char *v)
 		config |= ISTRUE(v) ? 0 : CFG_WDTE;
 	} else if (strcasecmp(s, "PWRTE") == 0) {	/* Power-up Timer Enable bit */
 		config |= ISTRUE(v) ? 0 : CFG_PWRTE;
-	} else if (strcasecmp(s, "MCLRE") == 0) {	/* MCLR Pin Function Select bit* /
+	} else if (strcasecmp(s, "MCLRE") == 0) {	/* MCLR Pin Function Select bit */
 		config |= ISTRUE(v) ? 0 : CFG_MCLRE;
 	} else if (strcasecmp(s, "CP") == 0) {		/* Program Memory Code Protection bit */
 		config |= ISTRUE(v) ? 0 : CFG_CP;
@@ -79,7 +79,7 @@ setconfig(const char *s, const char *v)
 	} else if (strcasecmp(s, "FCMEN") == 0) {	/* Fail-Safe Clock Monitor Enabled bit */
 		config |= ISTRUE(v) ? 0 : CFG_FCMEN;
 	} else {
-		fatal("unrecognise config option \"%s\"", s);
+		fatal("unrecognised config option \"%s\"", s);
 	}
 
 #undef ISTRUE
