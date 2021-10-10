@@ -33,12 +33,31 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-void yyerror(const char *);
-void nosect(void);
-void nofit(void);
+#define	THREE_PASS	/* branch and offset optimization */
+#define	LISTING		/* enable listing facilities */
 
-#define fit(x)	if (!(x)) nofit()
+#define ADDR_T		int
 
-void serror(const char *, ...);
-void warning(const char *, ...);
-void fatal(const char *, ...);
+#define ALIGNWORD	1
+#define ALIGNSECT	1
+
+#define IGNORECASE
+#define BYTES_REVERSED
+#define WORDS_REVERSED
+
+/* ========== Machine independent type declarations ========== */
+
+#define	PASS_1		0
+#define	PASS_2		1
+#define	PASS_3		2
+
+#define	PASS_SYMB	(pass != PASS_1)
+#define	PASS_RELO	(pass != PASS_1)
+
+/* Some character constants for scanner */
+#define ASC_COMMENT     ';'
+#define	CTRL(x) 	((x) & 037)
+#define ISALPHA(c)	(isalpha(c) || (c) == '_' || (c) == '.' || (c) == '@' || (c) == '%')
+#define ISALNUM(c)	(isalnum(c) || (c) == '_' || (c) == '.' || (c) == '-')
+
+#define DEFAULT_SECTION	(1)

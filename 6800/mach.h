@@ -33,12 +33,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-void yyerror(const char *);
-void nosect(void);
-void nofit(void);
+extern int opt_cmos;
 
-#define fit(x)	if (!(x)) nofit()
+#define fitj(z)	((unsigned)z + 0x80 <= 0xFF)
 
-void serror(const char *, ...);
-void warning(const char *, ...);
-void fatal(const char *, ...);
+void branch(register int opc,expr_t exp,expr_t cell);
