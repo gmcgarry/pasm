@@ -1,0 +1,12 @@
+STM8
+
+- 8-bit data, 16-bit addresses
+- 6 registers:
+	- A: 8-bit accumulator
+	- X: 16-bit index register
+	- Y: 16-bit index register
+	- SP: 16-bit stack pointer
+	- PC: 24-bit program counter 
+	- CCR: 8-bit code condition register (V x I1 H I0 N Z C)
+		- V=overflow, I1=interrupt mask level 1, H=half carry
+		- I0=interrupt mask level 0, N=negative, Z=zero, C=carry
