@@ -32,7 +32,26 @@
 { 0,	PSEUDOOP_BADRAM,	0,	"__BADRAM" },
 { 0,    PSEUDOOP_LIST,	  	0,      "NOLIST" },
 { 0,    PSEUDOOP_LIST,	  	1,	"LIST" },
+{ 0,    IDENT,	  		1,	"CODE" },
 { 0,    DOT,	  		0,	"$" },
+
+/* register file */
+{ 0,	NUMBER8,		0x01,	"TMR0" },
+{ 0,	NUMBER8,		0x02,	"PCL" },
+{ 0,	NUMBER8,		0x03,	"STATUS" },
+{ 0,	NUMBER8,		0x04,	"FSR" },
+{ 0,	NUMBER8,		0x0a,	"PCLATH" },
+{ 0,	NUMBER8,		0x0b,	"INTCON" },
+
+{ 0,	NUMBER8,		0x05,	"PORTA" },
+{ 0,	NUMBER8,		0x06,	"PORTB" },
+{ 0,	NUMBER8,		0x08,	"EEDATA" },
+{ 0,	NUMBER8,		0x09,	"EEADR" },
+
+{ 0,	NUMBER8,		0x05,	"TRISA" },
+{ 0,	NUMBER8,		0x06,	"TRISB" },
+{ 0,	NUMBER8,		0x08,	"EECON1" },
+{ 0,	NUMBER8,		0x09,	"EECON2" },
 
 /* register direction */
 { 0,	D,			0x00,	"W" },
