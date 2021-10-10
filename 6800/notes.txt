@@ -3,8 +3,9 @@ Motorola 6800/6805
 Backend original from ACK sources.
 
 - 6800 original
-6802/6805 contain RAM, ROM and I/O on single chip; no B accumulator
-6802 has 128B RAM
+- 6802 has 128B RAM, added stack instructions
+- 6805 removed B accumulator
+6802/6805 contain RAM, ROM and I/O on single chip;
 6809 16-bit aritmetic, stack registers, PIC instructions
 
 MC6800:

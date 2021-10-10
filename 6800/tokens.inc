@@ -34,7 +34,6 @@
  */
 
 %token <y_word> X
-%token <y_word> A
 %token <y_word> NOARG
 %token <y_word> BRANCH
 %token <y_word> BBRANCH
