@@ -39,6 +39,7 @@
 { 0,	'=',		0,		"equ"	},
 { 0,	PSEUDOOP_STM8,	0,		".stm8"	},
 { 0,	DOT,		0,		"$"	},
+{ 0,	PSEUDOOP_SEGMENT, 0,		"segment"	},
 
 /* registers */
 { 0,	REG,		A,		"A"	}, /* DONE */
@@ -46,6 +47,7 @@
 { 0,	REG,		Y,		"Y"	}, /* DONE */
 { 0,	REG,		XL,		"XL"	}, /* DONE */
 { 0,	REG,		YL,		"YL"	}, /* DONE */
+{ 0,	REG,		SP,		"SP"	}, /* DONE */
 
 /* Bit test and branch */
 { 0,	BBRANCH,	0x9000,		"btjt"	}, /* DONE */

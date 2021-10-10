@@ -43,6 +43,7 @@
 %token <y_word> TWOREG
 %token <y_word> MOV LD LDW LDF
 %token PSEUDOOP_STM8
+%token PSEUDOOP_SEGMENT
 %type <y_expr> expr8
 %type <y_valu> bitexp
 %type <y_word> ireg

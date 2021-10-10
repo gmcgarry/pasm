@@ -38,6 +38,7 @@
 #define Y	2
 #define XL	3
 #define YL	4
+#define SP	5
 
 #define fitj(z)	((unsigned)z + 0x80 <= 0xFF)
 
