@@ -37,13 +37,13 @@
  * Mostek 6500 dependent C declarations.
  */
 
-#define lowb(z)         ((int)(z) & 0xFF)
-#define loww(z)         ((int)(z) & 0xFFFF)
+#define lowb(z)         	((int)(z) & 0xFF)
+#define loww(z)         	((int)(z) & 0xFFFF)
 
-#define fitb(x)		((((x) + 0x80) & ~((int)0xFF)) == 0)
+#define fitb(x)			((((x) + 0x80) & ~((int)0xFF)) == 0)
 
 #define fits_zeropage(x)	(lowb(x) == (int)(x))
 
-void branch(register int opc, expr_t exp);
-void code(expr_t exp, register int opc1, register int opc2);
+void branch(int opc, expr_t exp);
+void code(expr_t exp, int opc1, int opc2);
 void machscr(void);

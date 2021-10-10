@@ -89,7 +89,8 @@ void
 code(expr_t exp, int opc1, int opc2)
 {
 	if (small((exp.typ & S_SCTMASK) == S_ABS && fits_zeropage(exp.val), 1)) {
-		emit1(opc1); emit1(exp.val);
+		emit1(opc1);
+		emit1(exp.val);
 	} else {
 		emit1(opc2);
 		newrelo(exp.typ, RELO2);

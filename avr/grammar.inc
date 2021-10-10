@@ -16,7 +16,8 @@
 
 #define FIT(x,b)	(((x) & ~((1 << (b))-1)) == 0)
 
-operation: BASICOP				{ emit2($1); }
+operation
+	: BASICOP				{ emit2($1); }
 	| BRANCHOP expr				{ branch($1, $2); }
 	| BRANCHOP_SREG imm3 ',' expr		{ branch($1 | $2, $4); }
 	| ONEOP reg8				{ emit2($1 | ($2 << 4)); }
