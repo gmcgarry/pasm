@@ -45,6 +45,9 @@
 #define BYTES_REVERSED
 #define WORDS_REVERSED
 
+#define HEXPREFIX       '$'
+#define BINPREFIX       '%'
+
 /* ========== Machine independent type declarations ========== */
 
 #define	PASS_1		0

@@ -40,11 +40,12 @@ expr8
 	;
 
 bitexp
-	: absexp		{ fit((unsigned) $1 <= 7); $$ = $1 & 07; }
+	: '#' absexp		{ fit((unsigned) $2 <= 7); $$ = $2 & 07; }
 	;
 
 operation
-	: NOARG			{ emit1($1); }
+	: PSEUDOOP_STM8		{ setdevice("stm8"); }
+	| NOARG			{ emit1($1); }
 	| BRANCH expr		{ expr_t expr = {0,0}; branch($1,$2,expr); }
 	| BBRANCH expr8 ',' bitexp ',' expr {  branch($1+($4 << 1), $6, $2); }
 	| BIT expr8 ',' bitexp	{ emit2($1+($4 << 1)); newrelo($2.typ, RELO1); emit1($2.val); }

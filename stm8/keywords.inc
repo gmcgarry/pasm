@@ -35,6 +35,10 @@
 
 #define XXX 0xff
 
+/* for compatibility */
+{ 0,	'=',		0,		"equ"	},
+{ 0,	PSEUDOOP_STM8,	0,		".stm8"	},
+{ 0,	DOT,		0,		"$"	},
 
 /* registers */
 { 0,	REG,		A,		"A"	}, /* DONE */

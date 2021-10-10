@@ -101,3 +101,8 @@ void branch(int opc, expr_t exp, expr_t cell)
 		emit2(exp.val);
 	}
 }
+
+void
+setdevice(const char *name)
+{
+}
