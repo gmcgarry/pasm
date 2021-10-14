@@ -38,6 +38,8 @@
 
 extern sect_t sect[];
 
+static item_t cseg = { 0, 0, S_UND, ".text" };
+
 void
 mflag(const char* flag)
 {
@@ -46,6 +48,11 @@ mflag(const char* flag)
 void
 machstart(int pass)
 {
+	if (pass == PASS_1) {
+		item_insert(&cseg, hash(cseg.i_name));
+		unresolved++;
+	}
+	newsect(&cseg, 0, NULL);
 }
 
 void
@@ -53,7 +60,8 @@ machfinish(int pass)
 {
 }
 
-void branch(int opc, expr_t exp, expr_t cell)
+void
+branch(int opc, expr_t exp, expr_t cell)
 {
 	int sm, dist;
 	int saving;
