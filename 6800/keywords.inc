@@ -36,6 +36,8 @@
 /* compatibility */
 { 0,	'=',		0,		"equ"	},
 { 0,	PSEUDOOP_ORG,	0,		"org"	},
+{ 0,	PSEUDOOP_DATA,	1,		"db"	},
+{ 0,	PSEUDOOP_DATA,	2,		"dw"	},
 
 /* The X register */
 { 0,	X,		0,		"x"	},
