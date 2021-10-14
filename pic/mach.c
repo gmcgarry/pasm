@@ -58,7 +58,7 @@ setconfig(const char *s, const char *v)
 			config |= CFG_FOSC_XT;
 		else if (strcasecmp(v, "HS") == 0)
 			config |= CFG_FOSC_HS;
-		else if (strcasecmp(v, "RC") == 0)
+		else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "RC") == 0)
 			config |= CFG_FOSC_RC;
 		else
 			fatal("unrecognised FOSC value \"%s\"", v);
