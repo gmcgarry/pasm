@@ -327,8 +327,10 @@ static void byte_bin(unsigned char b)
 
 static int open_tdr(const char *file, const char *ftype, const char *arg)
 {
-	if (file == NULL) fout = stdout;
-	else fout = fopen(file,"w");
+	if (file == NULL)
+		fout = stdout;
+	else
+		fout = fopen(file,"w");
 
 	if (fout == NULL) {
 		fatal("Cannot open %s for writing.\n",file);
@@ -534,18 +536,15 @@ void srec_finishline(void)
 
 	switch(srec_format) {
 	case 2:
-		fprintf(fout, "S1%02X%04lX", srec_index + 4,
-			srec_address & 0xFFFF);
+		fprintf(fout, "S1%02X%04lX", srec_index + 4, srec_address & 0xFFFF);
 		break;
 	case 3:
-		fprintf(fout, "S2%02X%06lX", srec_index + 6,
-			srec_address & 0xFFFFFF);
+		fprintf(fout, "S2%02X%06lX", srec_index + 6, srec_address & 0xFFFFFF);
 		srec_check += ((srec_address>>16) & 0xff) + 2;
 		break;
 	case 4:
 		fprintf(fout, "S3%02X%08lX", srec_index + 8, srec_address);
-		srec_check += ((srec_address>>16) & 0xff) +
-			((srec_address>>24) & 0xff) + 4;
+		srec_check += ((srec_address>>16) & 0xff) + ((srec_address>>24) & 0xff) + 4;
 		break;
 	}
 
@@ -571,8 +570,7 @@ static int open_srec(const char *file, const char *ftype, const char *arg)
 	}
 
 	if (srec_format < 2 || srec_format > 4) {
-		fatal("Illegal S Record format %d %s (must be 2, 3, or 4)\n",
-			srec_format, ftype);
+		fatal("Illegal S Record format %d %s (must be 2, 3, or 4)\n", srec_format, ftype);
 		return -1;
 	}
 
@@ -584,8 +582,10 @@ static int open_srec(const char *file, const char *ftype, const char *arg)
 		return -1;
 	}
 
-	if (arg)	offset = atoi(arg);
-	else	offset = 0;
+	if (arg)
+		offset = atoi(arg);
+	else
+		offset = 0;
 
 	fprintf(fout, "S0030000%02X\n", (~3 & 0xff));
 	return 0;
@@ -612,7 +612,9 @@ static void close_srec(void)
 
 static void addr_srec(unsigned long a)
 {
-	if (srec_index>0)
+	if (a == srec_address+srec_index)
+		return;
+	if (srec_index > 0)
 		srec_finishline();
 	srec_address = a + offset;
 }

@@ -11,6 +11,10 @@
 #define OUTPUT_FORMAT "hex"
 #endif
 
+#if defined(mach_6800)
+#define OUTPUT_FORMAT "srec2"
+#endif
+
 extern char *aoutpath;
 extern sect_t sect[];
 
