@@ -59,6 +59,7 @@ operation: optlabel instr
 /* for compatibility with asl assembler */
 optlabel:	/* empty */
 	| IDENT			{ newident($1, DOTSCT); newlabel($1); }
+	;
 
 instr	:	/* empty */
 	| NOPOP			{ emit1($1); }

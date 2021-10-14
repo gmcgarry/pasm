@@ -71,7 +71,7 @@ branch(int opc, expr_t exp)
 	int dist;
 
 	dist = exp.val - (DOTVAL + 2);
-	if (pass == PASS_2 && dist > 0 && !(exp.typ & S_DOT))
+	if (PASS_RELO && dist > 0 && !(exp.typ & S_DOT))
 		dist -= sect[DOTSCT].s_gain;
 	if (small(fitb(dist) && (exp.typ & ~S_DOT) == DOTSCT, 3)) {
 		emit1(opc);
