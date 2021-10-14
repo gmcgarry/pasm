@@ -44,79 +44,96 @@ bitexp
 	;
 
 operation
+	: optlabel instr
+	;
+
+optlabel
+	: /* empty */
+	| IDENT			{ newident($1, DOTSCT); newlabel($1); }
+	;
+
+instr
 	: NOARG			{ emit1($1); }
 	| BRANCH expr		{ expr_t expr = {0,0}; branch($1,$2,expr); }
 	| BBRANCH bitexp ',' expr8 ',' expr { branch($1+($2 << 1), $6, $4); }
 	| BIT bitexp ',' expr8	{ emit1($1+($2 << 1)); newrelo($4.typ, RELO1); emit1($4.val); }
+#if 0
 	| RMR '<' expr8
+#endif
 	| RMR expr8		{ emit1($1); newrelo($2.typ, RELO1); emit1($2.val); }
 	| RMR expr8 ',' X	{
-				if (small($2.val == 0 && ($2.typ & S_SCTMASK) == DOTSCT && pass == PASS_2, 1)) {
-					emit1($1+0x40);
-				} else {
-					emit1($1+0x30);
-					newrelo($2.typ, RELO1);
-					emit1($2.val);
-				}
+					int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
+					if (small($2.val == 0 && opt && PASS_RELO, 1)) {
+						emit1($1+0x40);
+					} else {
+						emit1($1+0x30);
+						newrelo($2.typ, RELO1);
+						emit1($2.val);
+					}
 				}
 	| RMR ',' X		{ emit1($1+0x40); }
 	| RM '#' expr8		{
-				switch($1) {
-					case 0xa7:
-					case 0xac:
-					case 0xad:
-					case 0xaf:
-						serror("mode error");
-					default:
-						emit1($1);
+					switch($1) {
+						case 0xa7:
+						case 0xac:
+						case 0xad:
+						case 0xaf:
+							serror("mode error");
+						default:
+							emit1($1);
+					}
+					newrelo($3.typ, RELO1);
+					emit1($3.val);
 				}
-				newrelo($3.typ, RELO1);
-				emit1($3.val);
-				}
+#if 0
 	| RM '<' expr8		{ emit1($1+0x10); newrelo($3.typ, RELO1); emit1($3.val); }
 	| RM '<' expr8 ',' X	{ emit1($1+0x40); newrelo($3.typ, RELO1); emit1($3.val); }
 	| RM '>' expr		{ emit1($1+0x20); newrelo($3.typ, RELO2|RELBR); emit2($3.val); }
 	| RM '>' expr ',' X	{ emit1($1+0x30); newrelo($3.typ, RELO2|RELBR); emit2($3.val); }
+#endif
 	| RM expr		{
-				if (small(pass == PASS_2 && ($2.typ & S_SCTMASK) == DOTSCT && fitb($2.val),1)) {
-					emit1($1+0x10);
-					newrelo($2.typ, RELO1);
-					emit1($2.val);
-				} else {
-					emit1($1+0x20);
-					newrelo($2.typ, RELO2|RELBR);
-					emit2($2.val);
-				}
-				}
-	| RM expr ',' X		{
-				if (small(pass == PASS_2 && ($2.typ & S_SCTMASK) == DOTSCT && fitb($2.val),1)) {
-					if (small(pass == PASS_2 && ($2.typ & S_SCTMASK) == DOTSCT && $2.val == 0,1)) {
-						emit1($1+0x50);
-					} else {
-						emit1($1+0x40);
+					int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
+					if (small(PASS_RELO && opt && fitb($2.val), 1)) {
+						emit1($1+0x10);
 						newrelo($2.typ, RELO1);
 						emit1($2.val);
+					} else {
+						printf("sections: 0x%x 0x%x\n", $2.typ & S_SCTMASK, DOTSCT);
+						emit1($1+0x20);
+						newrelo($2.typ, RELO2|RELBR);
+						emit2($2.val);
 					}
-				} else {
-					small(0,1);  /* dummy */
-					emit1($1+0x30);
-					newrelo($2.typ, RELO2|RELBR);
-					emit2($2.val);
 				}
+	| RM expr ',' X		{
+					int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
+					if (small(PASS_RELO && opt && fitb($2.val),1)) {
+						if (small(PASS_RELO && opt && $2.val == 0,1)) {
+							emit1($1+0x50);
+						} else {
+							emit1($1+0x40);
+							newrelo($2.typ, RELO1);
+							emit1($2.val);
+						}
+					} else {
+						small(0,1);  /* dummy */
+						emit1($1+0x30);
+						newrelo($2.typ, RELO2|RELBR);
+						emit2($2.val);
+					}
 				}
 	| RM ',' X		{ emit1($1+0x50); }
 #ifdef MC6805
 	| CMOS			{
-				switch($1) {
-					case 0:
-						opt_cmos = 1;
-						break;
-					case 0x8e:
-					case 0x8f:
-						if(! opt_cmos)
-						serror("bad opcode");
-						emit1($1);
-				}
+					switch($1) {
+						case 0:
+							opt_cmos = 1;
+							break;
+						case 0x8e:
+						case 0x8f:
+							if (!opt_cmos)
+								serror("bad opcode");
+							emit1($1);
+					}
 				}
 #endif
 	;

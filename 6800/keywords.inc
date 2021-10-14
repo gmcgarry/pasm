@@ -33,6 +33,10 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* compatibility */
+{ 0,	'=',		0,		"equ"	},
+{ 0,	PSEUDOOP_ORG,	0,		"org"	},
+
 /* The X register */
 { 0,	X,		0,		"x"	},
 
@@ -142,8 +146,7 @@
 { 0,	RM,		0xa9,		"adc"	},
 { 0,	RM,		0xaa,		"ora"	},
 { 0,	RM,		0xab,		"add"	},
-#endif
-#ifdef MC6800
+#else
 { 0,	RM,		0xA0,		"suba"	},
 { 0,	RM,		0xA1,		"cmpa"	},
 { 0,	RM,		0xA2,		"sbca"	},
@@ -154,6 +157,8 @@
 { 0,	RM,		0xA9,		"adca"	},
 { 0,	RM,		0xAA,		"oraa"	},
 { 0,	RM,		0xAB,		"adda"	},
+#endif
+#ifdef MC6800
 { 0,	RM,		0xAC,		"cpx"	},
 { 0,	RM,		0xE0,		"subb"	},
 { 0,	RM,		0xE1,		"cmpb"	},
@@ -171,51 +176,18 @@
 
 /* Brain damaged concatenated opcodes for RMR on registers */
 { 0,	NOARG,		0x40,		"nega"	},
-#ifdef MC6800
-{ 0,	NOARG,		0x50,		"negb"	},
-#endif
 { 0,	NOARG,		0x43,		"coma"	},
-#ifdef MC6800
-{ 0,	NOARG,		0x53,		"comb"	},
-#endif
 { 0,	NOARG,		0x44,		"lsra"	},
-#ifdef MC6800
-{ 0,	NOARG,		0x54,		"lsrb"	},
-#endif
 { 0,	NOARG,		0x46,		"rora"	},
-#ifdef MC6800
-{ 0,	NOARG,		0x56,		"rorb"	},
-#endif
 { 0,	NOARG,		0x47,		"asra"	},
-#ifdef MC6800
-{ 0,	NOARG,		0x57,		"asrb"	},
-#endif
 { 0,	NOARG,		0x48,		"lsla"	},
 { 0,	NOARG,		0x48,		"asla"	},	/* alias */
-#ifdef MC6800
-{ 0,	NOARG,		0x58,		"lslb"	},
-{ 0,	NOARG,		0x58,		"aslb"	},	/* alias */
-#endif
 { 0,	NOARG,		0x49,		"rola"	},
-#ifdef MC6800
-{ 0,	NOARG,		0x59,		"rolb"	},
-#endif
 { 0,	NOARG,		0x4a,		"deca"	},
-#ifdef MC6800
-{ 0,	NOARG,		0x5A,		"decb"	},
-#endif
 { 0,	NOARG,		0x4c,		"inca"	},
-#ifdef MC6800
-{ 0,	NOARG,		0x5C,		"incb"	},
-#endif
 { 0,	NOARG,		0x4d,		"tsta"	},
-#ifdef MC6800
-{ 0,	NOARG,		0x5D,		"tstb"	},
-#endif
 { 0,	NOARG,		0x4f,		"clra"	},
-#ifdef MC6800
-{ 0,	NOARG,		0x5F,		"clrb"	},
-#endif
+
 { 0,	NOARG,		0x50,		"negx"	},
 { 0,	NOARG,		0x53,		"comx"	},
 { 0,	NOARG,		0x54,		"lsrx"	},
@@ -230,6 +202,19 @@
 { 0,	NOARG,		0x5f,		"clrx"	},
 
 #ifdef MC6800
+{ 0,	NOARG,		0x50,		"negb"	},
+{ 0,	NOARG,		0x53,		"comb"	},
+{ 0,	NOARG,		0x54,		"lsrb"	},
+{ 0,	NOARG,		0x56,		"rorb"	},
+{ 0,	NOARG,		0x57,		"asrb"	},
+{ 0,	NOARG,		0x58,		"lslb"	},
+{ 0,	NOARG,		0x58,		"aslb"	},	/* alias */
+{ 0,	NOARG,		0x59,		"rolb"	},
+{ 0,	NOARG,		0x5A,		"decb"	},
+{ 0,	NOARG,		0x5C,		"incb"	},
+{ 0,	NOARG,		0x5D,		"tstb"	},
+{ 0,	NOARG,		0x5F,		"clrb"	},
+
 { 0,	NOARG,		0x19,		"daa"	},
 { 0,	NOARG,		0x0A,		"clv"	},
 { 0,	NOARG,		0x0B,		"sev"	},
@@ -254,6 +239,7 @@
 { 0,	NOARG,		0x35,		"txs"	},
 { 0,	NOARG,		0x30,		"tsx"	},
 #endif
+
 #ifdef MC6802
 /* XXXGJM check opcodes */
 { 0,	NOARG,		0x34,		"psha"	},
