@@ -105,22 +105,22 @@
 { 0,		BRANCH,		0xFB000000,	"BLNV" },
 #endif
 
-{ 0,		DATA1,		ADC,	"ADC" },
-{ 0,		DATA1,		ADD,	"ADD" },
-{ 0,		DATA1,		AND,	"AND" },
-{ 0,		DATA1,		BIC,	"BIC" },
-{ 0,		DATA1,		EOR,	"EOR" },
-{ 0,		DATA1,		ORR,	"ORR" },
-{ 0,		DATA1,		RSB,	"RSB" },
-{ 0,		DATA1,		RSC,	"RSC" },
-{ 0,		DATA1,		SBC,	"SBC" },
-{ 0,		DATA1,		SUB,	"SUB" },
-{ 0,		DATA2,		MOV,	"MOV" },
-{ 0,		DATA2,		MVN,	"MVN" },
-{ 0,		DATA3,		CMN,	"CMN" },
-{ 0,		DATA3,		CMP,	"CMP" },
-{ 0,		DATA3,		TEQ,	"TEQ" },
-{ 0,		DATA3,		TST,	"TST" },
+{ 0,		DATA1,		ADC,		"ADC" },
+{ 0,		DATA1,		ADD,		"ADD" },
+{ 0,		DATA1,		AND,		"AND" },
+{ 0,		DATA1,		BIC,		"BIC" },
+{ 0,		DATA1,		EOR,		"EOR" },
+{ 0,		DATA1,		ORR,		"ORR" },
+{ 0,		DATA1,		RSB,		"RSB" },
+{ 0,		DATA1,		RSC,		"RSC" },
+{ 0,		DATA1,		SBC,		"SBC" },
+{ 0,		DATA1,		SUB,		"SUB" },
+{ 0,		DATA2,		MOV,		"MOV" },
+{ 0,		DATA2,		MVN,		"MVN" },
+{ 0,		DATA3,		CMN,		"CMN" },
+{ 0,		DATA3,		CMP,		"CMP" },
+{ 0,		DATA3,		TEQ,		"TEQ" },
+{ 0,		DATA3,		TST,		"TST" },
 
 { 0,		DATA2,		0xB0000000|MOV,	"MOVLT" },
 { 0,		DATA2,		0xA0000000|MOV,	"MOVGE" },
@@ -137,13 +137,13 @@
 { 0,		REG,		5,		"R5" },
 { 0,		REG,		6,		"R6" },
 { 0,		REG,		7,		"R7" },
-{ 0,		REG,		8,		"R8" },
-{ 0,		REG,		9,		"R9" },
-{ 0,		REG,		10,		"R10" },
-{ 0,		REG,		11,		"R11" },
-{ 0,		REG,		11,		"FP" },
-{ 0,		REG,		12,		"R12" },
-{ 0,		REG,		12,		"IP" },
+{ 0,		REG,		8,		"R8" },		/* not thumb */
+{ 0,		REG,		9,		"R9" },		/* not thumb */
+{ 0,		REG,		10,		"R10" },	/* not thumb */
+{ 0,		REG,		11,		"R11" },	/* not thumb */
+{ 0,		REG,		11,		"FP" },		/* not thumb */
+{ 0,		REG,		12,		"R12" },	/* not thumb */
+{ 0,		REG,		12,		"IP" },		/* not thumb */
 { 0,		REG,		13,		"R13" },
 { 0,		REG,		13,		"SP" },
 { 0,		REG,		14,		"R14" },
@@ -197,4 +197,6 @@
 { 0,		MUL,		0x00000090,	"MUL" },
 { 0,		MLA,		0x00200090,	"MLA" },
 
-/* PUSH */
+/* thumb instructions */
+{ 0, 		STACK,		0xB400,		"PUSH" },	/* thumb */
+{ 0, 		STACK,		0xBC00,		"POP" },	/* thumb */

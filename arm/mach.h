@@ -36,6 +36,7 @@
 
 extern word_t opcode;
 extern int success;	/* LDR/STR address failure flag */
+extern int mode;
 
 /* ARM32 Specific routines */
 void branch(word_t brtyp, word_t link, ADDR_T val);
