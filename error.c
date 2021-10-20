@@ -111,7 +111,7 @@ warning(const char* s, ...)
 	va_list ap;
 	va_start(ap, s);
 
-	nerrors++;
+/*	nerrors++; */
 	diag(" (warning)\n", s, ap);
 /*	stop(); */
 
