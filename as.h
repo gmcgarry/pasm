@@ -327,6 +327,7 @@ char*	readident(int c);
 #endif
 item_t	*item_search(const char *);
 void	 item_insert(item_t *, int);
+void	 item_remove(item_t *);
 item_t	*item_alloc(int);
 item_t	*fb_alloc(int);
 item_t	*fb_shift(int);

@@ -410,8 +410,8 @@ inident(int c)
 	} while (ISALNUM(c));
 	*p = '\0';
 	peekc = c;
-	ip = item_search(name);
 	DPRINTF(("looking up identifier \"%s\"\n", name));
+	ip = item_search(name);
 	DPRINTF(("%s ip=%p\n", name, ip));
 	if (ip == 0) {
 		ip = item_alloc(S_UND);
@@ -490,7 +490,7 @@ innumber(int c)
 		*p = '\0';
 		p = num;
 		radix = 16;
-	} else if ((p - num) == 8 && (c == 'b' || c == 'B')) {
+	} else if (c == 'b' || c == 'B') {
 		*p = '\0';
 		p = num;
 		radix = 2;
@@ -720,8 +720,32 @@ done:
 void
 item_insert(item_t* ip, int h)
 {
+	DPRINTF(("inserted %s at %d\n", ip->i_name, h));
 	ip->i_next = hashtab[h];
 	hashtab[h] = ip;
+
+	DPRINTF(("row %d looks like this: ", h));
+	for (item_t *p = hashtab[h]; p != 0; p = p->i_next)
+		DPRINTF(("%s ", p->i_name));
+	DPRINTF(("\n"));
+}
+
+void
+item_remove(item_t* ip)
+{
+	item_t **pp;
+	int h;
+
+	for (h = hash(ip->i_name); h < H_TOTAL; h += H_SIZE) {
+		pp = &hashtab[h];
+		while (*pp && *pp != ip)
+			pp = &(*pp)->i_next;
+		if (*pp) {
+			*pp = (*pp)->i_next;
+			return;
+		}
+	}
+	fatal("could not remove item");
 }
 
 item_t*
