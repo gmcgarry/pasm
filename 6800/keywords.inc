@@ -36,8 +36,11 @@
 /* compatibility */
 { 0,	'=',		0,		"equ"	},
 { 0,	PSEUDOOP_ORG,	0,		"org"	},
-{ 0,	PSEUDOOP_DATA,	1,		"db"	},
-{ 0,	PSEUDOOP_DATA,	2,		"dw"	},
+{ 0,	PSEUDOOP_END,	0,		"end"	},
+{ 0,	PSEUDOOP_DATA,	1,		"fcb"	},	/* form constant byte */
+{ 0,	PSEUDOOP_DATA,	2,		"fdb"	},	/* form double byte */
+{ 0,	PSEUDOOP_ZERO,	1,		"rmb"	},	/* reserve memory byte */
+{ 0,	PSEUDOOP_ASCII,	0,		"fcc"	},	/* form constant character */
 
 /* The X register */
 { 0,	X,		0,		"x"	},

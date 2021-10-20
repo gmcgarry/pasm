@@ -45,11 +45,18 @@ bitexp
 
 operation
 	: optlabel instr
+	| optlabel pseudoop
 	;
 
 optlabel
 	: /* empty */
 	| IDENT			{ newident($1, DOTSCT); newlabel($1); }
+	;
+
+pseudoop
+ 	: PSEUDOOP_ZERO absexp	{ int i; for (i = 0; i < $2; i++) emit1(0); }
+	| PSEUDOOP_ASCII STRING	{ emitstr($1); }
+	| PSEUDOOP_DATA datalist 
 	;
 
 instr
@@ -98,7 +105,6 @@ instr
 						newrelo($2.typ, RELO1);
 						emit1($2.val);
 					} else {
-						printf("sections: 0x%x 0x%x\n", $2.typ & S_SCTMASK, DOTSCT);
 						emit1($1+0x20);
 						newrelo($2.typ, RELO2|RELBR);
 						emit2($2.val);
