@@ -156,8 +156,8 @@ main(int argc, char **argv)
 			while (*p >= '0' && *p <= '7')
 				dflag = (dflag << 3) + *p++ - '0';
 			if ((dflag & 0777) == 0)
-				dflag |= 0700;
-			dflag &= ~4;
+				dflag |= 0700;	/* -d defaults to 0700 */
+			dflag &= ~4;		/* source lines not needed for pass 1 */
 #endif
 			break;
 		case 's':

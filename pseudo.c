@@ -114,7 +114,11 @@ newlabel(item_t *ip)
 	ADDR_T oldval = ip->i_valu;
 #endif
 
+#if defined(THREE_PASS) && !defined(NDEBUG)
 	DPRINTF(("newlabel: (%s) lineno=%ld, pass=%d, section=%d oldval=%ld, DOTVAL=%ld, gain=%ld\n", ip->i_name, lineno, pass, DOTSCT, oldval, DOTVAL, sect[DOTSCT].s_gain));
+#else
+	DPRINTF(("newlabel: (%s) lineno=%ld, pass=%d, section=%d, DOTVAL=%ld\n", ip->i_name, lineno, pass, DOTSCT, DOTVAL));
+#endif
 
 	if (DOTSCT == S_UND)
 		nosect();
