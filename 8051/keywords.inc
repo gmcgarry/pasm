@@ -44,6 +44,7 @@
 { 0,	'=',			0,		"equ"	},
 { 0,	'=',			0,		"bit"	},
 { 0,	PSEUDOOP_DATA,		1,		"db"	},
+{ 0,	PSEUDOOP_DATA,		2,		"dw"	},
 { 0,	DOT,			0,		"$"	},
 #endif
 
@@ -54,6 +55,15 @@
 { 0,	PSEUDOOP_DATA,		2,		".ds"	},
 { 0,	PSEUDOOP_AREA,		0,		".area" },
 { 0,	PSEUDOOP_MODULE,	0,		".module" },
+#endif
+
+/* metalink asm51 compatibility */
+#ifdef COMPAT_ASM51
+{ 0,	PSEUDOOP_DATA,		2,		"ds"	},
+{ 0,	PSEUDOOP_SEG,		0,		"dseg"	},
+{ 0,	PSEUDOOP_SEG,		1,		"cseg"	},
+{ 0,	'&',			0,		"and"	},
+{ 0,	'|',			0,		"or"	},
 #endif
 
 { 0,	SHIFTFUNC,		0,		"low" },
@@ -179,6 +189,9 @@
 { 0,	DEC,			0,		"dec"	},
 { 0,	DIV,			0x84,		"div"	},
 { 0,	DJNZ,			0,		"djnz"	},
+{ 0,	ECALL,			0x12,		"ecall"	},
+{ 0,	EJMP,			0x02,		"ejmp"	},
+{ 0,	ERET,			0x22,		"eret"	},
 { 0,	INC,			0,		"inc"	},
 { 0,	JB,			0x20,		"jb"	},
 { 0,	JBC,			0x10,		"jbc"	},

@@ -15,12 +15,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+extern item_t cseg;
+extern item_t dseg;
+
 struct mode {
         unsigned char mode;             /* value to index with */
         unsigned char size;             /* # of bytes used */
         unsigned char orval;            /* value OR'd to obcode */
         unsigned char byte1;            /* extra byte 1 */
         unsigned char byte2;            /* extra byte 2 */
+        unsigned char byte3;            /* extra byte 3 */
 };
 
 extern struct mode	mode;
@@ -30,12 +34,14 @@ extern struct mode	mode;
 #define set_ov(m,a)     ((m).orval=(a))
 #define set_b1(m,a)     ((m).byte1=(a))
 #define set_b2(m,a)     ((m).byte2=(a))
+#define set_b3(m,a)     ((m).byte3=(a))
 
 #define get_md(m)       ((m).mode)
 #define get_sz(m)       ((m).size)
 #define get_ov(m)       ((m).orval)
 #define get_b1(m)       ((m).byte1)
 #define get_b2(m)       ((m).byte2)
+#define get_b3(m)       ((m).byte3)
 
 void emitop(int opc);
 

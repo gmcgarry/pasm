@@ -40,6 +40,9 @@
 %token <y_word> DEC
 %token <y_word> DIV
 %token <y_word> DJNZ
+%token <y_word> ECALL
+%token <y_word> EJMP
+%token <y_word> ERET
 %token <y_word> INC
 %token <y_word> JB
 %token <y_word> JBC
@@ -85,3 +88,4 @@
 %token <y_word> SFR
 %token <y_word> PSEUDOOP_AREA
 %token <y_word> PSEUDOOP_MODULE
+%token <y_word> PSEUDOOP_SEG

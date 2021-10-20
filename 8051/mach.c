@@ -20,7 +20,8 @@
 
 extern int hash(const char *);
 
-static item_t cseg = { 0, 0, S_UND, ".cseg" };
+item_t cseg = { 0, 0, S_UND, ".cseg" };
+item_t dseg = { 0, 0, S_UND, ".dseg" };
 
 void
 mflag(const char* flag)
@@ -32,6 +33,8 @@ machstart(int pass)
 {
 	if (pass == PASS_1) {
 		item_insert(&cseg, hash(cseg.i_name));
+		unresolved++;
+		item_insert(&dseg, hash(dseg.i_name));
 		unresolved++;
 	}
 	newsect(&cseg, 0, NULL);
@@ -53,6 +56,8 @@ emitop(int opc)
 		emit1(get_b1(mode));
 	if (get_sz(mode) > 1)
 		emit1(get_b2(mode));
+	if (get_sz(mode) > 2)
+		emit1(get_b3(mode));
 }
 
 void
