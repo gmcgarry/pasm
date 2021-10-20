@@ -16,9 +16,10 @@
 
 #define COMPAT_SDCC
 #define COMPAT_INTEL
+#define COMPAT_ASM51
 
-#define	THREE_PASS	/* branch and offset optimization */
 #define	LISTING		/* enable listing facilities */
+#define	THREE_PASS	/* branch and offset optimization */
 #if 0
 #define ASLD		1
 #endif
