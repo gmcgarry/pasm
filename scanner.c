@@ -490,7 +490,7 @@ innumber(int c)
 		*p = '\0';
 		p = num;
 		radix = 16;
-	} else if (c == 'b' || c == 'B') {
+	} else if ((p - num) == 8 && (c == 'b' || c == 'B')) {
 		*p = '\0';
 		p = num;
 		radix = 2;
