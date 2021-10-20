@@ -149,13 +149,15 @@ combine(int typ1, int typ2, int op)
 		case '-':
 			if (typ2 == S_ABS)
 				return typ1;
-			if ((typ1 & ~S_DOT) == (typ2 & ~S_DOT) && typ1 != S_UND)
+			if ((typ1 & S_SCTMASK) == (typ2 & S_SCTMASK) && typ1 != S_UND)
 				return (S_ABS | S_VAR);
 			break;
+		case '/':	/* used for rounding of bank addresses */
+		case '*':
 		case '>':
 			if (typ1 == S_ABS && typ2 == S_ABS)
 				return S_ABS;
-			if (((typ1 & ~S_DOT) == (typ2 & ~S_DOT) && typ1 != S_UND) || (typ1 == S_ABS) || (typ2 == S_ABS))
+			if (((typ1 & S_SCTMASK) == (typ2 & S_SCTMASK) && typ1 != S_UND) || (typ1 == S_ABS) || (typ2 == S_ABS))
 				return (S_ABS | S_VAR);
 			break;
 		default:
