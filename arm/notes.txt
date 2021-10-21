@@ -1,0 +1,174 @@
+
+ARM:
+
+ 3 3 2 2 | 2 | 2 | 2 | 2 2 2 2 | 2 | 1 1 1 1 | 1 1 1 1 | 1 1 9 8 7 6 5 4 3 2 1 0
+ 1 0 9 8 | 7 | 6 | 5 | 4 3 2 1 | 0 | 9 8 7 6 | 5 4 3 2 | 1 0
+
+ -cond-- | 0 | 0 | 0 | 0 0 0 A | S | --Rd--- | --Rn--- | --Rs--- 1 0 0 1 --Rm---	| multiply
+ -cond-- | 0 | 0 | 0 | 0 1 U A | S | --RdHi- | --RnLo- | --Rs--- 1 0 0 1 --Rm---	| multiply long
+
+ -cond-- | 0 | 0 | I | opcode- | S | --Rn--- | --Rd--- | --operand 2------------	| data processing
+ -cond-- | 0 | 0 | 0 | 1 B 0 0 | 0 | --Rn--- | --Rd--- | 0 0 0 0 1 0 0 1 --Rn---	| single data swap (LDR,STR)
+ -cond-- | 0 | 0 | 0 | 1 0 0 1 | 0 | 1 1 1 1 | 1 1 1 1 | 1 1 1 1 0 0 0 1 --Rn---	| branch and exchange
+ -cond-- | 0 | 1 | 1 | P U B W | L | --Rn--- | --Rd--- | --offset---------------	| single data transfer
+ -cond-- | 1 | 0 | 0 | P U S W | L | --Rn--- | --register list------------------	| block data transfer
+ -cond-- | 1 | 0 | 1 | L --offset-----------------------------------------------	| branch
+ -cond-- | 1 | 1 | 1 | 1 --IGNORED----------------------------------------------	| software interrupt
+ 
+opcode	: 4-bit
+Rn	: first operand (base register)
+Rd	: destination register
+Rs	: source register
+Rt	: source register
+Rm	: multiplicand / offset register
+operand 2 : immediate
+RdHi	: destination register hi
+RdLow	: destination register lo
+offset	: 12-bit or 23-bit offset
+register list : bitmask of 16 registers
+A	: accumulate flag; 0=multiple, 1=multiply-and-accumulate
+B	: byte/word bit; 0=word, 1=byte
+I	: immediate flag; 0=operand2 is shift+register, 1=operand2 is immediate
+L	: link bit; 0=branch, 1=banch-with-link
+P	: indexing bit; 0=post; 1=pre
+S	: set condition codes; 0=do not set, 1=set condition codes
+W	: write-back bit; 0=none; 1=wriate address into base
+U	; up/down bit: 0=down, 1=up
+
+
+THUMB:
+
+ 1 1 1 1 1 1 9 8 7 6 5 4 3 2 1 0
+ 5 4 3 2 1 0
+
+ --opcode--- --operands-----------	| general encoding
+
+ 0 0 -opcode--				| shift immediate, add, subtract, move & compare
+ 0 1 0 0 0 0 -opc---			| data processing
+ 0 1 0 0 0 1 -opc---			| special data instructions and branch/exchange
+ 0 1 0 0 1 x				| load from literal pool (LDR literal)
+ 0 1 0 1 opc--				| load/store single data item
+ 0 1 1 x opc--				| load/store single data item
+ 1 0 0 x opc--				| load/store single data item
+ 1 0 1 0 0 x				| generate PC-relative address
+ 1 0 1 0 1 x				| generate SP-relative address
+ 1 0 1 1 x x				| misc 16-bit instruction
+ 1 1 0 0 0 x				| store multiple registers (stmia, stmea)
+ 1 1 0 0 1 x				| load multiple registers (ldm, ldmia, ldmfd)
+ 1 1 0 opc----				| conditional branch and supervisor call
+ 1 1 1 0 0 x				| unconditional branch
+
+16-bit load/store instructions are not available.
+
+IT block puts processor in mode to generate condition flags (overflow, carry, etc).
+
+; shift-immediate, add, subtract, move and compare
+LSL 00 000ii iiimmmddd (5-bit immediate)
+LSR 00 001ii iiimmmddd (5-bit immediate)
+ASR 00 010ii iiimmmddd (5-bit immediate)
+ADD 00 01100 mmmnnnddd (register)
+SUB 00 01101 mmmnnnddd (register)
+ADD 00 01110 iiinnnddd (3-bit immediate)
+SUB 00 01111 iiinnnddd (3-bit immediate)
+MOV 00 100dd diiiiiiii (8-bit immediate)
+CMP 00 101dd diiiiiiii (8-bit immediate)
+ADD 00 110nn niiiiiiii (8-bit immediate) - THUMB2
+SUB 00 111nn niiiiiiii (8-bit immediate) - THUMB2
+MOV 00 00000 000mmmddd (register move) - THUMB2
+
+; data processing
+AND 010000 0000 dddmmm (register) - Rd &= Rm
+EOR 010000 0001 dddmmm (register)
+LSL 010000 0010 dddmmm (register)
+LSR 010000 0011 dddmmm (register)
+ASR 010000 0100 dddmmm (register)
+ADC 010000 0101 dddmmm (register)
+SBC 010000 0110 dddmmm (register)
+ROR 010000 0111 dddmmm (register)
+TST 010000 1000 dddmmm (register)
+RSB 010000 1001 dddmmm (register)
+CMP 010000 1010 dddmmm (register)
+CMN 010000 1011 dddmmm (register)
+ORR 010000 1100 dddmmm (register)
+MUL 010000 1101 dddmmm (register)
+BIC 010000 1110 dddmmm (register)
+MVN 010000 1111 dddmmm (register)
+
+; special data instructions and branch/exchange
+ADD 010001 00xm mmmnnn (register) - THUMB2 (access high registers)
+CMP 010001 01xm mmmnnn (register) - THUMB2 (acecss high registers)
+MOV 010001 10xm mmmnnn (register)
+BX  010001 110m mmmccc (register)
+BLX 010001 111m mmmccc (register)
+
+; load/store
+STR   0101 000 mmmnnnttt (register)
+STRH  0101 001 mmmnnnttt (register)
+STRB  0101 010 mmmnnnttt (register)
+LDRSB 0101 011 mmmnnnttt (register)
+LDR   0101 100 mmmnnnttt (register)
+LDRH  0101 101 mmmnnnttt (register)
+LDRB  0101 110 mmmnnnttt (register)
+LDRSH 0101 111 mmmnnnttt (register)
+
+STR   0110 0ii iiinnnttt (unsigned 5-bit immediate)
+LDR   0110 1ii iiinnnttt (unsigned 5-bit immediate)
+STRB  0111 0ii iiinnnttt (unsigned 5-bit immediate)
+LDRB  0111 1ii iiinnnttt (unsigned 5-bit immediate)
+STRH  1000 0ii iiinnnttt (unsigned 5-bit immediate)
+STRH  1000 1ii iiinnnttt (unsigned 5-bit immediate)
+STR   1001 0tt tiiiiiiii (SP-relative, 8-bit offset) - THUMB2
+LDR   1001 1tt tiiiiiiii (SP-relative, 8-bit offset) - THUMB2
+
+; conditional branches
+B   1101 0ccc iiiiiiii	(8-bit immediate)
+
+UDF 1101 1110 xxxxxxxx- permanently undefined
+SVC 1101 1111 iiiiiiii - previously SWI (8-bit immediate)
+
+
+Mnemonic format:
+
+Two slightly different syntaxes are supported.  Old-style (divided) uses separate syntaxes.  The
+new-style (unified) supports a common syntax.
+
+Unified Assembler Language (UAL) is a common syntax for ARM and Thumb instructions.  UAL supersedes
+earlier versions of both the ARM and Thumb assembler languages.  Code written using UAL can be assembled
+for ARM or Thumb for any ARM processor. The assembler faults the use of unavailable instructions.
+
+UAL enables:
+	- immediate operands do not require a # prefix
+	- IT instruction is accepted, but ignored in ARM mode
+	- .N and .W suffixes are recognised and honoured
+	- all instructions set the flags if and only if they have a .s suffix
+
+Conditional affixes are not used in THUMB.
+
+If Rd is not specified, Rd=Rn is assumed.
+
+'=' indicates an immediate value that should be loaded from code address space.
+
+	BX{cond} Rn
+	BL{cond} <expr>
+	<opcode>{cond}{S} Rd,<op2>
+	<opcode>{cond}{S} Rd,Rn,<op2>
+	<opcode>{cond} Rn,<op2>
+
+	<op2>: Rm,<shift>
+	<op2>: #immediate
+
+In Thumb state on processors before ARMv6T2, most data processing instructions update
+the condition flags automatically according to the result of the operation. There is no
+option to leave the flags unchanged and not update them. Other instructions cannot
+update the flags.  Consequently, almost all thumb instructions not in UAL end in .s
+because they modify the flags:
+
+	subs r3,#1
+	orrs r2,r0
+	lsls r2,r2,#29
+	lsrs r2,r3,#2
+	adds r2,#1
+	bics r4,r3
+	ands r0,r1
+
+
