@@ -90,7 +90,6 @@ branch(word_t brtyp, word_t link, ADDR_T val)
 	ADDR_T offset;
 
 	offset = val - DOTVAL - 8;		/* Allow for pipeline */
-	printf("val = %d, dot = %d\n", val, DOTVAL);
 	if (PASS_RELO && (offset & 0xFC000000) != 0 && (offset & 0xFC000000) != 0xFC000000)
 		serror("offset %d out of range for 26-bit addressing", offset);
 	offset = offset>>2 & 0xFFFFFF; 
