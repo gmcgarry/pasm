@@ -39,12 +39,13 @@
 
 operation
 	: PSEUDOOP_CPU IDENT 					{ setcpu($2->i_name); }
-	| PSEUDOOP_EABIATTR NUMBER8 ',' NUMBER8			{ }
+	| PSEUDOOP_EABIATTR NUMBER8 ',' NUMBER8			{ warning("ignoring .eabi directive"); }
 	| PSEUDOOP_ARCH IDENT					{ setarch($2->i_name); }
-	| PSEUDOOP_FPU	IDENT					{ setfpu($2->i_name); }
+	| PSEUDOOP_FPU IDENT					{ setfpu($2->i_name); }
 	| PSEUDOOP_MODE						{ setmode($1); }
-	| PSEUDOOP_SYNTAX IDENT					{ }
-	| BRANCH optlink expr					{ branch($1, $2, $3.val); }
+	| PSEUDOOP_SYNTAX IDENT					{ warning("ignoring .syntax directive"); }
+	| PSEUDOOP_THUMBFUNC					{ warning("ignoring .thumb_func directive"); }
+	| BRANCH optlink optexch expr				{ branch($1, $2, $4.val|$3); }
 	| DATA1 optcond opts optp REG ',' REG ',' operand	{ data($1,$2|$3|$4|$5<<12|$7<<16,$9.val,$9.typ); }
 	| DATA2 optcond opts optp REG ',' operand		{ data($1,$2|$3|$4|$5<<12,$7.val,$7.typ); }
 	| DATA3 optcond opts optp REG ',' operand		{ data($1,$2|$3|$4|$5<<16,$7.val,$7.typ); }
@@ -66,8 +67,13 @@ optcond	: 			{ $$ = 0xE0000000; }
 	| COND			{ $$ = $1; }
 	;
 
+/* thumb */
+optexch	:			{ $$ = 0; }
+	| EXCHANGE		{ $$ = $1; }
+	;
+
 opts	: 			{ $$ = 0; }
-	| SET			{ $$ = $1; }
+	| SET			{ $$ = $1; if (mode == MODE_THUMB) serror("S postfix not supported for thumb"); }
 	;
 
 optt	: 			{ $$ = 0; }
@@ -92,7 +98,7 @@ optpsr	: 			{ $$ = 0; }
 	;
 
 operand	: REG optshift		{ $$.val = $1|$2; $$.typ = S_REG; }
-	| '#'expr		{ $$ = $2; }
+	| '#' expr		{ $$ = $2; }
 	;
 
 optshift: ',' SHIFT shftcnt	{ $$ = $2|$3; }

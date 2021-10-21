@@ -90,9 +90,9 @@ branch(word_t brtyp, word_t link, ADDR_T val)
 	ADDR_T offset;
 
 	offset = val - DOTVAL - 8;		/* Allow for pipeline */
-	if ((offset & 0xFC000000) != 0 && (offset & 0xFC000000) != 0xFC000000){
-		serror("offset out of range");
-	}
+	printf("val = %d, dot = %d\n", val, DOTVAL);
+	if (PASS_RELO && (offset & 0xFC000000) != 0 && (offset & 0xFC000000) != 0xFC000000)
+		serror("offset %d out of range for 26-bit addressing", offset);
 	offset = offset>>2 & 0xFFFFFF; 
 	emit4(brtyp|link|offset);
 	return;
@@ -104,7 +104,7 @@ data(long opc, long ins, ADDR_T val, short typ)
 	ADDR_T tmpval;
 	int adrflag = 0;
 
-	if (typ == S_REG){	/* The argument is a register */
+	if (typ == S_REG) {	/* The argument is a register */
 		emit4(opc|ins|val);
 		return;
 	}
@@ -112,8 +112,8 @@ data(long opc, long ins, ADDR_T val, short typ)
 /* Do a bit of optimisation here, since the backend might produce instructions
    of the type    MOV R0, R0, #0.   We can ignore these. */
 
-	if (((opc == ADD) || (opc == SUB)) && (val == 0)){	/* ADD or SUB 0 ? */
-		if ((ins & 0x000F0000) == ((ins & 0x0000F000) << 4)) /* Same reg ? */
+	if (((opc == ADD) || (opc == SUB)) && (val == 0)) {	/* ADD or SUB 0 ? */
+		if (PASS_RELO && (ins & 0x000F0000) == ((ins & 0x0000F000) << 4)) /* Same reg ? */
 			return;		/* Don't emit anything */
 	}
 
@@ -121,37 +121,37 @@ data(long opc, long ins, ADDR_T val, short typ)
 
 	ins |= 0x02000000;	/* The argument is an immediate value */
 	tmpval = val;
-	if (opc == 0xff){		/* This is an ADR */
+	if (opc == 0xff) {		/* This is an ADR */
 		adrflag = 1;
 		opc = MOV;
 	}
 
-	if (typ == S_ABS){	/* An absolute value */
-		if (calcimm(&opc, &tmpval, typ)){
+	if (typ == S_ABS) {	/* An absolute value */
+		if (calcimm(&opc, &tmpval, typ)) {
 			emit4(opc|ins|tmpval);
 			return;
 		}
 	}
 
 	tmpval = val;
-	if (!adrflag){		/* Don't do this for ADRs */
-		if (oursmall(calcimm(&opc, &tmpval, typ), 12)){
+	if (!adrflag) {		/* Don't do this for ADRs */
+		if (oursmall(calcimm(&opc, &tmpval, typ), 12)) {
 			emit4(opc|ins|tmpval);
 			return;
 		}	
 	}
 
-	if (opc == MOV || opc == MVN || opc == ADD || opc == SUB){
-		if (!bflag && pass == PASS_3){		/* Debugging info */
+	if (opc == MOV || opc == MVN || opc == ADD || opc == SUB) {
+		if (!bflag && pass == PASS_3) {		/* Debugging info */
 			/* warning("MOV/ADD extension"); */
 			/* if (dflag)
 				printf("value: %lx\n", val);*/
 		}
-		if (oursmall((val & 0xFFFF0000) == 0, 8)){
+		if (oursmall((val & 0xFFFF0000) == 0, 8)) {
 			putaddr(opc, ins, val, 2);
 			return;
 		}
-		if (oursmall((val & 0xFF000000) == 0, 4)){
+		if (oursmall((val & 0xFF000000) == 0, 4)) {
 			putaddr(opc, ins, val, 3);
 			return;
 		}
@@ -183,7 +183,7 @@ calcimm(ADDR_T *opc, ADDR_T *val, short typ)
 	if ((*val & 0xFFFFFF00) == 0)	/* Value is positive, but < 256, */
 		return(1); 		/* so doesn't need a shift */
 
-	if ((~*val & 0xFFFFFF00) == 0){	/* Value is negative, but < 256, */
+	if ((~*val & 0xFFFFFF00) == 0) {	/* Value is negative, but < 256, */
 		if (*opc == AND)	/* so no shift required, only */
 			{		/* inversion */
 			*val = ~*val;
@@ -204,7 +204,7 @@ calcimm(ADDR_T *opc, ADDR_T *val, short typ)
 			}
 
 	}	
-	if ((-1**val & 0xFFFFFF00) == 0){ /* Same idea ... */
+	if ((-1**val & 0xFFFFFF00) == 0) { /* Same idea ... */
 		if (*opc == ADD)
 			{
 			*val *= -1;
@@ -222,11 +222,11 @@ calcimm(ADDR_T *opc, ADDR_T *val, short typ)
 	do{					/* Now we need to shift */
 		rotateleft2(&*val);		/* Rotate left by two bits */
 		i++;
-		if((*val & 0xFFFFFF00) == 0){	/* Got a value < 256 */
+		if((*val & 0xFFFFFF00) == 0) {	/* Got a value < 256 */
 			*val = *val|i<<8;	/* OR in the shift */
 			return(1);
 		}
-		if ((~*val & 0xFFFFFF00) == 0){ /* If negative, carry out */
+		if ((~*val & 0xFFFFFF00) == 0) { /* If negative, carry out */
 			if (*opc == AND)	/* inversion as before */
 				{
 				*val = ~*val|i<<8;
@@ -277,28 +277,28 @@ strldr(long opc, long ins, ADDR_T val)
 
 	/* If the expression was a register, then just output it and save 24 bytes */
 
-	if (success){ 
+	if (success) { 
 		emit4(opc|ins|val);
 		return;
 	}
 
 	reg = ins & 0x0000F000;		/* Extract register from instruction */
 
-	if (opc == LDR){
+	if (opc == LDR) {
 
 		tmpval = val - DOTVAL - 8;
-		if (oursmall((tmpval & 0xFFFFF000) == 0, 16)){	/* If it's +ve */
+		if (oursmall((tmpval & 0xFFFFF000) == 0, 16)) {	/* If it's +ve */
 			emit4(opc|ins|tmpval|0x018F0000);	/* PC rel, up bit */
 			return;
 		}
 
 		tmpval *= -1;
-		if (oursmall((tmpval & 0xFFFFF000) == 0, 16)){	/* If it's -ve */
+		if (oursmall((tmpval & 0xFFFFF000) == 0, 16)) {	/* If it's -ve */
 			emit4(opc|ins|tmpval|0x010F0000);	/* PC rel, no up bit */
 			return;
 		}
 
-		if (!bflag && pass == PASS_3){	/* Debugging info */
+		if (!bflag && pass == PASS_3) {	/* Debugging info */
 			/* warning("LDR address extension"); */
 			if (dflag)
 				printf("value: %lx\n", val);
@@ -306,12 +306,12 @@ strldr(long opc, long ins, ADDR_T val)
 
 		opc = 0x03A00000;	/* Set opc for putaddr */
 
-		if (oursmall((val & 0xFFFF0000) == 0, 8)){
+		if (oursmall((val & 0xFFFF0000) == 0, 8)) {
 			putaddr(opc, ins & 0xFFBFFFFF, val, 2);
 			emit4(0x05100000|ins|reg<<4);
 			return;
 		}
-		if (oursmall((val & 0xFF000000) == 0, 4)){
+		if (oursmall((val & 0xFF000000) == 0, 4)) {
 			putaddr(opc, ins & 0xFFBFFFFF, val, 3);
 			emit4(0x05100000|ins|reg<<4);
 			return;
@@ -327,23 +327,23 @@ strldr(long opc, long ins, ADDR_T val)
    This register is saved on a stack pointed to by R12.  Apart from this
    complication, the scheme is similar to the LDR above.  */
 
-	if (opc == STR){
+	if (opc == STR) {
 		reg2 = reg >> 12;	    /* Use R6 as the second register, */
 		reg2 = (reg2 == 6 ? 0 : 6); /* or R0 if we can't */
 
 		tmpval = val - DOTVAL - 8;
-		if (oursmall((tmpval & 0xFFFFF000) == 0, 24)){	/* If it's +ve */
+		if (oursmall((tmpval & 0xFFFFF000) == 0, 24)) {	/* If it's +ve */
 			emit4(opc|ins|tmpval|0x018F0000);	/* PC rel, up bit */
 			return;
 		}
 
 		tmpval *= -1;
-		if (oursmall((tmpval & 0xFFFFF000) == 0, 24)){	/* If it's -ve */
+		if (oursmall((tmpval & 0xFFFFF000) == 0, 24)) {	/* If it's -ve */
 			emit4(opc|ins|tmpval|0x010F0000);	/* PC rel, no up bit */
 			return;
 		}
 
-		if (!bflag && pass == PASS_3){	/* Debugging info */
+		if (!bflag && pass == PASS_3) {	/* Debugging info */
 			/* warning("STR address extension"); */
 			if (dflag)
 				printf("value: %lx\n", val);
@@ -351,14 +351,14 @@ strldr(long opc, long ins, ADDR_T val)
 
 		opc = 0x03A00000;	/* Set opc for putaddr */
 
-		if (oursmall((val & 0xFFFF0000) == 0, 8)){
+		if (oursmall((val & 0xFFFF0000) == 0, 8)) {
 			emit4(0xE92C0000|1<<reg2);
 			putaddr(opc, (ins & 0xFFBF0FFF)|reg2<<12, val, 2);
 			emit4(0x05000000|ins|reg2<<16);
 			emit4(0xE8BC0000|1<<reg2);
 			return;
 		}
-		if (oursmall((val & 0xFF000000) == 0, 4)){
+		if (oursmall((val & 0xFF000000) == 0, 4)) {
 			emit4(0xE92C0000|1<<reg2);
 			putaddr(opc, (ins & 0xFFBF0FFF)|reg2<<12, val, 3);
 			emit4(0x05000000|ins|reg2<<16);
@@ -395,7 +395,7 @@ calcadr(word_t ins, word_t reg, ADDR_T val, short typ)
 	if (val < 0) 
 		tmpval = ~tmpval; /* Invert negative addresses for check */
 
-	if ((tmpval & 0xFC000000) && (typ != S_UND)){
+	if ((tmpval & 0xFC000000) && (typ != S_UND)) {
 		serror("adr address out of range");
 		return;
 	}
@@ -430,7 +430,7 @@ rotateleft2(ADDR_T *x)
 
 	bits = *x & 0xC0000000;
 	*x <<= 2 ;
-	if (bits){
+	if (bits) {
 		bits >>= 30;
 		*x |= bits;
 	}
@@ -459,7 +459,7 @@ putaddr(long opc, long ins, long val, int count)
 
 	tmpval = (val & 0x0000FF00) >> 8 | 0x00000C00;
 
-/* Decide what to use for the additional instructions */
+	/* Decide what to use for the additional instructions */
 
 	if (opc == 0x03a00000)		/* This one is for strldr */
 		opc = 0x02800000;
@@ -475,8 +475,8 @@ putaddr(long opc, long ins, long val, int count)
 	else
 		emit4(0xF0000000);	/* No-op if a zero argument */
 
-	if (count == 3 || count == 4){	/* Must use three or more instructions */
-		if ((val & 0xFFFF0000) != 0){
+	if (count == 3 || count == 4) {	/* Must use three or more instructions */
+		if ((val & 0xFFFF0000) != 0) {
 			tmpval = (val & 0x00FF0000) >> 16 | 0x00000800;
 			emit4(opc|ins|reg<<4|tmpval);
 		}
@@ -484,8 +484,8 @@ putaddr(long opc, long ins, long val, int count)
 			emit4(0xF0000000);		/* No-op */
 	}
 
-	if (count == 4){	/* Must use four instructions */
-		if ((val & 0xFF000000) != 0){
+	if (count == 4) {	/* Must use four instructions */
+		if ((val & 0xFF000000) != 0) {
 			tmpval = (val & 0xFF000000) >> 24 | 0x00000400;
 			emit4(opc|ins|reg<<4|tmpval);
 		}
@@ -565,7 +565,7 @@ oursmall(int fitsmall, int gain)
 		}
 		return(fitsmall);
 	case PASS_3:
-		if (!(fitsmall || (*p & bit) == 0)){
+		if (!(fitsmall || (*p & bit) == 0)) {
 			printf("line: %ld - small failed\n", lineno);
 			printf("fitsmall: %d bit: %d\n", fitsmall, (*p & bit));
 			if (fitsmall) 
@@ -574,9 +574,8 @@ oursmall(int fitsmall, int gain)
 				serror("This one is fatal!");
 		}
 		return(*p & bit);
-     default:
+	default:
             assert(0);
-            
 	}
 	/*NOTREACHED*/
 }

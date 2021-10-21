@@ -39,9 +39,11 @@
 %token <y_word> PSEUDOOP_FPU
 %token <y_word> PSEUDOOP_MODE
 %token <y_word> PSEUDOOP_SYNTAX
+%token <y_word> PSEUDOOP_THUMBFUNC
 
 %token <y_word> COND
 %token <y_word> LINK
+%token <y_word> EXCHANGE
 %token <y_word> BRANCH
 %token <y_word> DATA1
 %token <y_word> DATA2
@@ -61,7 +63,7 @@
 %token <y_word> MUL
 %token <y_word> MLA
 
-%type <y_word> optlink optcond opts optt optp optb optexc reglist rlist
+%type <y_word> optlink optcond optexch opts optt optp optb optexc reglist rlist
 %type <y_word> optsign optpsr optshift shftcnt address offset aoptshift
 %type <y_expr> operand
 

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 1987, 1990, 1993, 2005 Vrije Universiteit, Amsterdam, The Netherlands.
  * All rights reserved.
@@ -34,6 +33,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#define COMPAT_GAS
+
 #define LISTING
 #define THREE_PASS
 #if 0
@@ -64,10 +65,10 @@
 #define VALWIDTH	8
 
 /* Some character constants for scanner*/
-#define ASC_COMMENT     '@'
+#define ASC_COMMENT     ';'
 #define CTRL(x)         ((x) & 037)
 #define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.' || (c) == '%')
-#define ISALNUM(c)      (isalnum(c) || (c) == '_' || (c) == '.')
+#define ISALNUM(c)      (isalnum(c) || (c) == '_')
 
 #define ELFM		"%"
 
