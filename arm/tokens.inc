@@ -38,7 +38,11 @@
 %token <y_word> PSEUDOOP_EABIATTR
 %token <y_word> PSEUDOOP_FPU
 %token <y_word> PSEUDOOP_MODE
+%token <y_word> PSEUDOOP_CODE
 %token <y_word> PSEUDOOP_SYNTAX
+%token <y_word> PSEUDOOP_FUNC
+%token <y_word> PSEUDOOP_POOL
+%token <y_word> PSEUDOOP_CANTUNWIND
 %token <y_word> PSEUDOOP_THUMBFUNC
 
 %token <y_word> COND

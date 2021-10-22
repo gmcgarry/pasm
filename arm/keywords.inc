@@ -40,6 +40,11 @@
 { 0,	PSEUDOOP_FPU,		0,		".fpu"	},
 { 0,	PSEUDOOP_MODE,		MODE_ARM,	".arm"	},
 { 0,	PSEUDOOP_MODE,		MODE_THUMB,	".thumb"	},
+{ 0,	PSEUDOOP_CODE,		0,		".code"	},
+{ 0,	PSEUDOOP_FUNC,		0,		".fnstart" },
+{ 0,	PSEUDOOP_FUNC,		1,		".fnend" },
+{ 0,	PSEUDOOP_POOL,		0,		".pool" },
+{ 0,	PSEUDOOP_CANTUNWIND,	0,		".cantunwind"	},
 { 0,	PSEUDOOP_THUMBFUNC,	0,		".thumb_func"	},
 
 { 0,	COND,		0x00000000,	".EQ"	},

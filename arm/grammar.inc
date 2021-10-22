@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 1987, 1990, 1993, 2005 Vrije Universiteit, Amsterdam, The Netherlands.
  * All rights reserved.
@@ -43,8 +42,12 @@ operation
 	| PSEUDOOP_ARCH IDENT					{ setarch($2->i_name); }
 	| PSEUDOOP_FPU IDENT					{ setfpu($2->i_name); }
 	| PSEUDOOP_MODE						{ setmode($1); }
+	| PSEUDOOP_CODE NUMBER8					{ warning("ignoring .code directive"); }
 	| PSEUDOOP_SYNTAX IDENT					{ warning("ignoring .syntax directive"); }
 	| PSEUDOOP_THUMBFUNC					{ warning("ignoring .thumb_func directive"); }
+	| PSEUDOOP_FUNC						{ warning("ignoring .fnstart/.fnend directive"); }
+	| PSEUDOOP_POOL						{ warning("ignoring .pool directive"); }
+	| PSEUDOOP_CANTUNWIND					{ warning("ignoring .cantunwind directive"); }
 	| BRANCH optlink optexch expr				{ branch($1, $2, $4.val|$3); }
 	| DATA1 optcond opts optp REG ',' REG ',' operand	{ data($1,$2|$3|$4|$5<<12|$7<<16,$9.val,$9.typ); }
 	| DATA2 optcond opts optp REG ',' operand		{ data($1,$2|$3|$4|$5<<12,$7.val,$7.typ); }
