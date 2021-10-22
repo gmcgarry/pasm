@@ -526,7 +526,7 @@ innumber(int c)
 			c -= ('a' - '9' - 1);
 		c -= '0';
 		if ((unsigned)c >= radix)
-			serror("digit exceeds radix");
+			serror("digit '%c' exceeds radix %d", '0'+c, radix);
 		v = v * radix + c;
 	}
 	yylval.y_valu = v;
