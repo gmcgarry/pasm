@@ -55,21 +55,12 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_DATA,		LONGSIZE,	".long" },
 	{ 0,	PSEUDOOP_DATA8,		QUADSIZE,	".quad" },
 	{ 0,	PSEUDOOP_ZERO,		0,		".zero" },
-#if 0
-	{ 0,	PSEUDOOP_DATA,		1,		".data1" },
-	{ 0,	PSEUDOOP_DATA,		2,		".data2" },
-	{ 0,	PSEUDOOP_DATA,		4,		".data4" },
-
-	{ 0,	PSEUDOOP_DATA8,		8,		".data8" },
-	{ 0,	PSEUDOOP_DATAF,		4,		".dataf4" },
-	{ 0,	PSEUDOOP_DATAF,		8,		".dataf8" },
-#endif
 	{ 0,	PSEUDOOP_ASCII,		0,		".ascii" },
 	{ 0,	PSEUDOOP_ASCII,		1,		".asciz" },
 	{ 0,	PSEUDOOP_ASCII,		1,		".string" },
 	{ 0,	PSEUDOOP_ALIGN,		0,		".align" },
-	{ 0,	PSEUDOOP_ALIGN,		0,		".balign" },
-	{ 0,	PSEUDOOP_ALIGN,		1,		".p2align" },
+	{ 0,	PSEUDOOP_ALIGN,		0,		".p2align" },
+	{ 0,	PSEUDOOP_ALIGN,		1,		".balign" },
 	{ 0,	PSEUDOOP_ASSERT,	0,		".assert" },
 	{ 0,	PSEUDOOP_SPACE,		0,		".space" },
 	{ 0,	PSEUDOOP_SEEK,		0,		".seek" },
