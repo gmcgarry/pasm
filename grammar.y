@@ -235,8 +235,9 @@ operation: /* empty */
 							store($2, $4.val);
 						}
 	| PSEUDOOP_EXTERN externlist
-	| PSEUDOOP_ALIGN optabs			{ if (!($1)) align($2); else align(0x1<<$2); }
-	| PSEUDOOP_SPACE absexp			{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; (&sect[DOTSCT])->s_zero += $2; }
+	| PSEUDOOP_ALIGN optabs				{ if ($1) align($2, 0, 0); else align(1<<$2, 0, 0); }
+	| PSEUDOOP_ALIGN absexp ',' optabs optsize	{ if ($1) align($2, $4, $5); else align(1<<$2, $4, $5); }
+	| PSEUDOOP_SPACE absexp				{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; (&sect[DOTSCT])->s_zero += $2; }
 	| PSEUDOOP_SEEK absexp			{
 							if (DOTSCT == S_UND)
 								nosect();
@@ -332,6 +333,7 @@ optabs : /* empty */				{ $$ = 0; }
 
 optsize : /* empty */				{ $$ = 1; }
 	| ',' absexp				{ $$ = $2; }
+	;
 
 /* ========== Machine dependent rules ========== */
 

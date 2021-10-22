@@ -342,7 +342,7 @@ void	 newsect(item_t *, int, const char*);
 void	 newbase(ADDR_T);
 void	 newcomm(item_t *, ADDR_T);
 void	 switchsect(int);
-void	 align(ADDR_T);
+void	 align(int, int, int);
 void	 newrelo(int, int);
 long	 new_string(const char *);
 void	 newsymb(const char *, int, ADDR_T);
