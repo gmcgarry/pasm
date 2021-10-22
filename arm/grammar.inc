@@ -37,10 +37,10 @@
 #define armonly()	do { if (mode != MODE_ARM) serror("invalid thumb instruction in arm mode"); } while (0)
 
 operation
-	: PSEUDOOP_CPU IDENT 					{ setcpu($2->i_name); }
-	| PSEUDOOP_EABIATTR NUMBER8 ',' NUMBER8			{ warning("ignoring .eabi directive"); }
-	| PSEUDOOP_ARCH IDENT					{ setarch($2->i_name); }
+	: PSEUDOOP_ARCH IDENT					{ setarch($2->i_name); }
+	| PSEUDOOP_CPU IDENT 					{ setcpu($2->i_name); }
 	| PSEUDOOP_FPU IDENT					{ setfpu($2->i_name); }
+	| PSEUDOOP_EABIATTR NUMBER8 ',' NUMBER8			{ warning("ignoring .eabi directive"); }
 	| PSEUDOOP_MODE						{ setmode($1); }
 	| PSEUDOOP_CODE NUMBER8					{ warning("ignoring .code directive"); }
 	| PSEUDOOP_SYNTAX IDENT					{ warning("ignoring .syntax directive"); }
