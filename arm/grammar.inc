@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 1987, 1990, 1993, 2005 Vrije Universiteit, Amsterdam, The Netherlands.
  * All rights reserved.
@@ -34,22 +33,35 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define thumbonly()	do { if (mode != MODE_THUMB) serror("invalid arm instruction in thumb mode"); } while (0)
-#define armonly()	do { if (mode != MODE_ARM) serror("invalid thumb instruction in arm mode"); } while (0)
+#define thumbonly()	do { if (mode != MODE_THUMB) serror("invalid thumb instruction in arm mode"); } while (0)
+#define armonly()	do { if (mode != MODE_ARM) serror("invalid arm instruction in thumb mode"); } while (0)
 
 operation
-	: PSEUDOOP_CPU IDENT 					{ setcpu($2->i_name); }
-	| PSEUDOOP_EABIATTR NUMBER8 ',' NUMBER8			{ warning("ignoring .eabi directive"); }
-	| PSEUDOOP_ARCH IDENT					{ setarch($2->i_name); }
+	: PSEUDOOP_ARCH IDENT					{ setarch($2->i_name); }
+	| PSEUDOOP_CPU IDENT 					{ setcpu($2->i_name); }
 	| PSEUDOOP_FPU IDENT					{ setfpu($2->i_name); }
+	| PSEUDOOP_EABIATTR NUMBER8 ',' NUMBER8			{ warning("ignoring .eabi directive"); }
 	| PSEUDOOP_MODE						{ setmode($1); }
+	| PSEUDOOP_CODE NUMBER8					{ warning("ignoring .code directive"); }
 	| PSEUDOOP_SYNTAX IDENT					{ warning("ignoring .syntax directive"); }
 	| PSEUDOOP_THUMBFUNC					{ warning("ignoring .thumb_func directive"); }
+#ifdef notyet
+	| PSEUDOOP_FUNC						{ warning("ignoring .fnstart/.fnend directive"); }
+	| PSEUDOOP_POOL						{ warning("ignoring .pool directive"); }
+	| PSEUDOOP_CANTUNWIND					{ warning("ignoring .cantunwind directive"); }
+#endif
 	| BRANCH optlink optexch expr				{ branch($1, $2, $4.val|$3); }
 	| DATA1 optcond opts optp REG ',' REG ',' operand	{ data($1,$2|$3|$4|$5<<12|$7<<16,$9.val,$9.typ); }
+#ifdef COMPAT_GAS /* XXXGJM probably thumb */
+	| DATA1 optcond opts optp REG ',' operand		{ data($1,$2|$3|$4|$5<<12|$5<<16,$7.val,$7.typ); }
+#endif
 	| DATA2 optcond opts optp REG ',' operand		{ data($1,$2|$3|$4|$5<<12,$7.val,$7.typ); }
 	| DATA3 optcond opts optp REG ',' operand		{ data($1,$2|$3|$4|$5<<16,$7.val,$7.typ); }
 	| SDT optcond optb optt REG ',' address			{ strldr($1,$2|$3|$4|$5<<12,$7); }
+#if 0
+	/* LDRD/STRD */
+	| SDT optcond optb optt REG ',' REG ',' address		{ if ($5 != $7+1) serror("bad registers"); strldr($1,$2|$3|$4|$5<<12,$9); }
+#endif
 	| BDT optcond REG optexc ',' reglist optpsr		{ armonly(); emit4($1|$2|$3<<16|$4|$6|$7); }
 	| SWI optcond expr					{ armonly(); emit4($1|$2|$3.val); }
 	| ADR optcond REG ',' expr				{ calcadr($2,$3,$5.val,$5.typ); }
@@ -116,6 +128,9 @@ shftcnt	: '#' expr			{ $$ = calcshft($2.val, $2.typ, $<y_word>0); }
 	;
 
 address	: expr					{ success = 0; $$ = $1.val; }
+#ifdef notyet
+	| '=' expr				{ success = 0; $$ = $2.val; }
+#endif
 	| '[' REG ']'				{ success = 1; $$ = 0x01000000|$2<<16; }
 	| '[' REG ',' offset ']' optexc		{ success = 1; $$ = $2<<16|$4|$6|0x01000000; }
 	| '[' REG ']' ',' offset		{ success = 1; $$ = $2<<16|$5; }

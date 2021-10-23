@@ -66,9 +66,10 @@
 
 /* Some character constants for scanner*/
 #define ASC_COMMENT     ';'
+#define ASC2_COMMENT	'@'
 #define CTRL(x)         ((x) & 037)
 #define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.' || (c) == '%')
-#define ISALNUM(c)      (isalnum(c) || (c) == '_')
+#define ISALNUM(c)      (isalnum(c) || (c) == '_' || (c) == '.')
 
 #define ELFM		"%"
 

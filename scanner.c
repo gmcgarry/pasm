@@ -103,6 +103,9 @@ yylex(void)
 					c = instring(c);
 					break;
 #ifdef ASC_COMMENT
+#ifdef ASC2_COMMENT
+				case ASC2_COMMENT:
+#endif
 				case ASC_COMMENT:
 					do
 						c = nextchar();

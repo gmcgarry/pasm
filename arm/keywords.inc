@@ -40,7 +40,36 @@
 { 0,	PSEUDOOP_FPU,		0,		".fpu"	},
 { 0,	PSEUDOOP_MODE,		MODE_ARM,	".arm"	},
 { 0,	PSEUDOOP_MODE,		MODE_THUMB,	".thumb"	},
+{ 0,	PSEUDOOP_CODE,		0,		".code"	},
 { 0,	PSEUDOOP_THUMBFUNC,	0,		".thumb_func"	},
+#if notyet
+{ 0,	PSEUDOOP_FUNC,		0,		".fnstart" },
+{ 0,	PSEUDOOP_FUNC,		1,		".fnend" },
+{ 0,	PSEUDOOP_POOL,		0,		".pool" },
+{ 0,	PSEUDOOP_CANTUNWIND,	0,		".cantunwind"	},
+#endif
+
+{ 0,	REG,		0,		"R0"	},
+{ 0,	REG,		1,		"R1"	},
+{ 0,	REG,		2,		"R2"	},
+{ 0,	REG,		3,		"R3"	},
+{ 0,	REG,		4,		"R4"	},
+{ 0,	REG,		5,		"R5"	},
+{ 0,	REG,		6,		"R6"	},
+{ 0,	REG,		7,		"R7"	},
+{ 0,	REG,		8,		"R8"	},	/* not thumb */
+{ 0,	REG,		9,		"R9"	},	/* not thumb */
+{ 0,	REG,		10,		"R10"	},	/* not thumb */
+{ 0,	REG,		11,		"R11"	},	/* not thumb */
+{ 0,	REG,		11,		"FP"	},	/* not thumb */
+{ 0,	REG,		12,		"R12"	},	/* not thumb */
+{ 0,	REG,		12,		"IP"	},	/* not thumb */
+{ 0,	REG,		13,		"R13"	},
+{ 0,	REG,		13,		"SP"	},
+{ 0,	REG,		14,		"R14"	},
+{ 0,	REG,		14,		"LR"	},
+{ 0,	REG,		15,		"R15"	},
+{ 0,	REG,		15,		"PC"	},
 
 { 0,	COND,		0x00000000,	".EQ"	},
 { 0,	COND,		0x10000000,	".NE"	},
@@ -66,6 +95,12 @@
 
 { 0,	BRANCH,		0xEA000000,	"B"	},
 
+#if 0
+{ 0,	BX,		0xEA000000,	"BX"	},
+{ 0,	BX,		0xEB000000,	"BLX"	},
+#endif
+
+#ifdef COMPAT_GAS
 { 0,	BRANCH,		0x0A000000,	"BEQ"	},
 { 0,	BRANCH,		0x1A000000,	"BNE"	},
 { 0,	BRANCH,		0x2A000000,	"BCS"	},
@@ -104,10 +139,6 @@
 { 0,	BRANCH,		0xEB000000,	"BLAL"	},
 { 0,	BRANCH,		0xEB000000,	"BL"	},
 { 0,	BRANCH,		0xFB000000,	"BLNV"	},
-
-#if 0
-{ 0,	BX,		0xEA000000,	"BX"	},
-{ 0,	BX,		0xEB000000,	"BLX"	},
 #endif
 
 { 0,	DATA1,		ADC,		"ADC"	},
@@ -127,34 +158,31 @@
 { 0,	DATA3,		TEQ,		"TEQ"	},
 { 0,	DATA3,		TST,		"TST"	},
 
+#ifdef COMPAT_GAS
+{ 0,	DATA1,		0x00100000|ADC,	"ADCS"	},
+{ 0,	DATA1,		0x00100000|ADD,	"ADDS"	},
+{ 0,	DATA1,		0x00100000|AND,	"ANDS"	},
+{ 0,	DATA1,		0x00100000|BIC,	"BICS"	},
+{ 0,	DATA1,		0x00100000|EOR,	"EORS"	},
+{ 0,	DATA1,		0x00100000|ORR,	"ORRS"	},
+{ 0,	DATA1,		0x00100000|RSB,	"RSBS"	},
+{ 0,	DATA1,		0x00100000|RSC,	"RSCS"	},
+{ 0,	DATA1,		0x00100000|SBC,	"SBCS"	},
+{ 0,	DATA1,		0x00100000|SUB,	"SUBS"	},
+{ 0,	DATA2,		0x00100000|MOV,	"MOVS"	},
+{ 0,	DATA2,		0x00100000|MVN,	"MVNS"	},
+{ 0,	DATA3,		0x00100000|CMN,	"CMNS"	},
+{ 0,	DATA3,		0x00100000|CMP,	"CMPS"	},
+{ 0,	DATA3,		0x00100000|TEQ,	"TEQS"	},
+{ 0,	DATA3,		0x00100000|TST,	"TSTS"	},
+#endif
+
 { 0,	DATA2,		0xB0000000|MOV,	"MOVLT"	},
 { 0,	DATA2,		0xA0000000|MOV,	"MOVGE"	},
 { 0,	DATA2,		0xC0000000|MOV,	"MOVGT"	},
 
 { 0,	SET,		0x00100000,	".S"	},	/* thumb? */
 { 0,	PEE,		0x0010F000,	".P"	},
-
-{ 0,	REG,		0,		"R0"	},
-{ 0,	REG,		1,		"R1"	},
-{ 0,	REG,		2,		"R2"	},
-{ 0,	REG,		3,		"R3"	},
-{ 0,	REG,		4,		"R4"	},
-{ 0,	REG,		5,		"R5"	},
-{ 0,	REG,		6,		"R6"	},
-{ 0,	REG,		7,		"R7"	},
-{ 0,	REG,		8,		"R8"	},	/* not thumb */
-{ 0,	REG,		9,		"R9"	},	/* not thumb */
-{ 0,	REG,		10,		"R10"	},	/* not thumb */
-{ 0,	REG,		11,		"R11"	},	/* not thumb */
-{ 0,	REG,		11,		"FP"	},	/* not thumb */
-{ 0,	REG,		12,		"R12"	},	/* not thumb */
-{ 0,	REG,		12,		"IP"	},	/* not thumb */
-{ 0,	REG,		13,		"R13"	},
-{ 0,	REG,		13,		"SP"	},
-{ 0,	REG,		14,		"R14"	},
-{ 0,	REG,		14,		"LR"	},
-{ 0,	REG,		15,		"R15"	},
-{ 0,	REG,		15,		"PC"	},
 
 { 0,	SHIFT,		0x00000000,	"LSL"	},
 { 0,	SHIFT,		0x00000000,	"ASL"	},
@@ -176,6 +204,8 @@
 { 0,	SDT,		0x04400000,	"STRB"	},
 { 0,	SDT,		0x005000B0,	"LDRH"	}, /* XXXGJM needs special handling */
 { 0,	SDT,		0x004000B0,	"STRH"	}, /* XXXGJM needs special handling */
+{ 0,	SDT,		0x000000D0,	"LDRD"	}, /* ARMv5TE */
+{ 0,	SDT,		0x000000F0,	"STRD"	}, /* ARMv5TE */
 #endif
 
 { 0,	BDT,		0x09100000,	"LDMDB"	},
@@ -204,5 +234,5 @@
 { 0,	MLA,		0x00200090,	"MLA"	},
 
 /* thumb instructions */
-{ 0, 		STACK,		0xB400,		"PUSH"	},	/* thumb */
-{ 0, 		STACK,		0xBC00,		"POP"	},	/* thumb */
+{ 0,	STACK,		0xB400,		"PUSH"	},	/* thumb */
+{ 0, 	STACK,		0xBC00,		"POP"	},	/* thumb */

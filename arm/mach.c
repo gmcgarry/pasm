@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 1987, 1990, 1993, 2005 Vrije Universiteit, Amsterdam, The Netherlands.
  * All rights reserved.
@@ -35,6 +34,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 #include "as.h"
@@ -60,22 +60,34 @@ machfinish(int pass)
 }
 
 void
-setcpu(const char* id)
+setcpu(const char* cpu)
 {
-	warning("ignoring .cpu directive");
+	if (strcmp(cpu, "arm7tdmi") == 0)
+		warning("thumb instructions not supported for arm7tdmi");
+	warning("ignoring .cpu directive (%s)", cpu);
 }
 
 void
-setarch(const char* id)
+setarch(const char* arch)
 {
-	warning("ignoring .arch directive");
+	/* armv2 armv2a
+	 * armv3 armv3m
+	 * armv4 armv4t
+	 * armv5 armv5e armv5t armv5te
+	 * armv6 armv6-m armv6j armv6k armv6s-m armv6t2 armv6z armv6zk
+	 * armv7 armv7-a armv7-m armv7-r armv7e-m
+	 */
+	if (strcmp(arch, "armv2") != 0 &&
+	    strcmp(arch, "armv3") != 0 &&
+	    strcmp(arch, "armv4") != 0 &&
+	    strcmp(arch, "armv5") != 0)
+		fatal("unsupported '%s' ISA", arch);
 }
-
 
 void
 setfpu(const char* fpu)
 {
-	warning("ignoring .fpu directive");
+	warning("ignoring .fpu directive (%s)", fpu);
 }
 
 void

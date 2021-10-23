@@ -240,10 +240,11 @@ switchsect(int sectno)
 }
 
 void
-align(ADDR_T bytes)
+align(int bytes, int padding, int maxpadding)
 {
 	ADDR_T gap;
 	sect_t *sp;
+	int i;
 
 	if (DOTSCT == S_UND)
 		nosect();
@@ -269,15 +270,23 @@ align(ADDR_T bytes)
 		if ((gap = DOTVAL % bytes) != 0)
 			gap = bytes - gap;
 #ifdef THREE_PASS
-		if (pass == PASS_2)
+		if (pass == PASS_2) {
 			/*
 			 * keep track of gain with respect to PASS_1
 			 */
+			if (gap > maxpadding)
+				gap = 0;
 			sect[DOTSCT].s_gain += (bytes - 1) - gap;
+		}
 #endif
 	}
-	DOTVAL += gap;
-	sp->s_zero += gap;
+	if (padding) {
+		for (i = 0; i < gap; i++)
+			emit1(padding);
+	} else {
+		DOTVAL += gap;
+		sp->s_zero += gap;
+	}
 }
 
 

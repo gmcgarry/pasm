@@ -1,5 +1,40 @@
+ISA:
 
-ARM:
+armv1:	as found in the ARM1 custom chips as a second processor of the BBC micro (1985)
+armv2:	as found in the ARM2 (no cache) boards (1986)
+	- 32-bit data bus, 26-bit address space, 27 32-bit registers
+	- added the MUL instruction
+armv2a:	as found in ARM3 (4KB cache) boards
+	- integrated MMU, graphics and I/O processor
+	- added SWP and SWPB instructions
+armv3:	as found in the ARM6, ARM7 systems (1992)
+	- 32-bit data bus, 32-bit address space
+armv3m
+armv4t:	as found in ARM7/ARM9T systems
+	- thumb instructions
+armv4:	as found in the ARM8 systems
+armv5t:	as found in ARM7E/ARM9E systems
+armv5e:	enhanced DSP
+armv5te:thumb and enhanced DSP
+armv5:
+
+
+armv6L
+ armv6-m
+ armv6j
+ armv6k
+ armv6s-m
+ armv6t2
+ armv6z
+ armv6zk
+armv7
+ armv7-a
+ armv7-m
+ armv7-r
+ armv7e-m
+
+
+ARM ISA:
 
  3 3 2 2 | 2 | 2 | 2 | 2 2 2 2 | 2 | 1 1 1 1 | 1 1 1 1 | 1 1 9 8 7 6 5 4 3 2 1 0
  1 0 9 8 | 7 | 6 | 5 | 4 3 2 1 | 0 | 9 8 7 6 | 5 4 3 2 | 1 0
@@ -36,12 +71,12 @@ W	: write-back bit; 0=none; 1=wriate address into base
 U	; up/down bit: 0=down, 1=up
 
 
-THUMB:
+THUMB ISA:
 
  1 1 1 1 1 1 9 8 7 6 5 4 3 2 1 0
  5 4 3 2 1 0
 
- --opcode--- --operands-----------	| general encoding
+ --opcode--- --operands---------	| general encoding
 
  0 0 -opcode--				| shift immediate, add, subtract, move & compare
  0 1 0 0 0 0 -opc---			| data processing
