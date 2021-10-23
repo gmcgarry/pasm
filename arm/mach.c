@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 1987, 1990, 1993, 2005 Vrije Universiteit, Amsterdam, The Netherlands.
  * All rights reserved.
@@ -63,7 +62,9 @@ machfinish(int pass)
 void
 setcpu(const char* cpu)
 {
-	warning("ignoring .cpu directive");
+	if (strcmp(cpu, "arm7tdmi") == 0)
+		warning("thumb instructions not supported for arm7tdmi");
+	warning("ignoring .cpu directive (%s)", cpu);
 }
 
 void
@@ -86,7 +87,7 @@ setarch(const char* arch)
 void
 setfpu(const char* fpu)
 {
-	warning("ignoring .fpu directive");
+	warning("ignoring .fpu directive (%s)", fpu);
 }
 
 void
