@@ -1,3 +1,5 @@
+/* https://github.com/jameslzhu/riscv-card/blob/master/riscv-card.pdf */
+
 { 0,	REG,	0,			"x0" },
 { 0,	REG,	1,			"x1" },
 { 0,	REG,	2,			"x2" },
@@ -75,7 +77,7 @@
 /* base instructions */
 
 /* func7 rs2 rs1 func3 rd opcode */
-/* 77777772222211111333dddddooooooo
+/* 77777772222211111333dddddooooooo */
 { 0,	RTYPE,	0x00000033,		"add"	},	/* DONE */
 { 0,	RTYPE,	0x00007033,		"and"	},	/* DONE */
 { 0,	RTYPE,	0x00006033,		"or"	},	/* DONE */
@@ -97,7 +99,7 @@
 { 0,	RTYPE,	0x00107033,		"remu"	},	/* DONE */
 
 { 0,	RTYPE,	0x1000202F,		"lr"	},	/* DONE */
-{ 0,	RTYPE,	0x1800202F,		"sr"	},	/* DONE 
+{ 0,	RTYPE,	0x1800202F,		"sr"	},	/* DONE */
 { 0,	RTYPE,	0x0800202F,		"amoswap"	},	/* DONE */
 { 0,	RTYPE,	0x0000202F,		"amoadd"	},	/* DONE */
 { 0,	RTYPE,	0x6000202F,		"amoand"	},	/* DONE */
