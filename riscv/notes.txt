@@ -1,0 +1,64 @@
+
+
+/* base instructions */
+
+/* func7 rs2 rs1 func3 rd opcode */
+/* 77777772222211111333dddddooooooo
+{ 0,	RTYPE,	0x0000703F,		"add"	},
+{ 0,	RTYPE,	0x0000703F,		"slt"	},
+{ 0,	RTYPE,	0x0000703F,		"sltu"	},
+{ 0,	RTYPE,	0x0000703F,		"and"	},
+{ 0,	RTYPE,	0x0000703F,		"or"	},
+{ 0,	RTYPE,	0x0000703F,		"xor"	},
+{ 0,	RTYPE,	0x0000703F,		"sll"	},
+{ 0,	RTYPE,	0x0000703F,		"srl"	},
+{ 0,	RTYPE,	0x0000703F,		"sub"	},
+{ 0,	RTYPE,	0x4000703F,		"sra"	},
+
+
+/* imm[11:0] rs1 func3 rd opcode */
+/* iiiiiiiiiiii11111333dddddooooooo */
+{ 0,	ITYPE,	0x0000703F,		"addi"	},
+{ 0,	ITYPE,	0x0000703F,		"slti"	},
+{ 0,	ITYPE,	0x0000703F,		"sltiu"	},
+{ 0,	ITYPE,	0x0000703F,		"andi"	},
+{ 0,	ITYPE,	0x0000703F,		"ori"	},
+{ 0,	ITYPE,	0x0000703F,		"xori"	},
+{ 0,	ITYPE,	0x0000703F,		"slli"	},
+{ 0,	ITYPE,	0x0000703F,		"srli"	},
+{ 0,	ITYPE,	0x0000703F,		"srai"	},
+{ 0,	ITYPE,	0x0000703F,		"jalr"	},
+{ 0,	ITYPE,	0x0000703F,		"load"	},
+
+/* imm[11:5] rs2 rs1 func3 imm[4:0] opcode */
+/* iiiiiii2222211111333iiiiiooooooo */
+{ 0,	STYPE,	0x0000703F,		"store"	},
+
+/* imm[12] imm[10:5] rs2 rs1 func3 imm[4:1] imm[11] opcode */
+/* iiiiiii2222211111333iiiiiooooooo */
+{ 0,	BTYPE,	0x00000000,		"b"	},
+
+{ 0,	BTYPE,	0x0007003F,		"beq"	},
+{ 0,	BTYPE,	0x0007003F,		"bne"	},
+{ 0,	BTYPE,	0x0007003F,		"blt"	},
+{ 0,	BTYPE,	0x0007003F,		"bltu"	},
+{ 0,	BTYPE,	0x0007003F,		"bgeu"	},
+
+/* imm[31:12] rd opcode */
+/* iiiiiiiiiiiiiiiiiiiidddddooooooo */
+{ 0,	UTYPE,	0x00000000,		"u"	},
+
+/* imm[20] imm[10:1] imm[11] imm[19:12] rd opcode */
+/* iiiiiiiiiiiiiiiiiiiidddddooooooo */
+{ 0,	JTYPE,	0x0000003F,		"j"	},
+{ 0,	JTYPE,	0x0000003F,		"jal"	},
+
+
+
+{ 0,	IMPL,	0x0000703F,		"nop"	},
+
+
+
+
+{ 0,	UTYPE,	0x0000003F,		"lui"	},
+{ 0,	UTYPE,	0x0000003F,		"auipc"	},
