@@ -33,15 +33,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define A	0
-#define X	1
-#define Y	2
-#define XL	3
-#define YL	4
-#define SP	5
+#define DEVICE_UNKNOWN	0
+#define DEVICE_MC6805	1
+#define DEVICE_ST7	2
+#define DEVICE_STM8	3
+
+extern int deviceid;
 
 #define fitj(z)	((unsigned)z + 0x80 <= 0xFF)
 
 void branch(int opc, expr_t exp, expr_t cell);
-
-void setdevice(const char *name);

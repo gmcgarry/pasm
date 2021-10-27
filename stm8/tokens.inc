@@ -33,18 +33,22 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-%token <y_word> REG
+%token <y_word> A X Y XH XL YH YL SP
 %token <y_word> NOARG
 %token <y_word> BRANCH
 %token <y_word> BBRANCH
 %token <y_word> BIT
 %token <y_word> RMR
 %token <y_word> RM
+%token <y_word> WOP
+%token <y_word> CPW
 %token <y_word> TWOREG
 %token <y_word> MOV LD LDW LDF
-%token PSEUDOOP_STM8
+%token <y_word> PSEUDOOP_DEVICE
 %token PSEUDOOP_SEGMENT
+%token WIDE
+%type <y_word> reg16
 %type <y_expr> expr8
+%type <y_expr> expr16
 %type <y_valu> bitexp
-%type <y_word> ireg
-%type <y_word> acc
+%type <y_expr> direct immediate imm8 indexedX indexedY indexedSP indirect indirect_indexedX indirect_indexedY

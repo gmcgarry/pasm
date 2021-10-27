@@ -36,6 +36,8 @@
 #include "as.h"
 #include "mach.h"
 
+int deviceid = DEVICE_UNKNOWN;
+
 extern sect_t sect[];
 
 void
@@ -100,9 +102,4 @@ void branch(int opc, expr_t exp, expr_t cell)
 #endif
 		emit2(exp.val);
 	}
-}
-
-void
-setdevice(const char *name)
-{
 }
