@@ -50,9 +50,12 @@ operation
 	| PSEUDOOP_POOL						{ warning("ignoring .pool directive"); }
 	| PSEUDOOP_CANTUNWIND					{ warning("ignoring .cantunwind directive"); }
 #endif
-	| BRANCH optlink optexch expr				{ branch($1, $2, $4.val|$3); }
+#ifdef COMPAT_GAS
+	| BRANCH optlink optexch expr				{ branch($1,$2,$4.val|$3); }
+#endif
+	| DATA1 optcond optlink optexch expr			{ branch($1|$2,$2,$5.val|$3); }
 	| DATA1 optcond opts optp REG ',' REG ',' operand	{ data($1,$2|$3|$4|$5<<12|$7<<16,$9.val,$9.typ); }
-#ifdef COMPAT_GAS /* XXXGJM probably thumb */
+#ifdef notyet
 	| DATA1 optcond opts optp REG ',' operand		{ data($1,$2|$3|$4|$5<<12|$5<<16,$7.val,$7.typ); }
 #endif
 	| DATA2 optcond opts optp REG ',' operand		{ data($1,$2|$3|$4|$5<<12,$7.val,$7.typ); }
