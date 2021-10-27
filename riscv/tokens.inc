@@ -1,5 +1,17 @@
-%token <y_word> ITYPE RTYPE STYPE BTYPE UTYPE JTYPE
-%token <y_word> REG CSR
-%token <y_word> IMPL
+%token <y_word> CSRR CSRW CSRWI
+%token <y_word> IMPLICIT
+%token <y_word> JALR JR
+%token <y_word> JAL JUMP
+%token <y_word> BRANCH BRANCHZ BRANCHSW BRANCHZSW
+%token <y_word> LOGICOP NEG
 
-%type <y_expr> imm12 imm13 imm20
+%token <y_word> ITYPE RTYPE STYPE UTYPE JTYPE
+%token <y_word> REG CSR
+
+%token <y_word> SIZE
+
+%token <y_word> ADDR LI
+%token <y_word> ITYPE_NODST
+
+%type <y_word> optsz
+%type <y_expr> imm5 imm12 imm13 imm20 imm21
