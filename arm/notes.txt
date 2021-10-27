@@ -67,8 +67,8 @@ I	: immediate flag; 0=operand2 is shift+register, 1=operand2 is immediate
 L	: link bit; 0=branch, 1=banch-with-link
 P	: indexing bit; 0=post; 1=pre
 S	: set condition codes; 0=do not set, 1=set condition codes
-W	: write-back bit; 0=none; 1=wriate address into base
-U	; up/down bit: 0=down, 1=up
+W	: write-back bit; 0=none; 1=write address into base
+U	; up/down bit (for post-increment): 0=down, 1=up
 
 
 THUMB ISA:
