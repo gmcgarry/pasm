@@ -9,8 +9,8 @@ operation
 	| JTYPE optsz REG ',' imm20		{ emit4($1); }
 
 	| ITYPE_NODST REG ',' imm12		{ emit4($1); }
-	| LI REG ',' expr			{ emit4($1); }
-	| LA REG ',' expr			{ emit4(0x27|RD($2)|($4.val&0xFFFFF000)); emit4(0x13|RD($2)|RS1($2)|IMM12I($4.val&0xFFF)); }
+	| LI REG ',' expr			{ emit4(0x37|RD($2)|($4.val&0xFFFFF000)); emit4(0x13|RD($2)|RS1($2)|IMM12I($4.val&0xFFF)); }
+	| LA REG ',' expr			{ emit4(0x17|RD($2)|($4.val&0xFFFFF000)); emit4(0x13|RD($2)|RS1($2)|IMM12I($4.val&0xFFF)); }
 	| CSR REG				{ /* csrrs($2, $2, x0) */ }
 
 	| IMPLICIT				{ emit4($1); }
@@ -22,9 +22,9 @@ operation
 	| JALR REG				{ emit4($1|RD(1)|RS1($1)|IMM12I(0)); }
 	| JR imm12 '(' REG ')'			{ emit4($1|RD(0)|RS1($4)|IMM12I($2.val)); }
 	| JR REG				{ emit4($1|RD(0)|RS1($1)|IMM12I(0)); }
-	| JAL REG ',' imm21			{ emit4($1|RD($1)|IMM20J($4.val>>1)); }
-	| JAL imm21				{ emit4($1|RD(1)|IMM20J($2.val>>1)); }
-	| JUMP imm21				{ emit4($1|RD(0)|IMM20J($2.val>>1)); }
+	| JAL REG ',' offset21			{ emit4($1|RD($1)|IMM20J($4.val)); }
+	| JAL offset21				{ emit4($1|RD(1)|IMM20J($2.val)); }
+	| JUMP offset21				{ emit4($1|RD(0)|IMM20J($2.val)); }
 	| BRANCH REG ',' REG ',' imm13		{ emit4($1|RS1($2)|RS2($4)|IMM13B($6.val)); }
 	| BRANCHSW REG ',' REG ',' imm13	{ emit4($1|RS1($4)|RS2($2)|IMM13B($6.val)); }
 	| BRANCHZ REG ',' imm13			{ emit4($1|RS1($2)|RS2(0)|IMM13B($4.val)); }
@@ -51,4 +51,8 @@ imm20	: expr		{ $$ = $1; }
 	;
 
 imm21	: expr		{ $$ = $1; /* LSB must be 0 */}
+	;
+
+offset21
+	: expr		{ $$.typ = S_ABS; $$.val = ($1.val - DOTVAL); }
 	;

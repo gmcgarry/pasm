@@ -14,4 +14,4 @@
 %token <y_word> ITYPE_NODST
 
 %type <y_word> optsz
-%type <y_expr> imm5 imm12 imm13 imm20 imm21
+%type <y_expr> imm5 imm12 imm13 imm20 imm21 offset21

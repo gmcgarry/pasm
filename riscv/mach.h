@@ -1,14 +1,14 @@
-#define RS1(x)		((x) << 14)
-#define RS2(x)		((x) << 19)
-#define RD(x)		((x) << 6)
-#define FUNC3(x)	((x) << 11)
-#define FUNC7(x)	((x) << 24)
+#define RS1(x)		((x) << 15)
+#define RS2(x)		((x) << 20)
+#define RD(x)		((x) << 7)
+#define FUNC3(x)	((x) << 12)
+#define FUNC7(x)	((x) << 25)
 
-#define IMM12I(x)	((x) << 19)
-#define IMM12S(x)	((((x) & 0xfe0) << 19) | (((x) & 0x1f) << 6))
-#define IMM13B(x)	((((x) & 0x1000) << 19) | (((x) & 0x3e0) << 19) | (((x) & 0x1e) << 6) | (((x) & 0x800) >> 4))
-#define IMM20U(x)	((x) << 11)
-#define IMM20J(x)	((((x) & 0x100000) << 7) | (((x) & 0x3fe) << 20) | (((x) & 0x800) << 8) | ((x) & 0xff000))
+#define IMM12I(x)	RS2(x)
+#define IMM12S(x)	FUNC7((x) & 0xfe0) | RD((x) & 0x1f)
+#define IMM13B(x)	FUNC7((x) & 0x1000) | FUNC7((x) & 0x3e0) | RD((x) & 0x1e) | (((x) & 0x800) >> 4)
+#define IMM20U(x)	FUNC3(x)
+#define IMM20J(x)	(((x) & 0x100000) << 11) | (((x) & 0x7fe) << 20) | (((x) & 0x800) << 9) | ((x) & 0xff000)
 
 
 /* func7 rs2 rs1 func3 rd opcode */
@@ -38,5 +38,5 @@
 
 /* imm[20] imm[10:1] imm[11] imm[19:12] rd opcode */
 /* iiiiiiiiiiiiiiiiiiiidddddooooooo */
-#define jtype(imm20, rd, opcode) \
-		IMM20J(imm20) | RD(rd) | opcode
+#define jtype(imm21, rd, opcode) \
+		IMM20J(imm21) | RD(rd) | opcode
