@@ -1,4 +1,4 @@
-%token <y_word> CSRR CSRW CSRWI
+%token <y_word> CSRR CSRW
 %token <y_word> IMPLICIT
 %token <y_word> JALR JR
 %token <y_word> JAL JUMP
@@ -10,7 +10,7 @@
 
 %token <y_word> SIZE
 
-%token <y_word> ADDR LI
+%token <y_word> LI LA
 %token <y_word> ITYPE_NODST
 
 %type <y_word> optsz

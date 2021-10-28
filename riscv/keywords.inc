@@ -72,17 +72,31 @@
 { 0,	SIZE,		4,			".d"	},
 
 
+{ 0,	CSR,		0x000,			"ustatus"	},
 { 0,	CSR,		0x001,			"fflags"	},
 { 0,	CSR,		0x002,			"frm"	},
 { 0,	CSR,		0x003,			"fcsr"	},
 
+{ 0,	CSR,		0x100,			"sstatus"	},
+{ 0,	CSR,		0x104,			"sie"	},
+{ 0,	CSR,		0x105,			"stvec"	},
+{ 0,	CSR,		0x140,			"sscratch"	},
+{ 0,	CSR,		0x141,			"sepc"	},
+{ 0,	CSR,		0x142,			"scause"	},
+
 { 0,	CSR,		0x300,			"mstatus"	},
 { 0,	CSR,		0x301,			"misa"	},
+{ 0,	CSR,		0x302,			"medeleg"	},
+{ 0,	CSR,		0x302,			"mideleg"	},
 { 0,	CSR,		0x304,			"mie"	},
 { 0,	CSR,		0x305,			"mtvec"	},
 { 0,	CSR,		0x320,			"mcountinhibit"	},
 { 0,	CSR,		0x320,			"mucounteren"	},	/* XXXGJM: v1.1 */
 /* 0x323 - 0x33F mhpmevent */
+{ 0,	CSR,		0x341,			"mepc"	},
+{ 0,	CSR,		0x342,			"mcause"	},
+{ 0,	CSR,		0x7D0,			"mmisc_ctl"	},
+
 { 0,	CSR,		0xC00,			"cycle"	},
 { 0,	CSR,		0xC01,			"time"	},
 { 0,	CSR,		0xC02,			"instret"	},
@@ -239,22 +253,22 @@
 { 0,	IMPLICIT,	itype(0x000,0,0,0,0x13),	"nop"	},	/* DONE */
 { 0,	IMPLICIT,	itype(0x000,1,0,0,0x6E),	"ret"	},	/* DONE */
 
-
-/* op csr, imm12 */
-{ 0,	CSRWI,		itype(0x000,0,5,0,0x73),	"csrwi"	},	/* DONE */
-{ 0,	CSRWI,		itype(0x000,0,6,0,0x73),	"csrsi"	},	/* DONE */
-{ 0,	CSRWI,		itype(0x000,0,7,0,0x73),	"csrci"	},	/* DONE */
-
-/* op rd, csr */
-{ 0,	CSRR,		itype(0x000,0,2,0,0x73),	"csrr"	},	/* DONE */
-
 /* op csr, rs */
 { 0,	CSRW,		itype(0x000,0,1,0,0x73),	"csrw"	},	/* DONE */
 { 0,	CSRW,		itype(0x000,0,2,0,0x73),	"csrs"	},	/* DONE */
 { 0,	CSRW,		itype(0x000,0,3,0,0x73),	"csrc"	},	/* DONE */
 
+/* op csr, imm12 */
+{ 0,	CSRW,		itype(0x000,0,5,0,0x73),	"csrwi"	},	/* DONE */
+{ 0,	CSRW,		itype(0x000,0,6,0,0x73),	"csrsi"	},	/* DONE */
+{ 0,	CSRW,		itype(0x000,0,7,0,0x73),	"csrci"	},	/* DONE */
+
+/* op rd, csr */
+{ 0,	CSRR,		itype(0x000,0,2,0,0x73),	"csrr"	},	/* DONE */
+
 /* op imm32 */
 { 0,	LI,		0x00000000,			"li"	},
+{ 0,	LA,		0x00000000,			"la"	},
 
 /* op rd, rs */
 { 0,	LOGICOP,	itype(0x000,0,0,0,0x13),	"mv"	},	/* DONE */

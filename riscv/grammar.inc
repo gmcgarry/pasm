@@ -8,13 +8,13 @@ operation
 	| UTYPE optsz REG ',' imm20		{ emit4($1); }
 	| JTYPE optsz REG ',' imm20		{ emit4($1); }
 
-	| ADDR imm20				{ emit4($1); }
 	| ITYPE_NODST REG ',' imm12		{ emit4($1); }
 	| LI REG ',' expr			{ emit4($1); }
+	| LA REG ',' expr			{ emit4(0x27|RD($2)|($4.val&0xFFFFF000)); emit4(0x13|RD($2)|RS1($2)|IMM12I($4.val&0xFFF)); }
 	| CSR REG				{ /* csrrs($2, $2, x0) */ }
 
 	| IMPLICIT				{ emit4($1); }
-	| CSRWI CSR ',' imm5			{ emit4($1|RS1($4.val)|IMM12I($2)); }
+	| CSRW CSR ',' imm5			{ emit4($1|FUNC3(4)|RS1($4.val)|IMM12I($2)); }
 	| CSRW CSR ',' REG			{ emit4($1|RS1($4)|IMM12I($2)); }
 	| CSRR REG ',' CSR			{ emit4($1|RD($2)|IMM12I($4)); }
 	| JALR REG ',' imm12 '(' REG ')'	{ emit4($1|RD($2)|RS1($6)|IMM12I($4.val)); }
