@@ -1,8 +1,11 @@
 operation
 	: RTYPE REG ',' REG ',' REG		{ emit4($1|RD($2)|RS1($4)|RS2($6)); }
 	| ITYPE REG ',' imm12 '(' REG ')'	{ emit4($1|RD($2)|RS1($6)|IMM12I($4.val)); }
+	| ITYPE REG ',' '(' REG ')'		{ emit4($1|RD($2)|RS1($5)|IMM12I(0)); }
 	| ITYPE REG ',' REG ',' imm12		{ emit4($1|RD($2)|RS1($4)|IMM12I($6.val)); }
-	| STYPE REG ',' imm12 '(' REG ')'	{ emit4($1|RD($2)|RS1($6)|IMM12S($4.val)); }
+	| STYPE REG ',' imm12 '(' REG ')'	{ emit4($1|RS1($6)|RS2($2)|IMM12S($4.val)); }
+	| STYPE REG ',' '(' REG ')'		{ emit4($1|RS1($5)|RS2($2)|IMM12S(0)); }
+
 	| UTYPE REG ',' offset21		{ emit4($1|RD($2)|IMM20U($4.val)); }
 
 	| LI REG ',' expr			{ emit4(0x37|RD($2)|($4.val&0xFFFFF000)); emit4(0x13|RD($2)|RS1($2)|IMM12I($4.val&0xFFF)); }

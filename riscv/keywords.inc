@@ -243,7 +243,7 @@
  */
 
 { 0,	IMPLICIT,	itype(0x000,0,0,0,0x13),	"nop"	},	/* DONE */
-{ 0,	IMPLICIT,	itype(0x000,1,0,0,0x6E),	"ret"	},	/* DONE */
+{ 0,	IMPLICIT,	itype(0x000,1,0,0,0x67),	"ret"	},	/* DONE */
 
 /* op csr, rs */
 { 0,	CSRW,		itype(0x000,0,1,0,0x73),	"csrw"	},	/* DONE */
