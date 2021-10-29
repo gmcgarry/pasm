@@ -39,7 +39,6 @@
 
 #define XXX 0xff
 
-
 /* for compatibility */
 { 0,	PSEUDOOP_DEVICE,	DEVICE_MC6805,	".mc6805"	},
 { 0,	PSEUDOOP_DEVICE,	DEVICE_ST7,	".st7"	},

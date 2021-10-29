@@ -49,6 +49,9 @@
 #define st7()		check(DEVICE_ST7)
 #define mc6805()	check(DEVICE_MC6805)
 
+expr	: '{' expr '}'		{ $$  = $2; }
+	;
+
 expr8
 	: expr			{ fit(fitb($1.val)); }
 	;
