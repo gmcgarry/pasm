@@ -59,7 +59,7 @@ newrelo(int s, int typ)
 		or_nami = relonami;
 #endif
 		relonami = RELO_UNDEF;
-		printf("using relonami\n");
+		DPRINTF(("using relonami\n"));
 	} else if (s == S_ABS) {
 		/*
 		 * use first non existing entry (argh)
