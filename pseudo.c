@@ -274,7 +274,7 @@ align(int bytes, int padding, int maxpadding)
 			/*
 			 * keep track of gain with respect to PASS_1
 			 */
-			if (gap > maxpadding)
+			if (maxpadding && gap > maxpadding)
 				gap = 0;
 			sect[DOTSCT].s_gain += (bytes - 1) - gap;
 		}
