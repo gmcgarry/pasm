@@ -1,14 +1,10 @@
 operation
-	: RTYPE optsz REG ',' REG ',' REG	{ emit4($1); }
+	: RTYPE REG ',' REG ',' REG		{ emit4($1|RD($2)|RS1($4)|RS2($6)); }
+	| ITYPE REG ',' imm12 '(' REG ')'	{ emit4($1|RD($2)|RS1($6)|IMM12I($4.val)); }
+	| ITYPE REG ',' REG ',' imm12		{ emit4($1|RD($2)|RS1($4)|IMM12I($6.val)); }
+	| STYPE REG ',' imm12 '(' REG ')'	{ emit4($1|RD($2)|RS1($6)|IMM12S($4.val)); }
+	| UTYPE REG ',' offset21		{ emit4($1|RD($2)|IMM20U($4.val)); }
 
-	| ITYPE optsz REG ',' imm12 '(' REG ')'	{ emit4($1); }
-	| ITYPE optsz REG ',' REG ',' imm12	{ emit4($1); }
-
-	| STYPE optsz REG ',' imm12 '(' REG ')'	{ emit4($1); }
-	| UTYPE optsz REG ',' imm20		{ emit4($1); }
-	| JTYPE optsz REG ',' imm20		{ emit4($1); }
-
-	| ITYPE_NODST REG ',' imm12		{ emit4($1); }
 	| LI REG ',' expr			{ emit4(0x37|RD($2)|($4.val&0xFFFFF000)); emit4(0x13|RD($2)|RS1($2)|IMM12I($4.val&0xFFF)); }
 	| LA REG ',' expr			{ emit4(0x17|RD($2)|($4.val&0xFFFFF000)); emit4(0x13|RD($2)|RS1($2)|IMM12I($4.val&0xFFF)); }
 	| CSR REG				{ /* csrrs($2, $2, x0) */ }
@@ -19,10 +15,10 @@ operation
 	| CSRR REG ',' CSR			{ emit4($1|RD($2)|IMM12I($4)); }
 	| JALR REG ',' imm12 '(' REG ')'	{ emit4($1|RD($2)|RS1($6)|IMM12I($4.val)); }
 	| JALR imm12 '(' REG ')'		{ emit4($1|RD(1)|RS1($4)|IMM12I($2.val)); }
-	| JALR REG				{ emit4($1|RD(1)|RS1($1)|IMM12I(0)); }
+	| JALR REG				{ emit4($1|RD(1)|RS1($2)|IMM12I(0)); }
 	| JR imm12 '(' REG ')'			{ emit4($1|RD(0)|RS1($4)|IMM12I($2.val)); }
-	| JR REG				{ emit4($1|RD(0)|RS1($1)|IMM12I(0)); }
-	| JAL REG ',' offset21			{ emit4($1|RD($1)|IMM20J($4.val)); }
+	| JR REG				{ emit4($1|RD(0)|RS1($2)|IMM12I(0)); }
+	| JAL REG ',' offset21			{ emit4($1|RD($2)|IMM20J($4.val)); }
 	| JAL offset21				{ emit4($1|RD(1)|IMM20J($2.val)); }
 	| JUMP offset21				{ emit4($1|RD(0)|IMM20J($2.val)); }
 	| BRANCH REG ',' REG ',' imm13		{ emit4($1|RS1($2)|RS2($4)|IMM13B($6.val)); }
@@ -44,7 +40,7 @@ imm5	: expr		{ $$ = $1; }
 imm12	: expr		{ $$ = $1; }
 	;
 
-imm13	: expr		{ $$ = $1; }
+imm13	: expr		{ $$.typ = S_ABS; $$.val = ($1.val - DOTVAL); }
 	;
 
 imm20	: expr		{ $$ = $1; }

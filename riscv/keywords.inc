@@ -71,19 +71,16 @@
 { 0,	SIZE,		2,			".w"	},
 { 0,	SIZE,		4,			".d"	},
 
-
 { 0,	CSR,		0x000,			"ustatus"	},
 { 0,	CSR,		0x001,			"fflags"	},
 { 0,	CSR,		0x002,			"frm"	},
 { 0,	CSR,		0x003,			"fcsr"	},
-
 { 0,	CSR,		0x100,			"sstatus"	},
 { 0,	CSR,		0x104,			"sie"	},
 { 0,	CSR,		0x105,			"stvec"	},
 { 0,	CSR,		0x140,			"sscratch"	},
 { 0,	CSR,		0x141,			"sepc"	},
 { 0,	CSR,		0x142,			"scause"	},
-
 { 0,	CSR,		0x300,			"mstatus"	},
 { 0,	CSR,		0x301,			"misa"	},
 { 0,	CSR,		0x302,			"medeleg"	},
@@ -96,7 +93,6 @@
 { 0,	CSR,		0x341,			"mepc"	},
 { 0,	CSR,		0x342,			"mcause"	},
 { 0,	CSR,		0x7D0,			"mmisc_ctl"	},
-
 { 0,	CSR,		0xC00,			"cycle"	},
 { 0,	CSR,		0xC01,			"time"	},
 { 0,	CSR,		0xC02,			"instret"	},
@@ -142,11 +138,11 @@
 /* jalr rd, imm12(rs1) */
 /* jalr imm12(rs1) - psuedo op */
 /* jalr rs1 - psuedo op */
-{ 0,	JALR,		itype(0x000,0,0,0,0x6E),	"jalr"	},	/* DONE */
+{ 0,	JALR,		itype(0x000,0,0,0,0x67),	"jalr"	},	/* DONE */
 
 /* op rs1 - pseudo op */
 /* op imm12(rs1) - pseudo op */
-{ 0,	JR,		itype(0x000,0,0,0,0x6E),	"jr"	},	/* DONE */
+{ 0,	JR,		itype(0x000,0,0,0,0x67),	"jr"	},	/* DONE */
 
 /* op rd, imm20 */
 /* op imm20 - pseudo op */
@@ -160,12 +156,12 @@
 { 0,	IMPLICIT,	itype(0x001,0,0,0,0x73),	"ebreak"	},	/* DONE */
 
 /* op rd, csr, rs1 */
-{ 0,	ITYPE,		itype(0x000,0,1,0,0x73),	"csrrw"	},
-{ 0,	ITYPE,		itype(0x000,0,2,0,0x73),	"csrrs"	},
-{ 0,	ITYPE,		itype(0x000,0,3,0,0x73),	"csrrc"	},
-{ 0,	ITYPE,		itype(0x000,0,5,0,0x73),	"csrrwi"	},
-{ 0,	ITYPE,		itype(0x000,0,6,0,0x73),	"csrcsi"	},
-{ 0,	ITYPE,		itype(0x000,0,7,0,0x73),	"csrcci"	},
+{ 0,	ITYPE,		itype(0x000,0,1,0,0x73),	"csrrw"	},	/* DONE */
+{ 0,	ITYPE,		itype(0x000,0,2,0,0x73),	"csrrs"	},	/* DONE */
+{ 0,	ITYPE,		itype(0x000,0,3,0,0x73),	"csrrc"	},	/* DONE */
+{ 0,	ITYPE,		itype(0x000,0,5,0,0x73),	"csrrwi"	},	/* DONE */
+{ 0,	ITYPE,		itype(0x000,0,6,0,0x73),	"csrcsi"	},	/* DONE */
+{ 0,	ITYPE,		itype(0x000,0,7,0,0x73),	"csrcci"	},	/* DONE */
 
 /* op rd, imm12(rs1) */
 /* op rd, symbol - pseudo op */
@@ -198,22 +194,18 @@
 { 0,	BRANCHSW,		btype(0,0,0,7,0x63),	"bleu"	},	/* DONE */
 
 /* op rs1, imm13 - pseudo ops */
-{ 0,	BRANCHZ,		btype(0,0,0,0,0x63),		"beqz"	},	/* DONE */
-{ 0,	BRANCHZ,		btype(0,0,0,1,0x63),		"bnez"	},	/* DONE */
-{ 0,	BRANCHZ,		btype(0,0,0,4,0x63),		"bltz"	},	/* DONE */
-{ 0,	BRANCHZ,		btype(0,0,0,5,0x63),		"bgez"	},	/* DONE */
+{ 0,	BRANCHZ,		btype(0,0,0,0,0x63),	"beqz"	},	/* DONE */
+{ 0,	BRANCHZ,		btype(0,0,0,1,0x63),	"bnez"	},	/* DONE */
+{ 0,	BRANCHZ,		btype(0,0,0,4,0x63),	"bltz"	},	/* DONE */
+{ 0,	BRANCHZ,		btype(0,0,0,5,0x63),	"bgez"	},	/* DONE */
 
 /* op rs2, imm13 - pseudo ops */
-{ 0,	BRANCHZSW,		btype(0,0,0,4,0x63),		"bgtz"	},	/* DONE */
-{ 0,	BRANCHZSW,		btype(0,0,0,5,0x63),		"blez"	},	/* DONE */
+{ 0,	BRANCHZSW,		btype(0,0,0,4,0x63),	"bgtz"	},	/* DONE */
+{ 0,	BRANCHZSW,		btype(0,0,0,5,0x63),	"blez"	},	/* DONE */
 
 /* op rd, imm20 - upper 20 bits */
 { 0,	UTYPE,		utype(0x00000,0,0x37),		"lui"	},	/* DONE */
 { 0,	UTYPE,		utype(0x00000,0,0x17),		"auipc"	},	/* DONE */
-
-/* op rd, imm20 - lower 20 bits */
-{ 0,	JTYPE,		jtype(0x00000,0,0x6F),		"jal"	},	/* DONE */
-
 
 /*
  * Multiply Instructions
