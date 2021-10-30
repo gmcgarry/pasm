@@ -40,7 +40,7 @@
 %token <y_word> BIT
 %token <y_word> RMR
 %token <y_word> RM
-%token <y_word> WOP
+%token <y_word> OPW
 %token <y_word> CPW
 %token <y_word> TWOREG
 %token <y_word> MOV LD LDW LDF

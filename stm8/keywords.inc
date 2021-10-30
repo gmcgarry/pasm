@@ -34,10 +34,8 @@
  */
 
 /*
- * Derived from 6805, since they're essentially the same.
+ * Derived from 6800/6805, since they're essentially the same.
  */
-
-#define XXX 0xff
 
 /* for compatibility */
 { 0,	PSEUDOOP_DEVICE,	DEVICE_MC6805,	".mc6805"	},
@@ -135,25 +133,25 @@
 { 0,	RMR,		0x4d,		"tnz"	}, /* DONE */ /* test not zero */
 { 0,	RMR,		0xcd,		"call"	}, /* DONE */ 
 
-{ 0,	WOP,		0x50,		"negw"	}, /* DONE */
-{ 0,	WOP,		0x53,		"cplw"	}, /* DONE */
-{ 0,	WOP,		0x54,		"srlw"	}, /* DONE */
-{ 0,	WOP,		0x56,		"rrcw"	}, /* DONE */
-{ 0,	WOP,		0x56,		"sraw"	}, /* DONE */
-{ 0,	WOP,		0x58,		"sllw"	}, /* DONE */
-{ 0,	WOP,		0x58,		"slaw"	}, /* DONE */ /* alias */
-{ 0,	WOP,		0x5a,		"decw"	}, /* DONE */
-{ 0,	WOP,		0x5c,		"incw"	}, /* DONE */
-{ 0,	WOP,		0x5e,		"swapw"	}, /* DONE */ /* swap low and high bytes */
-{ 0,	WOP,		0x5f,		"clrw"	}, /* DONE */
-{ 0,	WOP,		0x89,		"pushw"	}, /* DONE */
-{ 0,	WOP,		0x85,		"popw"	}, /* DONE */
+{ 0,	OPW,		0x50,		"negw"	}, /* DONE */
+{ 0,	OPW,		0x53,		"cplw"	}, /* DONE */
+{ 0,	OPW,		0x54,		"srlw"	}, /* DONE */
+{ 0,	OPW,		0x56,		"rrcw"	}, /* DONE */
+{ 0,	OPW,		0x56,		"sraw"	}, /* DONE */
+{ 0,	OPW,		0x58,		"sllw"	}, /* DONE */
+{ 0,	OPW,		0x58,		"slaw"	}, /* DONE */ /* alias */
+{ 0,	OPW,		0x5a,		"decw"	}, /* DONE */
+{ 0,	OPW,		0x5c,		"incw"	}, /* DONE */
+{ 0,	OPW,		0x5e,		"swapw"	}, /* DONE */ /* swap low and high bytes */
+{ 0,	OPW,		0x5f,		"clrw"	}, /* DONE */
+{ 0,	OPW,		0x89,		"pushw"	}, /* DONE */
+{ 0,	OPW,		0x85,		"popw"	}, /* DONE */
 
 { 0,	CPW,		0,		"cpw"	}, /* YES */
 
 /* load/store/transfer */
 { 0,	MOV,		0x05,		"mov"	}, /* DONE */
-{ 0,	LDW,		0x90,		"ldw"	}, /* YES */
+{ 0,	LDW,		0x1E,		"ldw"	}, /* YES */
 { 0,	LD,		0x00,		"ld"	}, /* YES */
 { 0,	LDF,		0x00,		"ldf"	}, /* YES */
 
@@ -178,8 +176,8 @@
 { 0,	RM,		0xae,		"ldx"	}, /* YES */
 { 0,	RM,		0xaf,		"stx"	},
 
-{ 0,	RM,		XXX,		"addw"	}, /* YES */
-{ 0,	RM,		XXX,		"subw"	}, /* YES */
+{ 0,	RM,		0x80,		"addw"	}, /* YES */
+{ 0,	RM,		0x89,		"subw"	}, /* YES */
 
 { 0,	TWOREG,		0x62,		"div"	}, /* YES */ /* PREFIX FOR Y */ /* div X,A */
 { 0,	TWOREG,		0x65,		"divw"	}, /* YES */ /* div X,Y */

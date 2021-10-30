@@ -194,6 +194,9 @@ RM sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx
 
 #endif
 
+
+
+
 	| MOV expr ',' imm8		{ emit1(0x30|$1); emit1($4.val); emit2($2.val); }
 	| MOV expr ',' expr		{ if (fitu($2.val,8) && fitu($4.val,8)) { emit1(0x40|$1); emit1($2.val); emit1($4.val); } else { emit1(0x50|$1); emit2($2.val); emit2($4.val); } }
 
@@ -206,15 +209,15 @@ RM sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx
 	| LD A ',' YH 			{ emit2(0x909E); }
 	| LD A ',' YL 			{ emit2(0x909F); }
 
-	| LDW X ',' Y			{ emit1(0x03|$1); }
-	| LDW X ',' SP			{ emit1(0x04|$1); }
-	| LDW SP ',' X			{ emit1(0x06|$1); }
-	| LDW Y ',' X			{ emit2(0x9003|$1); }
-	| LDW Y ',' SP			{ emit2(0x9004|$1); }
-	| LDW SP ',' Y			{ emit2(0x9006|$1); }
+	| LDW X ',' Y			{ emit1(0x93); }
+	| LDW X ',' SP			{ emit1(0x94); }
+	| LDW SP ',' X			{ emit1(0x96); }
+	| LDW Y ',' X			{ emit2(0x9093); }
+	| LDW Y ',' SP			{ emit2(0x9094); }
+	| LDW SP ',' Y			{ emit2(0x9096); }
 
 	| RMR A				{ emit1($1 - 0x30 + 0x40); }
-	| RMR expr			{
+	| RMR direct			{
 						int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
 						if (small($2.val == 0 && opt && PASS_RELO, fitb($2.val) ? 1 : 2)) {
 							emit1($1);
@@ -245,7 +248,7 @@ RM sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx
 							emit2($3.val);
 						}
 					}
-	| RM A ',' '#' expr		{
+	| RM A ',' imm8			{
 						switch($1) {
 							case 0xa7:
 							case 0xac:
@@ -255,8 +258,8 @@ RM sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx
 							default:
 								emit1($1);
 						}
-						newrelo($5.typ, RELO1);
-						emit1($5.val);
+						newrelo($4.typ, RELO1);
+						emit1($4.val);
 					}
 	| RM A ',' direct		{
 						if (small(pass == PASS_2 && ($4.typ & S_SCTMASK) == DOTSCT && fitb($4.val),1)) {
@@ -288,7 +291,13 @@ RM sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx
 							emit2($5.val);
 						}
 					}
-	| WOP reg16			{ if ($2 == Y) emit1(0x90); emit1($1); }
+
+	| LDW reg16 ',' immediate	{ if ($2 == Y) emit1(0x90); }
+	| LDW reg16 ',' direct		{ if ($2 == Y) emit1(0x90); }
+	| LDW X ',' '(' indexedY ')'	{ }
+	| LDW Y ',' '(' indexedX ')'	{ emit1(0x90); }
+	
+	| OPW reg16			{ if ($2 == Y) emit1(0x90); emit1($1); }
 	;
 
 memref	: direct
@@ -330,12 +339,12 @@ indirect
 	;
 
 indexedX
-	: '(' X  ')' 			{ $$ = {0,0}; }
+	: '(' X  ')' 			{ $$.typ = S_ABS; $$.val = 0; }
 	| '(' expr ',' X ')'		{ $$ = $2; }
 	;
 
 indexedY
-	: '(' Y  ')' 			{ $$ = {0,0}; }
+	: '(' Y  ')' 			{ $$.typ = S_ABS; $$.val = 0; }
 	| '(' expr ',' Y ')'		{ $$ = $2; }
 	;
 
