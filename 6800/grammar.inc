@@ -62,8 +62,10 @@ pseudoop
 instr
 	: NOARG			{ emit1($1); }
 	| BRANCH expr		{ expr_t expr = {0,0}; branch($1,$2,expr); }
+#ifdef MC6805
 	| BBRANCH bitexp ',' expr8 ',' expr { branch($1+($2 << 1), $6, $4); }
 	| BIT bitexp ',' expr8	{ emit1($1+($2 << 1)); newrelo($4.typ, RELO1); emit1($4.val); }
+#endif
 #if 0
 	| RMR '<' expr8
 #endif
@@ -93,6 +95,7 @@ instr
 					emit1($3.val);
 				}
 #if 0
+	/* these are now determined in an extra pass */
 	| RM '<' expr8		{ emit1($1+0x10); newrelo($3.typ, RELO1); emit1($3.val); }
 	| RM '<' expr8 ',' X	{ emit1($1+0x40); newrelo($3.typ, RELO1); emit1($3.val); }
 	| RM '>' expr		{ emit1($1+0x20); newrelo($3.typ, RELO2|RELBR); emit2($3.val); }

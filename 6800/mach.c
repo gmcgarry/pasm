@@ -37,6 +37,7 @@
 #include "mach.h"
 
 extern sect_t sect[];
+extern int hash(const char *);
 
 static item_t cseg = { 0, 0, S_UND, ".text" };
 

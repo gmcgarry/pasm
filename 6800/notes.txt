@@ -1,15 +1,18 @@
 Motorola 6800/6805
 
-Backend original from ACK sources.
+Backend originated from ACK sources.
 
 - 6800 original
 - 6802 has 128B RAM, added stack instructions
 - 6805 removed B accumulator
+	- successor to the 6804
 6802/6805 contain RAM, ROM and I/O on single chip;
 6809 16-bit aritmetic, stack registers, PIC instructions
 
 MC6800:
 
+- 8-bit data bus
+- 16-bit address bus (64KB RAM)
 - 6 registers:
 	- A: 8-bit accumulator
 	- B: 8-bit accumulator
@@ -18,13 +21,11 @@ MC6800:
 	- PC: 16-bit program counter
 	- CCR: 8-bit condition code register (x x H I N Z V C)
 		- H=half carry, I=interrupt mask, N=negative, Z=zero, V=overflow, C=carry
-		
 
 MC6805:
 
-- successor to the 6804
-- 8-bit data, 16-bit address
-- 256B RAM
+- 8-bit data bus
+- 8-bit address bus (256B RAM)
 - 8K program memory
 - 6805 (NMOS), 146805 (CMOS), 68HC05 (HCMOS)
 - CMOS and HCMOS have addition instructions for bit manipulation
@@ -32,8 +33,9 @@ MC6805:
 - 5 registers: (no B accumulator)
 	- A: 8-bit accumulator
 	- X: 8-bit index register
-	- SP: 6-bit stack pointer (bits 6,6 wired to 1)
+	- SP: 6-bit stack pointer (bit 6 wired to 1)
 	- PC: 13-bit program counter
 	- CCR: 8-bit condition-code register (x x x H I N Z C)
 		- H=half carry, I=interrupt mask, N=negative, Z=zero, C=carry
+- adds bit operations
 - interrupts save all registers on the stack: PCL, PCH, X, A, CCR

@@ -33,9 +33,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define MC6805
-/* #define MC6800 */
-/* #efine MC6809 */
+/* #define MC6805 */
 
 #define	THREE_PASS	/* branch and offset optimization */
 #define	LISTING		/* enable listing facilities */

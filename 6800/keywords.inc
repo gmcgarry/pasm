@@ -87,7 +87,6 @@
 { 0,	BRANCH,		0x2d,		"blt"	},
 { 0,	BRANCH,		0x2e,		"bgt"	},
 { 0,	BRANCH,		0x2f,		"ble"	},
-{ 0,	BRANCH,		0x8D,		"bsr"	},
 #endif
 
 /* unconditional branches */
@@ -158,12 +157,13 @@
 { 0,	RM,		0xA4,		"anda"	},
 { 0,	RM,		0xA5,		"bita"	},
 { 0,	RM,		0xA6,		"ldaa"	},
+{ 0,	RM,		0xA7,		"staa"	},
 { 0,	RM,		0xA8,		"eora"	},
 { 0,	RM,		0xA9,		"adca"	},
 { 0,	RM,		0xAA,		"oraa"	},
 { 0,	RM,		0xAB,		"adda"	},
 #endif
-#ifdef MC6800
+#ifndef MC6805
 { 0,	RM,		0xAC,		"cpx"	},
 { 0,	RM,		0xE0,		"subb"	},
 { 0,	RM,		0xE1,		"cmpb"	},
@@ -206,7 +206,7 @@
 { 0,	NOARG,		0x5d,		"tstx"	},
 { 0,	NOARG,		0x5f,		"clrx"	},
 
-#ifdef MC6800
+#ifndef MC6805
 { 0,	NOARG,		0x50,		"negb"	},
 { 0,	NOARG,		0x53,		"comb"	},
 { 0,	NOARG,		0x54,		"lsrb"	},
@@ -236,7 +236,7 @@
 #endif
 
 /* stack operations */
-#ifdef MC6800
+#ifndef MC6805
 { 0,	RM,		0xEE,		"lds"	},
 { 0,	RM,		0xEF,		"sts"	},
 { 0,	NOARG,		0x34,		"des"	},
