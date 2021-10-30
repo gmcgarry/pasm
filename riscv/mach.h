@@ -5,8 +5,8 @@
 #define FUNC7(x)	((x) << 25)
 
 #define IMM12I(x)	RS2(x)
-#define IMM12S(x)	FUNC7((x) & 0xfe0) | RD((x) & 0x1f)
-#define IMM13B(x)	FUNC7((x) & 0x1000) | FUNC7((x) & 0x3e0) | RD((x) & 0x1e) | (((x) & 0x800) >> 4)
+#define IMM12S(x)	(((x) & 0xfe0) << 20) | (((x) & 0x1f) << 7)
+#define IMM13B(x)	(((x) & 0x1000) << 19) | (((x) & 0x7e0) << 20)| (((x) & 0x1e) << 7) | (((x) & 0x800) >> 4)
 #define IMM20U(x)	FUNC3(x)
 #define IMM20J(x)	(((x) & 0x100000) << 11) | (((x) & 0x7fe) << 20) | (((x) & 0x800) << 9) | ((x) & 0xff000)
 

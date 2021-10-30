@@ -6,7 +6,7 @@ operation
 	| STYPE REG ',' imm12 '(' REG ')'	{ emit4($1|RS1($6)|RS2($2)|IMM12S($4.val)); }
 	| STYPE REG ',' '(' REG ')'		{ emit4($1|RS1($5)|RS2($2)|IMM12S(0)); }
 
-	| UTYPE REG ',' offset21		{ emit4($1|RD($2)|IMM20U($4.val)); }
+	| UTYPE REG ',' imm21			{ emit4($1|RD($2)|IMM20U($4.val)); }
 
 	| LI REG ',' expr			{ emit4(0x37|RD($2)|($4.val&0xFFFFF000)); emit4(0x13|RD($2)|RS1($2)|IMM12I($4.val&0xFFF)); }
 	| LA REG ',' expr			{ emit4(0x17|RD($2)|($4.val&0xFFFFF000)); emit4(0x13|RD($2)|RS1($2)|IMM12I($4.val&0xFFF)); }
