@@ -36,7 +36,7 @@
 #include "as.h"
 #include "mach.h"
 
-int deviceid = DEVICE_UNKNOWN;
+int deviceid = DEVICE_STM8;
 
 extern sect_t sect[];
 
@@ -55,44 +55,59 @@ machfinish(int pass)
 {
 }
 
-void branch(int opc, expr_t exp, expr_t cell)
+void
+branch(int opc, expr_t exp, expr_t cell)
 {
 	int sm, dist;
 	int saving;
 
 	if (opc & 0xff00)
 		emit1(opc >> 8);
-	opc &= 0xff;
+
+	DPRINTF(("opcode = 0x%02x\n", opc));
+	DPRINTF(("DOTVAL=0x%04x exp=0x%04x, cell=0x%04x\n", DOTVAL, exp.val, cell.val));
 
 	dist = exp.val - (DOTVAL + 2);
-	if ((opc & 0xf0) == 0)
-		dist -= 1;  /* bitbranch */
+	DPRINTF(("dist = %d\n", dist));
+	if ((opc & 0xf0) == 0) { /* bitbranch */
+		if (opc & 0xff00)
+			dist -= 2;
+		else
+			dist -= 1;  /* bitbranch */
+	}
 	if (pass == PASS_2 && dist > 0 && !(exp.typ & S_DOT))
 		dist -= sect[DOTSCT].s_gain;
 	sm = fitj(dist);
+	DPRINTF(("sm = %d\n", sm));
 	if ((exp.typ & S_SCTMASK) != DOTSCT)
 		sm = 0;
 	if (opc == 0x20 || opc == 0xAD)
 		saving = 1;
 	else
 		saving = 3;
-	if (small(sm,saving)) {
+	if (small(sm, saving)) {
 		emit1(opc);
-		if((opc & 0xF0) == 0)	/* bit branch */
+		if ((opc & 0xF0) == 0) {	/* bit branch */
+			if (opc & 0xff00)
+				emit1(cell.val>>8);
 			emit1(cell.val);
+		}
 #ifdef RELOCATION
 		newrelo(exp.typ, RELPC|RELO1);
 #endif
 		emit1(dist);
 	} else {
-		if (opc == 0xAD)		/* bsr */
+		if (opc == 0xAD) {		/* bsr */
 			emit1(0xBD);		/* jsr */
-		else {
+		} else {
 			if (opc != 0x20) {	/* bra */
 				/* reverse condition : */
 				emit1(opc ^ 1);
-				if((opc & 0xF0) == 0)  /* bitbranch */
+				if ((opc & 0xF0) == 0) { /* bitbranch */
+					if (opc & 0xff00)
+						emit1(cell.val>>8);
 					emit1(cell.val);
+				}
 				emit1(3);
 			}
 			emit1(0xCC);		/* jmp */

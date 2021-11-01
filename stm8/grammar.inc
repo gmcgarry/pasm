@@ -95,9 +95,17 @@ instr
 	: /* empty */
 	| NOARG					{ emit1($1); }
 	| BRANCH expr				{ expr_t expr = {0,0}; branch($1,$2,expr); }
-	| BBRANCH expr8 ',' bitexp ',' expr	{ branch($1+($4 << 1), $6, $2); }
-	| BIT expr ',' bitexp			{ emit2($1+($4 << 1)); newrelo($2.typ, RELO1); emit1($2.val); }
-
+	| BBRANCH expr ',' bitexp ',' expr	{ branch($1+($4 << 1), $6, $2); }
+	| BIT expr ',' bitexp			{
+							emit2($1+($4 << 1));
+							if (deviceid == DEVICE_STM8) {
+								newrelo($2.typ, RELO2);
+								emit2($2.val);
+							} else {
+								newrelo($2.typ, RELO1);
+								emit1($2.val);
+							}
+						}
 #if 0
 	// cpl, neg, call, clr, dec, inc, rlc, rrc, srl, sll, sra, sla, swap, tnz
 	| RMR A							0x43			- not for call/jp			- register
@@ -195,8 +203,6 @@ RM sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx
 #endif
 
 
-
-
 	| MOV expr ',' imm8		{ emit1(0x30|$1); emit1($4.val); emit2($2.val); }
 	| MOV expr ',' expr		{ if (fitu($2.val,8) && fitu($4.val,8)) { emit1(0x40|$1); emit1($2.val); emit1($4.val); } else { emit1(0x50|$1); emit2($2.val); emit2($4.val); } }
 
@@ -209,13 +215,27 @@ RM sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx
 	| LD A ',' YH 			{ emit2(0x909E); }
 	| LD A ',' YL 			{ emit2(0x909F); }
 
-	| LDW X ',' Y			{ emit1(0x93); }
-	| LDW X ',' SP			{ emit1(0x94); }
 	| LDW SP ',' X			{ emit1(0x96); }
-	| LDW Y ',' X			{ emit2(0x9093); }
-	| LDW Y ',' SP			{ emit2(0x9094); }
 	| LDW SP ',' Y			{ emit2(0x9096); }
 
+	| LDW X ',' SP			{ emit1(0x94); }
+	| LDW X ',' Y			{ emit1(0x93); }
+	| LDW X ',' immediate		{ emit1($1); }
+	| LDW X ',' direct		{ emit1($1 - 0x10); }
+	| LDW X ',' '(' indexedY ')'	{ }
+
+	| LDW Y ',' SP			{ emit2(0x9094); }
+	| LDW Y ',' X			{ emit2(0x9093); }
+	| LDW Y ',' immediate		{ emit2(0x9000|$1); }
+	| LDW Y ',' direct		{ emit2(0x9000|$1); }
+	| LDW Y ',' '(' indexedX ')'	{ emit1(0x90); }
+
+	| CPW X ',' immediate		{ emit1($1-0x10); emit2($4.val); }
+	| CPW X ',' direct		{ if (fitb($4.val)) { emit1($1); emit1($4.val); } else { emit1($1+0x20); emit2($4.val); } }
+
+	| CPW Y ',' immediate		{ emit2(0x9000|$1-0x10); emit2($4.val); }
+	| CPW Y ',' direct		{ if (fitb($4.val)) { emit2(0x9000|$1); emit1($4.val); } else { emit2(0x9000|$1+0x20); emit2($4.val); } }
+	
 	| RMR A				{ emit1($1 - 0x30 + 0x40); }
 	| RMR direct			{
 						int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
@@ -292,11 +312,7 @@ RM sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx
 						}
 					}
 
-	| LDW reg16 ',' immediate	{ if ($2 == Y) emit1(0x90); }
-	| LDW reg16 ',' direct		{ if ($2 == Y) emit1(0x90); }
-	| LDW X ',' '(' indexedY ')'	{ }
-	| LDW Y ',' '(' indexedX ')'	{ emit1(0x90); }
-	
+
 	| OPW reg16			{ if ($2 == Y) emit1(0x90); emit1($1); }
 	;
 
@@ -309,8 +325,8 @@ memref	: direct
 	| indirect_indexedY
 	;
 
-reg16	: X
-	| Y
+reg16	: X		{ $$ = $1; }
+	| Y		{ $$ = $1; }
 	;
 
 reg8	: A

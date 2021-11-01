@@ -7,7 +7,7 @@
 
 #include "emitter.h"
 
-#if defined(mach_pic) || defined(mach_8051) || defined(mach_avr) || defined(mach_riscv)
+#if defined(mach_pic) || defined(mach_8051) || defined(mach_avr) || defined(mach_riscv) || defined(mach_stm8)
 #define OUTPUT_FORMAT "hex"
 #endif
 

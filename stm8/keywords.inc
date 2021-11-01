@@ -46,21 +46,20 @@
 
 { 0,	PSEUDOOP_SEGMENT, 	0,		"segment"	},
 { 0,	'=',			0,		"equ"	},
-{ 0,	DOT,			0,		"$"	},
 
 { 0,	WIDE,			0,		".W"	},
 
 /* registers */
-{ 0,	A,		0,		"A"	}, /* DONE */
-{ 0,	X,		0,		"X"	}, /* DONE */
+{ 0,	A,		A,		"A"	}, /* DONE */
+{ 0,	X,		X,		"X"	}, /* DONE */
 { 0,	Y,		0,		"Y"	}, /* DONE */
-{ 0,	XL,		0,		"XL"	}, /* DONE */
-{ 0,	YL,		0,		"YL"	}, /* DONE */
-{ 0,	SP,		0,		"SP"	}, /* DONE */
+{ 0,	XL,		XL,		"XL"	}, /* DONE */
+{ 0,	YL,		YL,		"YL"	}, /* DONE */
+{ 0,	SP,		SP,		"SP"	}, /* DONE */
 
 /* Bit test and branch */
-{ 0,	BBRANCH,	0x9000,		"btjt"	}, /* DONE */
-{ 0,	BBRANCH,	0x9001,		"btjf"	}, /* DONE */
+{ 0,	BBRANCH,	0x7200,		"btjt"	}, /* DONE */
+{ 0,	BBRANCH,	0x7201,		"btjf"	}, /* DONE */
 
 /* Bit manipulation */
 { 0,	BIT,		0x7210,		"bset"	}, /* DONE */ /* bit set */
@@ -147,7 +146,7 @@
 { 0,	OPW,		0x89,		"pushw"	}, /* DONE */
 { 0,	OPW,		0x85,		"popw"	}, /* DONE */
 
-{ 0,	CPW,		0,		"cpw"	}, /* YES */
+{ 0,	CPW,		0xb3,		"cpw"	}, /* YES */
 
 /* load/store/transfer */
 { 0,	MOV,		0x05,		"mov"	}, /* DONE */
