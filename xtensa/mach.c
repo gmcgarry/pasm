@@ -61,7 +61,7 @@ literal(item_t *ident, expr_t e)
 		newsect(&literals, SHT_PROGBITS, "ax");
 		printf("<===== DOTSCT = %d\n", DOTSCT);
 	}
-	align(4);
+	align(4,0,0);
 	newident(ident, sct);
 	newlabel(ident);
 	if (PASS_RELO)
