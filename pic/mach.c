@@ -36,6 +36,12 @@ static int config = 0x3fff;
 #define CFG_FOSC_XT		0x0001		/* crystal/resonator */
 #define CFG_FOSC_HS		0x0002		/* high-speed crystal/resonator */
 #define CFG_FOSC_RC		0x0003		/* resistor/capacitor */
+#define CFG_FOSC_EC		0x0003		/* external clock on CLKIN pin, I/O on CLKOUT pin */
+#define CFG_FOSC_INTRCIO	0x0004		/* internal RC oscillator; I/O functions on CLKIN/CLKOUT pins */
+#define CFG_FOSC_INTRCCLK	0x0005		/* internal RC oscillator; I/O function on CLKIN */
+#define CFG_FOSC_EXTRCIO	0x0006		/* external RC oscillator on CLKIN pin; I/O function on CLKOUT pin */
+#define CFG_FOSC_EXTRCCLK	0x0007		/* external RC oscillator on CLKIN; clock out on CLKOUT pin */
+
 #define CFG_WDTE		0x0004
 #define CFG_PWRTE		0x0008
 #define CFG_CP			0x3ff0
@@ -60,6 +66,14 @@ setconfig(const char *s, const char *v)
 			config |= CFG_FOSC_HS;
 		else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "RC") == 0)
 			config |= CFG_FOSC_RC;
+		else if (strcasecmp(v, "INTRC") == 0 || strcasecmp(v, "INTRCIO") == 0)
+			config |= CFG_FOSC_INTRCIO;
+ 		else if (strcasecmp(v, "INTRCCLK") == 0)
+			config |= CFG_FOSC_INTRCCLK;
+		else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "EXTRCIO") == 0)
+			config |= CFG_FOSC_EXTRCIO;
+ 		else if (strcasecmp(v, "EXTRCCLK") == 0)
+			config |= CFG_FOSC_EXTRCCLK;
 		else
 			fatal("unrecognised FOSC value \"%s\"", v);
 	} else if (strcasecmp(s, "WDTE") == 0) {	/* Watchdog Timer Enable bit */
@@ -100,6 +114,8 @@ banksel(int regno)
 static const struct { int id; const char* name; } devices[] = {
 	{ DEVICE_PIC16F84, "p16f84" },
 	{ DEVICE_PIC16F84A, "p16f84a" },
+	{ DEVICE_PIC16F630, "p16f630" },
+	{ DEVICE_PIC16F676, "p16f676" },
 };
 
 #ifndef __TABLE_SIZE
