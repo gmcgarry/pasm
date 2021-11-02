@@ -39,7 +39,7 @@
 %token <y_word> BBRANCH
 %token <y_word> BIT
 %token <y_word> RMR
-%token <y_word> RM
+%token <y_word> RM RMX
 %token <y_word> CMOS
 %type <y_expr> expr8
 %type <y_valu> bitexp

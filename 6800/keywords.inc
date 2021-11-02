@@ -45,7 +45,7 @@
 /* The X register */
 { 0,	X,		0,		"x"	},
 
-#ifdef MC6805
+#if defined(MC6805) || defined(MC68HC08)
 /* Bit test and branch */
 { 0,	BBRANCH,	0x00,		"brset"	},
 { 0,	BBRANCH,	0x01,		"brclr"	},
@@ -57,7 +57,7 @@
 
 /* Branches */
 { 0,	BRANCH,		0x20,		"bra"	},
-#ifdef MC6805
+#if defined(MC6805) || defined(MC68HC08)
 { 0,	BRANCH,		0x21,		"brn"	},
 #endif
 { 0,	BRANCH,		0x22,		"bhi"	},
@@ -68,7 +68,7 @@
 { 0,	BRANCH,		0x25,		"bcs"	},
 { 0,	BRANCH,		0x26,		"bne"	},
 { 0,	BRANCH,		0x27,		"beq"	},
-#ifdef MC6805
+#if defined(MC6805) || defined(MC68HC08)
 { 0,	BRANCH,		0x28,		"bhcc"	},
 { 0,	BRANCH,		0x29,		"bhcs"	},
 #else
@@ -77,7 +77,7 @@
 #endif
 { 0,	BRANCH,		0x2a,		"bpl"	},
 { 0,	BRANCH,		0x2b,		"bmi"	},
-#ifdef MC6805
+#if defined(MC6805) || defined(MC68HC08)
 { 0,	BRANCH,		0x2c,		"bmc"	},
 { 0,	BRANCH,		0x2d,		"bms"	},
 { 0,	BRANCH,		0x2e,		"bil"	},
@@ -90,7 +90,7 @@
 #endif
 
 /* unconditional branches */
-#ifdef MC6805
+#if defined(MC6805) || defined(MC68HC08)
 { 0,	RM,		0xac,		"jmp"	},
 { 0,	BRANCH,		0xad,		"bsr"	},
 #else
@@ -113,7 +113,7 @@
 { 0,	RMR,		0x3f,		"clr"	},
 
 /* Implied stuff */
-#ifdef MC6805
+#if defined(MC6805) || defined(MC68HC08)
 { 0,	NOARG,		0x80,		"rti"	},
 { 0,	NOARG,		0x81,		"rts"	},
 { 0,	NOARG,		0x83,		"swi"	},
@@ -137,7 +137,7 @@
 #endif
 
 /* Register memory. Warning. Some imediate opcodes excluded in parser actions. */
-#ifdef MC6805
+#if defined(MC6805) || defined(MC68HC08)
 { 0,	RM,		0xa0,		"sub"	},
 { 0,	RM,		0xa1,		"cmp"	},
 { 0,	RM,		0xa2,		"sbc"	},
@@ -163,7 +163,7 @@
 { 0,	RM,		0xAA,		"oraa"	},
 { 0,	RM,		0xAB,		"adda"	},
 #endif
-#ifndef MC6805
+#if !defined(MC6805) && !defined(MC68HC08)
 { 0,	RM,		0xAC,		"cpx"	},
 { 0,	RM,		0xE0,		"subb"	},
 { 0,	RM,		0xE1,		"cmpb"	},
@@ -206,7 +206,7 @@
 { 0,	NOARG,		0x5d,		"tstx"	},
 { 0,	NOARG,		0x5f,		"clrx"	},
 
-#ifndef MC6805
+#if !defined(MC6805) && !defined(MC68HC08)
 { 0,	NOARG,		0x50,		"negb"	},
 { 0,	NOARG,		0x53,		"comb"	},
 { 0,	NOARG,		0x54,		"lsrb"	},
@@ -236,7 +236,7 @@
 #endif
 
 /* stack operations */
-#ifndef MC6805
+#if !defined(MC6805) && !defined(MC68HC08)
 { 0,	RM,		0xEE,		"lds"	},
 { 0,	RM,		0xEF,		"sts"	},
 { 0,	NOARG,		0x34,		"des"	},
@@ -253,7 +253,7 @@
 { 0,	NOARG,		0x37,		"pulb"	},
 #endif
 
-#ifdef MC6805
+#if defined(MC6805) || defined(MC68HC08)
 /* CMOS support */
 { 0,	CMOS,		0,		".cmos"	},
 { 0,	CMOS,		0x8e,		"stop"	},

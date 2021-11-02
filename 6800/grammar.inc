@@ -34,6 +34,7 @@
  */
 
 #define fitb(x)		((((x) + 0x80) & ~((int)0xFF)) == 0)
+#define fitw(x)		((((x) + 0x8000) & ~((int)0xFFFF)) == 0)
 
 expr8
 	: expr			{ fit(fitb($1.val)); }
@@ -66,9 +67,6 @@ instr
 	| BBRANCH bitexp ',' expr8 ',' expr { branch($1+($2 << 1), $6, $4); }
 	| BIT bitexp ',' expr8	{ emit1($1+($2 << 1)); newrelo($4.typ, RELO1); emit1($4.val); }
 #endif
-#if 0
-	| RMR '<' expr8
-#endif
 	| RMR expr8		{ emit1($1); newrelo($2.typ, RELO1); emit1($2.val); }
 	| RMR expr8 ',' X	{
 					int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
@@ -81,26 +79,33 @@ instr
 					}
 				}
 	| RMR ',' X		{ emit1($1+0x40); }
-	| RM '#' expr8		{
+
+
+	| RM '#' expr		{
 					switch($1) {
 						case 0xa7:
-						case 0xac:
 						case 0xad:
+#ifdef MACH_6805
+						case 0xac:
 						case 0xaf:
+#endif
 							serror("mode error");
 						default:
-							emit1($1);
+							emit2($1);
 					}
-					newrelo($3.typ, RELO1);
-					emit1($3.val);
-				}
-#if 0
-	/* these are now determined in an extra pass */
-	| RM '<' expr8		{ emit1($1+0x10); newrelo($3.typ, RELO1); emit1($3.val); }
-	| RM '<' expr8 ',' X	{ emit1($1+0x40); newrelo($3.typ, RELO1); emit1($3.val); }
-	| RM '>' expr		{ emit1($1+0x20); newrelo($3.typ, RELO2|RELBR); emit2($3.val); }
-	| RM '>' expr ',' X	{ emit1($1+0x30); newrelo($3.typ, RELO2|RELBR); emit2($3.val); }
+#ifndef MACH_6805
+					if ($1 == 0xac || $1 == 0xae || $1 == 0xaf) {
+						fit(fitw($3.val));
+						newrelo($3.typ, RELO2);
+						emit2($3.val);
+					} else
 #endif
+					{
+						fit(fitb($3.val));
+						newrelo($3.typ, RELO1);
+						emit1($3.val);
+					}
+				}
 	| RM expr		{
 					int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
 					if (small(PASS_RELO && opt && fitb($2.val), 1)) {

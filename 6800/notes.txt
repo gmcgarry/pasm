@@ -6,7 +6,7 @@ Backend originated from ACK sources.
 - 6802 has 128B RAM, added stack instructions
 - 6805 removed B accumulator
 	- successor to the 6804
-6802/6805 contain RAM, ROM and I/O on single chip;
+6802/6805 contains RAM, ROM and I/O on single chip;
 6809 16-bit aritmetic, stack registers, PIC instructions
 
 MC6800:
@@ -39,3 +39,12 @@ MC6805:
 		- H=half carry, I=interrupt mask, N=negative, Z=zero, C=carry
 - adds bit operations
 - interrupts save all registers on the stack: PCL, PCH, X, A, CCR
+
+MC6808
+
+- 6805 with:
+	- 16-bit index register H:X
+	- 16-bit SP register
+	- 16-bit PC
+
+https://physics.mcmaster.ca/tech/HC908/HC908Intro.htm

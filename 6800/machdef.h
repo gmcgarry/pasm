@@ -34,6 +34,7 @@
  */
 
 /* #define MC6805 */
+/* #define MC6808 */
 
 #define	THREE_PASS	/* branch and offset optimization */
 #define	LISTING		/* enable listing facilities */
