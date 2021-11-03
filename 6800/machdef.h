@@ -33,8 +33,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* #define MC6805 */
-/* #define MC6808 */
+#define MC6805
+#define MC68HC08
 
 #define	THREE_PASS	/* branch and offset optimization */
 #define	LISTING		/* enable listing facilities */
@@ -49,6 +49,7 @@
 #define WORDS_REVERSED
 
 #define HEXPREFIX	'$'
+#define BINPREFIX	'%'
 
 /* ========== Machine independent type declarations ========== */
 

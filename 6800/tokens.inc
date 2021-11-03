@@ -33,13 +33,17 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-%token <y_word> X
+%token <y_word> X SP
 %token <y_word> CTL
 %token <y_word> BRANCH
 %token <y_word> BBRANCH
+%token <y_word> CBRANCH DBNZ
+%token <y_word> MOV
 %token <y_word> BIT
 %token <y_word> RMW
 %token <y_word> RM RMX
 %token <y_word> CMOS
 %type <y_expr> expr8
 %type <y_valu> bitexp
+
+%token PSEUDOOP_BOOT PSEUDOOP_ENDB

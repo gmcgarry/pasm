@@ -36,14 +36,23 @@
 /* compatibility */
 { 0,	'=',		0,		"equ"	},
 { 0,	PSEUDOOP_ORG,	0,		"org"	},
+{ 0,	PSEUDOOP_BOOT,	0,		"boot"	},
+{ 0,	PSEUDOOP_ENDB,	0,		"endb"	},
+
 { 0,	PSEUDOOP_END,	0,		"end"	},
 { 0,	PSEUDOOP_DATA,	1,		"fcb"	},	/* form constant byte */
+{ 0,	PSEUDOOP_DATA,	1,		"fcc"	},	/* form constant character */
 { 0,	PSEUDOOP_DATA,	2,		"fdb"	},	/* form double byte */
 { 0,	PSEUDOOP_ZERO,	1,		"rmb"	},	/* reserve memory byte */
-{ 0,	PSEUDOOP_ASCII,	0,		"fcc"	},	/* form constant character */
+{ 0,	PSEUDOOP_ZERO,	1,		"ds"	},	/* define storage */
+{ 0,	PSEUDOOP_ASCII,	0,		"fcs"	},	/* form constant character */
+
 
 /* The X register */
 { 0,	X,		0,		"x"	},
+#if defined(MC68HC08)
+{ 0,	SP,		0,		"sp"	},
+#endif
 
 #if defined(MC6805) || defined(MC68HC08)
 /* Bit test and branch */
@@ -88,6 +97,14 @@
 { 0,	BRANCH,		0x2e,		"bgt"	},
 { 0,	BRANCH,		0x2f,		"ble"	},
 #endif
+#if defined(MC68HC08)
+{ 0,	CBRANCH,	0x31,		"cbeq"	},
+{ 0,	CBRANCH,	0x41,		"cbeqa"	},
+{ 0,	CBRANCH,	0x51,		"cbeqx"	},
+{ 0,	DBNZ,		0x3b,		"dbnz"	},
+{ 0,	DBNZ,		0x4b,		"dbnza"	},
+{ 0,	DBNZ,		0x5b,		"dbnzx"	},
+#endif
 
 /* unconditional branches */
 #if defined(MC6805) || defined(MC68HC08)
@@ -113,6 +130,7 @@
 { 0,	RMW,		0x3f,		"clr"	},
 
 /* Implied stuff */
+#if defined(MC6805) || defined(MC68HC08)
 { 0,	CTL,		0x80,		"rti"	},
 { 0,	CTL,		0x81,		"rts"	},
 { 0,	CTL,		0x83,		"swi"	},
@@ -124,7 +142,6 @@
 { 0,	CTL,		0x9c,		"rsp"	},
 { 0,	CTL,		0x9d,		"nop"	},
 { 0,	CTL,		0x9f,		"txa"	},
-#if defined(MC6805) || defined(MC68HC08)
 #else
 { 0,	CTL,		0x3B,		"rti"	},
 { 0,	CTL,		0x39,		"rts"	},
@@ -134,6 +151,10 @@
 { 0,	CTL,		0x0E,		"cli"	},
 { 0,	CTL,		0x0F,		"sei"	},
 { 0,	CTL,		0x01,		"nop"	},
+#endif
+
+#if defined(MC68HC08)
+{ 0,	CTL,		0x62,		"nsa"	},
 #endif
 
 /* Register memory. Warning. Some imediate opcodes excluded in parser actions. */
@@ -178,6 +199,10 @@
 #endif
 { 0,	RM,		0xae,		"ldx"	},
 { 0,	RM,		0xaf,		"stx"	},
+#if defined(MC68HC08)
+{ 0,	RM,		0x45,		"ldhx"	},
+{ 0,	RM,		0x35,		"sthx"	},
+#endif
 
 /* Brain damaged concatenated opcodes for RMW on registers */
 { 0,	CTL,		0x40,		"nega"	},
@@ -245,12 +270,25 @@
 { 0,	CTL,		0x30,		"tsx"	},
 #endif
 
-#ifdef MC6802
-/* XXXGJM check opcodes */
-{ 0,	CTL,		0x34,		"psha"	},
-{ 0,	CTL,		0x35,		"pshb"	},
-{ 0,	CTL,		0x36,		"pula"	},
+#if defined(MC68HC08)
+{ 0,	MOV,		0x4e,		"mov"	},
+#endif
+
+#if defined(MC6802) || defined(MC68HC08)
+{ 0,	CTL,		0x86,		"pula"	},
+{ 0,	CTL,		0x87,		"psha"	},
+{ 0,	CTL,		0x88,		"pulx"	},
+{ 0,	CTL,		0x89,		"pshx"	},
+#endif
+
+#if defined(MC6802)
 { 0,	CTL,		0x37,		"pulb"	},
+{ 0,	CTL,		0x35,		"pshb"	},
+#endif
+
+#if defined(MC68HC08)
+{ 0,	CTL,		0x8a,		"pulh"	},
+{ 0,	CTL,		0x8b,		"pshh"	},
 #endif
 
 #if defined(MC6805) || defined(MC68HC08)

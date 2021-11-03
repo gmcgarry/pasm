@@ -55,9 +55,11 @@ optlabel
 	;
 
 pseudoop
- 	: PSEUDOOP_ZERO absexp	{ int i; for (i = 0; i < $2; i++) emit1(0); }
+	: PSEUDOOP_ZERO absexp	{ int i; for (i = 0; i < $2; i++) emit1(0); }
 	| PSEUDOOP_ASCII STRING	{ emitstr($1); }
 	| PSEUDOOP_DATA datalist 
+	| PSEUDOOP_ENDB IDENT	{ }
+	| PSEUDOOP_BOOT		{ }
 	;
 
 instr
@@ -66,6 +68,24 @@ instr
 #ifdef MC6805
 	| BBRANCH bitexp ',' expr8 ',' expr { branch($1+($2 << 1), $6, $4); }
 	| BIT bitexp ',' expr8	{ emit1($1+($2 << 1)); newrelo($4.typ, RELO1); emit1($4.val); }
+#endif
+#ifdef MC68HC08
+	| CBRANCH expr ',' expr			{ emit1($1); emit1($2.val); emit1($4.val - DOTVAL); }
+	| CBRANCH '#' expr ',' expr		{ emit1($1); emit1($3.val); emit1($5.val - DOTVAL); }
+	| CBRANCH expr ',' X '+' ',' expr	{ emit1($1+0x30); emit1($2.val); emit1($7.val - DOTVAL); }
+	| CBRANCH X '+' ',' expr		{ emit1($1+0x40); emit1($5.val - DOTVAL); }
+	| CBRANCH expr ',' SP ',' expr		{ emit2(0x9e61); emit1($2.val); emit1($6.val - DOTVAL); }
+
+	| DBNZ expr8 ',' expr			{ emit1($1); emit1($2.val); emit1($4.val - DOTVAL); }
+	| DBNZ expr				{ emit1($1); emit1($2.val - DOTVAL); }
+	| DBNZ expr8 ',' X ',' expr		{ emit1($1+0x30); emit1($2.val); emit1($6.val - DOTVAL); }
+	| DBNZ X ',' expr			{ emit1($1+0x40); emit1($4.val - DOTVAL); }
+	| DBNZ expr ',' SP ',' expr		{ emit2(0x9e6b); emit1($2.val); emit1($6.val - DOTVAL); }
+
+	| MOV expr8 ',' expr8			{ emit1(0x4e); emit1($2.val); emit1($4.val); }
+	| MOV expr ',' X '+'			{ emit1(0x5e); emit1($2.val); }
+	| MOV '#' expr ',' expr			{ emit1(0x6e); emit1($3.val); emit1($5.val); }
+	| MOV X '+' ',' expr			{ emit1(0x6f); emit1($5.val); }
 #endif
 	| RMW expr8		{ emit1($1); newrelo($2.typ, RELO1); emit1($2.val); }
 	| RMW expr8 ',' X	{
@@ -79,6 +99,9 @@ instr
 					}
 				}
 	| RMW ',' X		{ emit1($1+0x40); }
+#ifdef MC68HC08
+	| RMW expr8 ',' SP	{ emit1(0x9e); emit1($1+0x30); }
+#endif
 	| RM '#' expr8		{
 					switch($1) {
 						case 0xa7:
