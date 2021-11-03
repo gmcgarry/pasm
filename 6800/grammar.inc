@@ -61,14 +61,14 @@ pseudoop
 	;
 
 instr
-	: NOARG			{ emit1($1); }
+	: CTL			{ emit1($1); }
 	| BRANCH expr		{ expr_t expr = {0,0}; branch($1,$2,expr); }
 #ifdef MC6805
 	| BBRANCH bitexp ',' expr8 ',' expr { branch($1+($2 << 1), $6, $4); }
 	| BIT bitexp ',' expr8	{ emit1($1+($2 << 1)); newrelo($4.typ, RELO1); emit1($4.val); }
 #endif
-	| RMR expr8		{ emit1($1); newrelo($2.typ, RELO1); emit1($2.val); }
-	| RMR expr8 ',' X	{
+	| RMW expr8		{ emit1($1); newrelo($2.typ, RELO1); emit1($2.val); }
+	| RMW expr8 ',' X	{
 					int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
 					if (small($2.val == 0 && opt && PASS_RELO, 1)) {
 						emit1($1+0x40);
@@ -78,10 +78,8 @@ instr
 						emit1($2.val);
 					}
 				}
-	| RMR ',' X		{ emit1($1+0x40); }
-
-
-	| RM '#' expr		{
+	| RMW ',' X		{ emit1($1+0x40); }
+	| RM '#' expr8		{
 					switch($1) {
 						case 0xa7:
 						case 0xad:
