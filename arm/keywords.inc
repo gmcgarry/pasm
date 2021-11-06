@@ -40,14 +40,6 @@
 { 0,	PSEUDOOP_FPU,		0,		".fpu"	},
 { 0,	PSEUDOOP_MODE,		0,		".arm"	},
 { 0,	PSEUDOOP_CODE,		0,		".code"	},
-#if notyet
-{ 0,	PSEUDOOP_MODE,		0,		".thumb"	},
-{ 0,	PSEUDOOP_THUMBFUNC,	0,		".thumb_func"	},
-{ 0,	PSEUDOOP_FUNC,		0,		".fnstart" },
-{ 0,	PSEUDOOP_FUNC,		1,		".fnend" },
-{ 0,	PSEUDOOP_POOL,		0,		".pool" },
-{ 0,	PSEUDOOP_CANTUNWIND,	0,		".cantunwind"	},
-#endif
 
 { 0,	REG,			0,		"R0"	},
 { 0,	REG,			1,		"R1"	},
@@ -184,7 +176,7 @@
 { 0,	DATA2,		0xA0000000|MOV,	"MOVGE"	},
 { 0,	DATA2,		0xC0000000|MOV,	"MOVGT"	},
 
-{ 0,	SET,		0x00100000,	".S"	},	/* thumb? */
+{ 0,	SET,		0x00100000,	".S"	},
 { 0,	PEE,		0x0010F000,	".P"	},
 
 { 0,	SHIFT,		0x00000000,	"LSL"	},

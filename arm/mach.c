@@ -102,7 +102,7 @@ branch(word_t brtyp, word_t link, ADDR_T val)
 }
 
 void
-data(long opc, long ins, ADDR_T val, short typ)
+data(ADDR_T opc, long ins, ADDR_T val, short typ)
 {
 	ADDR_T tmpval;
 	int adrflag = 0;
@@ -272,7 +272,7 @@ calcoffset(ADDR_T val)
 /* This routine deals with STR and LDR instructions */
 
 void
-strldr(long opc, long ins, ADDR_T val)
+strldr(ADDR_T opc, long ins, ADDR_T val)
 {
 
 	long reg, reg2;	/* The registers we are using */
@@ -453,7 +453,7 @@ rotateleft2(ADDR_T *x)
 */
 
 void
-putaddr(long opc, long ins, long val, int count)
+putaddr(ADDR_T opc, long ins, long val, int count)
 {
 	long tmpval = val;
 	long reg = ins & 0x0000F000;

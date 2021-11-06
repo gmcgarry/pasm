@@ -41,12 +41,6 @@ operation
 	| PSEUDOOP_MODE						{ warning("ignoring .arm directive"); }
 	| PSEUDOOP_CODE NUMBER8					{ warning("ignoring .code directive"); }
 	| PSEUDOOP_SYNTAX IDENT					{ warning("ignoring .syntax directive"); }
-	| PSEUDOOP_THUMBFUNC					{ fatal("unsupportd .thumb_func directive"); }
-#ifdef notyet
-	| PSEUDOOP_FUNC						{ warning("ignoring .fnstart/.fnend directive"); }
-	| PSEUDOOP_POOL						{ warning("ignoring .pool directive"); }
-	| PSEUDOOP_CANTUNWIND					{ warning("ignoring .cantunwind directive"); }
-#endif
 #ifdef COMPAT_GAS
 	| BRANCH optlink optexch expr				{ branch($1,$2,$4.val|$3); }
 #endif

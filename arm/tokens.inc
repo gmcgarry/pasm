@@ -40,12 +40,6 @@
 %token <y_word> PSEUDOOP_MODE
 %token <y_word> PSEUDOOP_CODE
 %token <y_word> PSEUDOOP_SYNTAX
-#ifdef notyet
-%token <y_word> PSEUDOOP_FUNC
-%token <y_word> PSEUDOOP_POOL
-%token <y_word> PSEUDOOP_CANTUNWIND
-#endif
-%token <y_word> PSEUDOOP_THUMBFUNC
 
 %token <y_word> COND
 %token <y_word> LINK
