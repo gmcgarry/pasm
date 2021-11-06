@@ -41,7 +41,7 @@ extern int mode;
 /* ARM32 Specific routines */
 void branch(word_t brtyp, word_t link, ADDR_T val);
 void data(ADDR_T opc, long ins, ADDR_T val, short typ);
-int calcimm(ADDR_T *opc, ADDR_T *val,short typ);
+int calcimm(ADDR_T *opc, ADDR_T *val, short typ);
 word_t calcoffset(ADDR_T val);
 void strldr(ADDR_T opc, long ins, ADDR_T val);
 void calcadr(word_t ins, word_t reg, ADDR_T val, short typ);
@@ -52,4 +52,3 @@ int oursmall(int fitsmall, int gain);
 void setcpu(const char* id);
 void setarch(const char* id);
 void setfpu(const char* fpu);
-void setmode(int mode);

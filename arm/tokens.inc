@@ -72,7 +72,3 @@
 %type <y_word> optlink optcond optexch opts optt optp optb optexc reglist rlist
 %type <y_word> optsign optpsr optshift shftcnt address offset aoptshift
 %type <y_expr> operand
-
-/* thumb */
-%token <y_word> STACK
-%type <y_word> loreglist lorlist

@@ -42,8 +42,6 @@
 
 extern sect_t sect[];
 
-int mode = MODE_ARM;
-
 void
 mflag(const char* flag)
 {
@@ -88,12 +86,6 @@ void
 setfpu(const char* fpu)
 {
 	warning("ignoring .fpu directive (%s)", fpu);
-}
-
-void
-setmode(int m)
-{
-	mode = m;
 }
 
 void

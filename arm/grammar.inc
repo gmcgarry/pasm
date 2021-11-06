@@ -33,18 +33,15 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define thumbonly()	do { if (mode != MODE_THUMB) serror("invalid thumb instruction in arm mode"); } while (0)
-#define armonly()	do { if (mode != MODE_ARM) serror("invalid arm instruction in thumb mode"); } while (0)
-
 operation
 	: PSEUDOOP_ARCH IDENT					{ setarch($2->i_name); }
 	| PSEUDOOP_CPU IDENT 					{ setcpu($2->i_name); }
 	| PSEUDOOP_FPU IDENT					{ setfpu($2->i_name); }
 	| PSEUDOOP_EABIATTR NUMBER8 ',' NUMBER8			{ warning("ignoring .eabi directive"); }
-	| PSEUDOOP_MODE						{ setmode($1); }
+	| PSEUDOOP_MODE						{ warning("ignoring .arm directive"); }
 	| PSEUDOOP_CODE NUMBER8					{ warning("ignoring .code directive"); }
 	| PSEUDOOP_SYNTAX IDENT					{ warning("ignoring .syntax directive"); }
-	| PSEUDOOP_THUMBFUNC					{ warning("ignoring .thumb_func directive"); }
+	| PSEUDOOP_THUMBFUNC					{ fatal("unsupportd .thumb_func directive"); }
 #ifdef notyet
 	| PSEUDOOP_FUNC						{ warning("ignoring .fnstart/.fnend directive"); }
 	| PSEUDOOP_POOL						{ warning("ignoring .pool directive"); }
@@ -65,13 +62,11 @@ operation
 	/* LDRD/STRD */
 	| SDT optcond optb optt REG ',' REG ',' address		{ if ($5 != $7+1) serror("bad registers"); strldr($1,$2|$3|$4|$5<<12,$9); }
 #endif
-	| BDT optcond REG optexc ',' reglist optpsr		{ armonly(); emit4($1|$2|$3<<16|$4|$6|$7); }
-	| SWI optcond expr					{ armonly(); emit4($1|$2|$3.val); }
+	| BDT optcond REG optexc ',' reglist optpsr		{ emit4($1|$2|$3<<16|$4|$6|$7); }
+	| SWI optcond expr					{ emit4($1|$2|$3.val); }
 	| ADR optcond REG ',' expr				{ calcadr($2,$3,$5.val,$5.typ); }
-	| MUL optcond REG ',' REG ',' REG			{ armonly(); emit4($1|$2|$3<<16|$5|$7<<8); }
-	| MLA optcond REG ',' REG ',' REG ',' REG		{ armonly(); emit4($1|$2|$3<<16|$5|$7<<8|$9<<12); }
-	/* thumb */
-	| STACK loreglist					{ thumbonly(); emit2($1|$2); }
+	| MUL optcond REG ',' REG ',' REG			{ emit4($1|$2|$3<<16|$5|$7<<8); }
+	| MLA optcond REG ',' REG ',' REG ',' REG		{ emit4($1|$2|$3<<16|$5|$7<<8|$9<<12); }
 	;
 
 optlink	: 			{ $$ = 0; }
@@ -154,16 +149,4 @@ reglist	: '{' rlist '}'			{ $$ = $2; }
 rlist	: REG				{ $$ = 1<<$1; }
 	| rlist ',' REG			{ $$ = $1|1<<$3; }
 	| REG '-' REG			{ for ($$ = 0; $1 <= $3; $1++) $$ |= (1<<$1); }
-	;
-
-#define thumbreg(x)			do { if (x > 7 && x < 14) serror("invalid register"); } while(0)
-
-loreglist
-	: REG				{ thumbreg($1); if ($1 == 14 || $1 == 15) $1 = 8; $$ = (1<<$1); }
-	| '{' lorlist '}'		{ $$ = $2; }
-	;
-
-lorlist	: REG				{ thumbreg($1); if ($1 == 14 || $1 == 15) $1 = 8; $$ = 1<<$1; }
-	| rlist ',' REG			{ thumbreg($1); if ($3 == 14 || $3 == 15) $3 = 8; $$ = $1|1<<$3; }
-	| REG '-' REG			{ for ($$ = 0; $1 <= $3; $1++) { thumbreg($1); $$ |= (1<<$1); } }
 	;
