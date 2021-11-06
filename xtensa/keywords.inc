@@ -168,7 +168,7 @@
 { 0,	JUMPOP,			0x000006,	"j" },		/* iiii06	label - imm18	*/
 { 0,	CALLXOP,		0x0000C0,	"callx0" },	/* 000sC0	as		*/
 { 0,	CALLXOP,		0x0000A0,	"jx" },		/* 000sA0	as		*/
-{ 0,	CALLX,			0x000080,	"ret" },	/* 000080	-		*/
+{ 0,	RET,			0x000080,	"ret" },	/* 000080	-		*/
 
 /*
  * debug option
@@ -254,7 +254,7 @@
 { 0,	CALLXOP,		0x0000D0,	"callx4" },	/* 000sD0	as		*/
 { 0,	CALLXOP,		0x0000E0,	"callx8" },	/* 000sE0	as		*/
 { 0,	CALLXOP,		0x0000F0,	"callx12" },	/* 000sF0	as		*/
-{ 0,	CALLX,			0x000090,	"retw" },	/* 000090	-		*/
+{ 0,	RET,			0x000090,	"retw" },	/* 000090	-		*/
 { 0,	FORMAT_BRI12,		0x000036,	"entry" },	/* iixs36	as,8*(0..4095)	*/
 { 0,	FORMAT_RRI4_TSRx4,	0x09B000,	"l32e" }, 	/* 09rst0	at,as,4*(-16..-1,1) */
 { 0,	FORMAT_RRI4_TSRx4,	0x490000,	"s32e" },	/* 49rst0	at,as,4*(-16..-1,1) */
