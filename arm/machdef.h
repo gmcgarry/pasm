@@ -73,9 +73,6 @@
 
 #define ELFM		"%"
 
-#define MODE_ARM	0
-#define MODE_THUMB	1
-
 #define S_REG		0xF
 #define S_NUM		0x8
 

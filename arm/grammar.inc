@@ -77,7 +77,7 @@ optexch	:			{ $$ = 0; }
 	;
 
 opts	: 			{ $$ = 0; }
-	| SET			{ $$ = $1; if (mode == MODE_THUMB) serror("S postfix not supported for thumb"); }
+	| SET			{ $$ = $1; }
 	;
 
 optt	: 			{ $$ = 0; }
