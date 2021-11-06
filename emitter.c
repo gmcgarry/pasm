@@ -285,16 +285,19 @@ static void close_bin(void)
 
 static void addr_bin(unsigned long a)
 {
+#if 0
 	long i;
+#endif
 
 	if (fout == NULL) return;
+#if 0
 	if (a > addr) {
-		for (i=0; i < a - addr; i++) {
+		for (i=0; i < a - addr; i++)
 			fprintf(fout, "%c", 0);
-		}
 		addr = a;
 		return;
 	}
+#endif
 	if (a < addr) {
 		warning("address changed to %lX, from %lX", a, addr);
 		warning("binary output format can't write backwards");
