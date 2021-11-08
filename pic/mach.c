@@ -37,19 +37,22 @@ static int config = 0x3fff;
 #define CFG_FOSC_HS		0x0002		/* high-speed crystal/resonator */
 #define CFG_FOSC_RC		0x0003		/* resistor/capacitor */
 #define CFG_FOSC_EC		0x0003		/* external clock on CLKIN pin, I/O on CLKOUT pin */
-#define CFG_FOSC_INTRCIO	0x0004		/* internal RC oscillator; I/O functions on CLKIN/CLKOUT pins */
-#define CFG_FOSC_INTRCCLK	0x0005		/* internal RC oscillator; I/O function on CLKIN */
-#define CFG_FOSC_EXTRCIO	0x0006		/* external RC oscillator on CLKIN pin; I/O function on CLKOUT pin */
-#define CFG_FOSC_EXTRCCLK	0x0007		/* external RC oscillator on CLKIN; clock out on CLKOUT pin */
+#define CFG_FOSC_INTRCIO	0x0010		/* internal RC oscillator; I/O functions on CLKIN/CLKOUT pins */
+#define CFG_FOSC_INTRCCLK	0x0011		/* internal RC oscillator; I/O function on CLKIN */
+#define CFG_FOSC_EXTRCIO	0x0012		/* external RC oscillator on CLKIN pin; I/O function on CLKOUT pin */
+#define CFG_FOSC_EXTRCCLK	0x0013		/* external RC oscillator on CLKIN; clock out on CLKOUT pin */
 
-#define CFG_WDTE		0x0004
-#define CFG_PWRTE		0x0008
-#define CFG_CP			0x3ff0
-#define CFG_MCLRE		3
-#define CFG_CPD			5
-#define CFG_BOREN		6
-#define CFG_IESO		7
-#define CFG_FCMEN		8
+#define CFG_WDTE		(1<<2)		/* watchdog timer enable */
+#define CFG_PWRTE		(1<<3)		/* powerup timer enable */
+#define CFG_MCLRE		(1<<5)
+#define CFG_BOREN		(1<<6)		/* brown-out reset enable */
+#define CFG_LVP			(1<<7)		/* low-voltage programming enable */
+#define CFG_IESO		(1<<7)
+#define CFG_CPD			(1<<8)		/* data code protection */
+#define CFG_FCMEN		(1<<8)
+
+#define CFG_CP_F84A		0x3ff0		/* PIC16F84A */
+#define CFG_CP			(1<<13)		/* PIC16F628A */
 
 void
 setconfig(const char *s, const char *v)
@@ -66,30 +69,32 @@ setconfig(const char *s, const char *v)
 			config |= CFG_FOSC_HS;
 		else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "RC") == 0)
 			config |= CFG_FOSC_RC;
-		else if (strcasecmp(v, "INTRC") == 0 || strcasecmp(v, "INTRCIO") == 0)
+		else if (strcasecmp(v, "INTRC") == 0 || strcasecmp(v, "INTOSC") == 0 || strcasecmp(v, "INTOSCIO") == 0 || strcasecmp(v, "INTRCIO") == 0)
 			config |= CFG_FOSC_INTRCIO;
- 		else if (strcasecmp(v, "INTRCCLK") == 0)
+ 		else if (strcasecmp(v, "INTRCCLK") == 0 || strcasecmp(v, "INTOSCCLK") == 0)
 			config |= CFG_FOSC_INTRCCLK;
-		else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "EXTRCIO") == 0)
+		else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "EXTOSC") == 0 || strcasecmp(v, "EXTRCIO") == 0 || strcasecmp(v, "EXTOSCIO") == 0)
 			config |= CFG_FOSC_EXTRCIO;
- 		else if (strcasecmp(v, "EXTRCCLK") == 0)
+ 		else if (strcasecmp(v, "EXTRCCLK") == 0 || strcasecmp(v, "EXTOSCCLK") == 0)
 			config |= CFG_FOSC_EXTRCCLK;
 		else
 			fatal("unrecognised FOSC value \"%s\"", v);
 	} else if (strcasecmp(s, "WDTE") == 0) {	/* Watchdog Timer Enable bit */
-		config |= ISTRUE(v) ? 0 : CFG_WDTE;
+		config |= ISTRUE(v) ? CFG_WDTE : 0;
 	} else if (strcasecmp(s, "PWRTE") == 0) {	/* Power-up Timer Enable bit */
 		config |= ISTRUE(v) ? 0 : CFG_PWRTE;
 	} else if (strcasecmp(s, "MCLRE") == 0) {	/* MCLR Pin Function Select bit */
-		config |= ISTRUE(v) ? 0 : CFG_MCLRE;
+		config |= ISTRUE(v) ? CFG_MCLRE : 0;
 	} else if (strcasecmp(s, "CP") == 0) {		/* Program Memory Code Protection bit */
 		config |= ISTRUE(v) ? 0 : CFG_CP;
 	} else if (strcasecmp(s, "CPD") == 0) {		/* Data Memory Code Protection bit */
 		config |= ISTRUE(v) ? 0 : CFG_CPD;
 	} else if (strcasecmp(s, "BOREN") == 0) {	/* Brown-out Reset Selection bits */
-		config |= ISTRUE(v) ? 0 : CFG_BOREN;
-	} else if (strcasecmp(s, "IESO") == 0) {	/* Internal External Switchover bit */
+		config |= ISTRUE(v) ? CFG_BOREN : 0;
+	} else if (strcasecmp(s, "IESO") == 0) {	/* Internal/External Switchover bit */
 		config |= ISTRUE(v) ? 0 : CFG_IESO;
+	} else if (strcasecmp(s, "LVP") == 0) {		/* Low-Voltage Programming Enable bit */
+		config |= ISTRUE(v) ? CFG_LVP : 0;
 	} else if (strcasecmp(s, "FCMEN") == 0) {	/* Fail-Safe Clock Monitor Enabled bit */
 		config |= ISTRUE(v) ? 0 : CFG_FCMEN;
 	} else {
