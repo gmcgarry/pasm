@@ -18,8 +18,8 @@
 
 %token <y_word> REG REGW SFR
 %token <y_word> RMW RM
-%token <y_word> LD LDC LDCD
-%token <y_word> IMPL CALL INC
+%token <y_word> LD LDC LDCI
+%token <y_word> IMPL CALL INC INCW SRP
 %token <y_word> BRANCH RBRANCH
 
 %token <y_word> COND

@@ -14,6 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*
+ * Currently only supports opcodes in the S3F94C MCUs based
+ * on Samsung's SAM88R implementation.
+ */
+
 { 0,	PSEUDOOP_DEVICE,	0,	".device"	},
 { 0,	DOT,			0,	"$"		},
 
@@ -48,10 +53,12 @@
 { 0,	LD,	0,	"LD"		},
 { 0,	LDC,	0,	"LDC"		},	/* code */
 { 0,	LDC,	1,	"LDE"		},	/* external */ /* alias */
-{ 0,	LDCD,	0xE2,	"LDCD"		},	/* code and decrement */
-{ 0,	LDCD,	0xE2,	"LDED"		},	/* external and decrement */
-{ 0,	LDCD,	0xE3,	"LDCI"		},	/* code and increment */
-{ 0,	LDCD,	0xE3,	"LDEI"		},	/* external and increment */
+{ 0,	LDCI,	0xE3,	"LDCI"		},	/* code and increment */
+{ 0,	LDCI,	0xE3,	"LDEI"		},	/* external and increment */
+#ifdef S3F94C
+{ 0,	LDCI,	0xE2,	"LDCD"		},	/* code and decrement */
+{ 0,	LDCI,	0xE2,	"LDED"		},	/* external and decrement */
+#endif
 { 0,	RM,	0x50,	"POP"		},
 { 0,	RM,	0x70,	"PUSH"		},
 
@@ -60,9 +67,14 @@
 { 0,	RMW,	0x00,	"ADD",		},
 { 0,	RMW,	0xA0,	"CP",		},
 { 0,	RM,	0x00,	"DEC",		},
-{ 0,	INC,	0,	"INC",		},	/* 0x20, 0x21 or 0x?E */
+{ 0,	INC,	0,	"INC",		},
 { 0,	RMW,	0x30,	"SBC",		},
 { 0,	RMW,	0x20,	"SUB",		},
+#ifndef S3F94C
+{ 0,	RMW,	0x40,	"DA"		},	/* decimal adjust */
+{ 0,	INCW,	0xA0,	"INCW",		},
+{ 0,	INCW,	0x80,	"DECW",		},
+#endif
 
 /* logic instructions */
 { 0,	RMW,	0x50,	"AND",		},
@@ -74,9 +86,11 @@
 { 0,	CALL,	0xF0,	"CALL"		},
 { 0,	IMPL,	0xBF,	"IRET"		},
 { 0,	IMPL,	0xAF,	"RET"		},
-
 { 0,	BRANCH,	0x0D,	"JP"		},
 { 0,	RBRANCH,0x0B,	"JR"		},
+#ifndef S3F94C
+{ 0,	RBRANCH,0x0A,	"DJNZ"		},
+#endif
 
 { 0,	COND,	0x0,	"F"		},
 { 0,	COND,	0x8,	"T"		},
@@ -104,25 +118,25 @@
 { 0,	BRANCH,	0x1D,	"JLT"		},
 { 0,	BRANCH,	0x9D,	"JGE"		},
 { 0,	BRANCH,	0x2D,	"JLE"		},
-{ 0,	BRANCH,	0xaD,	"JGT"		},
+{ 0,	BRANCH,	0xAD,	"JGT"		},
 { 0,	BRANCH,	0x3D,	"JULE"		},
 { 0,	BRANCH,	0xBD,	"JUGT"		},
 { 0,	BRANCH,	0x4D,	"JOV"		},
-{ 0,	BRANCH,	0xcD,	"JNOV"		},
+{ 0,	BRANCH,	0xCD,	"JNOV"		},
 { 0,	BRANCH,	0x5D,	"JMI"		},
 { 0,	BRANCH,	0xdD,	"JPL"		},
 { 0,	BRANCH,	0x6D,	"JEQ"		},
 { 0,	BRANCH,	0x6D,	"JZ"		},
-{ 0,	BRANCH,	0xeD,	"JNE"		},
-{ 0,	BRANCH,	0xeD,	"JNZ"		},
+{ 0,	BRANCH,	0xED,	"JNE"		},
+{ 0,	BRANCH,	0xED,	"JNZ"		},
 { 0,	BRANCH,	0x7D,	"JC"		},
 { 0,	BRANCH,	0x7D,	"JULT"		},
 { 0,	BRANCH,	0xFD,	"JNC"		},
 { 0,	BRANCH,	0xFD,	"JUGE"		},
 
 /* bit manipulation */
-{ 0,	RMW,	0x60,	"TCM"		},
-{ 0,	RMW,	0x70,	"TM"		},
+{ 0,	RMW,	0x60,	"TCM"		},	/* test and complement under mask */
+{ 0,	RMW,	0x70,	"TM"		},	/* test under mask */
 
 /* rotate and shift */
 { 0,	RM,	0x90,	"RL"		},
@@ -130,17 +144,26 @@
 { 0,	RM,	0xE0,	"RR"		},
 { 0,	RM,	0xC0,	"RRC"		},
 { 0,	RM,	0xD0,	"SRA"		},
+#ifndef S3F94C
+{ 0,	RM,	0xF0,	"SWAP"		},	/* swap nibbles */
+#endif
 
 /* cpu instructions */
-{ 0,	IMPL,	0xEF,	"CCF"		},
-{ 0,	IMPL,	0x8F,	"DI"		},
-{ 0,	IMPL,	0x9F,	"EI"		},
+{ 0,	IMPL,	0xEF,	"CCF"		},	/* complement carry flag */
+{ 0,	IMPL,	0x8F,	"DI"		},	/* disable interrupts */
+{ 0,	IMPL,	0x9F,	"EI"		},	/* enable interrupts */
 { 0,	IMPL,	0x6F,	"IDLE"		},
 { 0,	IMPL,	0xFF,	"NOP"		},
-{ 0,	IMPL,	0xCF,	"RCF"		},
-{ 0,	IMPL,	0xDF,	"SCF"		},
+{ 0,	IMPL,	0xCF,	"RCF"		},	/* reset carry flag */
+{ 0,	IMPL,	0xDF,	"SCF"		},	/* set carry flag */
+#ifdef S3F94C
 { 0,	IMPL,	0x7F,	"STOP"		},
+#endif
+#ifndef S3F94C
+{ 0,	SRP,	0x31,	"SRP"		},	/* set register pointer */
+#endif
 
+#ifdef S3F94C
 /* special function registers */
 { 0,	SFR,	0xD0,	"T0CNT"		},	/* Timer0 counter register */
 { 0,	SFR,	0xD1,	"T0DATA"	},	/* Timer0 data register */
@@ -184,3 +207,4 @@
 { 0,	SFR,	0xF7,	"ADCON"		},	/* ADC control register */
 { 0,	SFR,	0xF8,	"ADDATAH"	},	/* ADC data register (high) */
 { 0,	SFR,	0xF9,	"ADDATAL"	},	/* ADC data register (low) */
+#endif

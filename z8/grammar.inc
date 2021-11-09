@@ -14,6 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* 
+ * Note: the original Z8 assembler uses '(' rather than ']' syntax
+ * for indexed addressing.
+ */
+
 #define fitx(x,b)	(((x) & ~((1 << (b))-1)) == 0)
 #define fitb(x)		fitx(x,8)
 #define fitw(x)		fitx(x,16)
@@ -72,7 +77,7 @@ operation
 						}
 					}
 
-	| LDCD REG ',' REGW		{ emit1($1); emit1($2<<4|$4); }
+	| LDCI REG ',' REGW		{ emit1($1); emit1($2<<4|$4); }
 
 	| IMPL				{ emit1($1); }
 
@@ -80,13 +85,22 @@ operation
 	| INC direct			{ emit1(0x20); emit1($2); }
 	| INC '@' reg			{ emit1(0x21); emit1($3); }
 
+#ifndef S3F94C
+	| INCW REG16			{ emit1($1|0x00); emit1($3); }
+	| INCW '@' reg			{ emit1($1|0x01); emit1($3); }
+#endif
+
+#ifndef S3F94C
+	| SRP imm8			{ emit1($1); emit1($2); }
+#endif
+
 	| CALL expr			{ emit1($1|0x06); emit2($2.val); }
 	| CALL '@' REGW			{ emit1($1|0x04); emit1($3); }
 
 	| BRANCH optcond address	{ emit1($2<<4|$1); emit2($3); }
 	| BRANCH '@' REGW		{ emit1(0x30); emit1($3); }
 
-	| RBRANCH optcond offset	{ emit1($2<<4|$1); emit2($3); }
+	| RBRANCH optcond offset	{ emit1($2<<4|$1); emit1($3); }
 	;
 
 reg	: REG		{ $$ = $1; }

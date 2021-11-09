@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define S3F94C		1	/* Samsung's SAM88R core in S3F94Cx MCUs */
+
 #define	THREE_PASS	/* branch and offset optimization */
 #define	LISTING		/* enable listing facilities */
 
@@ -23,6 +25,7 @@
 #define ALIGNSECT	1
 
 #define IGNORECASE
+#define HEXPREFIX	'%'
 
 /* ========== Machine independent type declarations ========== */
 
