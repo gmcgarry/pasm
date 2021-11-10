@@ -85,12 +85,12 @@ operation
 	| INC direct			{ emit1(0x20); emit1($2); }
 	| INC '@' reg			{ emit1(0x21); emit1($3); }
 
-#ifndef S3F94C
+#ifndef SAM88RC
 	| INCW REG16			{ emit1($1|0x00); emit1($3); }
 	| INCW '@' reg			{ emit1($1|0x01); emit1($3); }
 #endif
 
-#ifndef S3F94C
+#ifndef SAM88RC
 	| SRP imm8			{ emit1($1); emit1($2); }
 #endif
 

@@ -15,7 +15,7 @@
  */
 
 /*
- * Currently only supports opcodes in the S3F94C MCUs based
+ * Currently only supports opcodes in the SAM88RC MCUs based
  * on Samsung's SAM88R implementation.
  */
 
@@ -55,7 +55,7 @@
 { 0,	LDC,	1,	"LDE"		},	/* external */ /* alias */
 { 0,	LDCI,	0xE3,	"LDCI"		},	/* code and increment */
 { 0,	LDCI,	0xE3,	"LDEI"		},	/* external and increment */
-#ifdef S3F94C
+#ifdef SAM88RC
 { 0,	LDCI,	0xE2,	"LDCD"		},	/* code and decrement */
 { 0,	LDCI,	0xE2,	"LDED"		},	/* external and decrement */
 #endif
@@ -70,7 +70,7 @@
 { 0,	INC,	0,	"INC",		},
 { 0,	RMW,	0x30,	"SBC",		},
 { 0,	RMW,	0x20,	"SUB",		},
-#ifndef S3F94C
+#ifndef SAM88RC
 { 0,	RMW,	0x40,	"DA"		},	/* decimal adjust */
 { 0,	INCW,	0xA0,	"INCW",		},
 { 0,	INCW,	0x80,	"DECW",		},
@@ -88,7 +88,7 @@
 { 0,	IMPL,	0xAF,	"RET"		},
 { 0,	BRANCH,	0x0D,	"JP"		},
 { 0,	RBRANCH,0x0B,	"JR"		},
-#ifndef S3F94C
+#ifndef SAM88RC
 { 0,	RBRANCH,0x0A,	"DJNZ"		},
 #endif
 
@@ -144,7 +144,7 @@
 { 0,	RM,	0xE0,	"RR"		},
 { 0,	RM,	0xC0,	"RRC"		},
 { 0,	RM,	0xD0,	"SRA"		},
-#ifndef S3F94C
+#ifndef SAM88RC
 { 0,	RM,	0xF0,	"SWAP"		},	/* swap nibbles */
 #endif
 
@@ -156,14 +156,14 @@
 { 0,	IMPL,	0xFF,	"NOP"		},
 { 0,	IMPL,	0xCF,	"RCF"		},	/* reset carry flag */
 { 0,	IMPL,	0xDF,	"SCF"		},	/* set carry flag */
-#ifdef S3F94C
+#ifdef SAM88RC
 { 0,	IMPL,	0x7F,	"STOP"		},
 #endif
-#ifndef S3F94C
+#ifndef SAM88RC
 { 0,	SRP,	0x31,	"SRP"		},	/* set register pointer */
 #endif
 
-#ifdef S3F94C
+#ifdef SAM88RC
 /* special function registers */
 { 0,	SFR,	0xD0,	"T0CNT"		},	/* Timer0 counter register */
 { 0,	SFR,	0xD1,	"T0DATA"	},	/* Timer0 data register */
