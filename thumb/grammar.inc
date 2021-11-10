@@ -21,8 +21,7 @@
 #define MASK(val,nbits)				((val)&((1<<(nbits))-1))
 #define BITS(val,nbits,shift)			(MASK((val),(nbits))<<(shift))
 
-#define __ISA(val)				ISA_ ## val
-#define ISA(val)				do { if (isa < __ISA(val)) serror("invalid instruction for ISA"); } while(0)
+#define ISA(val)				do { if (isa < val) serror("invalid instruction for ISA"); } while(0)
 
 operation
 	: PSEUDOOP_ARCH IDENT			{ setarch($2->i_name); }
@@ -36,7 +35,7 @@ operation
 	| PSEUDOOP_SYNTAX IDENT			{ if (pass == PASS_1) warning("ignoring .syntax directive"); }
 	| PSEUDOOP_FUNC				{ if (pass == PASS_1) warning("ignoring .fnstart/.fnend directive"); }
 	| PSEUDOOP_POOL				{ if (pass == PASS_1) warning("ignoring .pool directive"); }
-	| PSEUDOOP_CANTUNWIND			{ if (Pass == PASS_1) warning("ignoring .cantunwind directive"); }
+	| PSEUDOOP_CANTUNWIND			{ if (pass == PASS_1) warning("ignoring .cantunwind directive"); }
 #endif
 
 	| SHIFT format_01			{ emit2($1|$2); }
@@ -44,6 +43,8 @@ operation
 
 	| ADD format_02				{ emit2($1|$2); }
 	| ADD format_03				{ ISA(ARMv6); emit2(0x3000|BITS($1>>9,1,11)|$2); }		/* XXXGJM: thumb2 */
+	| ADD format_13				{ emit2(0xB000|BITS($1>>9,1,7)|$2); }
+	;
 
 	| MOV format_03				{ emit2(0x2000|$2); }
 	| MOV format_04				{ emit2(0x0000|$2); }
@@ -53,12 +54,14 @@ operation
 	| CMP format_04				{ emit2(0x4280|$2); }
 	| CMP format_05				{ ISA(ARMv6); emit2(0x4500|$2); }	/* thumb2 */
 
+	| ADR format_12				{ emit2($1|$2); }
+
 	| DATA1 format_04			{ emit2($1|$2); }
 
 	| LDST format_07			{ emit2(0x5000|BITS($1,1,11)|$2); }
 	| LDST format_09			{ emit2(0x6000|BITS($1,1,11)|$2); }
 	| LDST format_11			{ emit2(0x9000|BITS($1,1,11)|$2); }
-	| LDST format_12			{ }
+	| LDST format_12			{ emit2(0x4800|$2); }
 
 	| LDSTB format_07			{ emit2(0x5400|BITS($1,1,11)|$2); }
 	| LDSTB format_09b			{ emit2(0x7000|BITS($1,1,11)|$2); }
@@ -70,10 +73,16 @@ operation
 
 	| STACK format_14			{ emit2($1|$2); }
 
+	| LDM format_15				{ emit2($1|$2); }
+
 	| BREXCH REG				{ emit2($1|BITS($2,4,3)); }
 	| BREXCH PC				{ emit2($1|BITS($2,4,3)); }
 	| BREXCH LR				{ emit2($1|BITS($2,4,3)); }
-	| LBRANCH offset			{ emit2(0xf000|BITS($2>>23,1,10)|BITS($2>>11,10,0)); emit2(0xd000|BITS($2>>22,1,13)|BITS($2>>21,1,11)|BITS($2,11,0)); }
+	| LBRANCH offset			{
+							int off = $2>>1;
+							emit2(0xf000|BITS(off>>21,1,10)|BITS(off>>11,10,0));
+							emit2(0xf800|BITS(off,11,0));
+						}
 #if 0
 	| BREXCH offset				{ XXXX }
 #endif
@@ -102,12 +111,12 @@ format_04
 	;
 
 format_05
-	: REGHI ',' reg				{ $$ = BITS($3,3,3)|BITS($1,3,0)|BITS($1>>3,1,7)|BITS($3>>3,1,8); }
-	| REG ',' REGHI				{ $$ = BITS($3,3,3)|BITS($1,3,0)|BITS($1>>3,1,7)|BITS($3>>3,1,8); }
+	: reghi ',' reg				{ $$ = BITS($3,3,3)|BITS($1,3,0)|BITS($1>>3,1,7)|BITS($3>>3,1,8); }
+	| REG ',' reghi				{ $$ = BITS($3,3,3)|BITS($1,3,0)|BITS($1>>3,1,7)|BITS($3>>3,1,8); }
 	;
 
 format_06
-	: REG ',' '=' offset			{ $$ = BITS($1,3,8)|BITS($4,8,0); }
+	: REG ',' '=' offset			{ $$ = BITS($1,3,8)|BITS($4>>2,8,0); }
 	;
 
 format_07
@@ -144,19 +153,21 @@ format_12
 	;
 
 format_13
-	: SP ',' absexp				{ $$ = BITS($3,7,0); }
+	: SP ',' '#' absexp			{ $$ = BITS($4>>2,7,0); }
 	;
 
 format_14
-	: reglist				{ $$ = $1; }
+	: reg					{ if ($1 == 14 || $1 == 15) $1 = 8; $$ = (1<<$1); }
+	| reglist				{ $$ = $1; }
 	;
 
 format_15
-	: REG ',' rlist				{ $$ = BITS($1,3,8)|BITS($3,8,0); }
+	: REG ',' reglist			{ $$ = BITS($1,3,8)|BITS($3,8,0); }
+	| REG '!' ',' reglist			{ $$ = BITS($1,3,8)|BITS($4,8,0); if ((1<<$1)&$4) serror("bad register list"); }
 	;
 
 format_16
-	: offset				{ $$ = $1; }
+	: offset				{ $$ = $1>>1; }
 	;
 
 format_17
@@ -164,21 +175,20 @@ format_17
 	;
 
 format_18
-	: offset				{ $$ = $1; /* 11-bit offset */ }
+	: offset				{ $$ = $1>>1; /* 11-bit offset */ }
 	;
 
 format_19
 	: format_18				{ $$ = $1; /* 11-bit offset */ }
 	;
 
-offset	: expr					{ $$ = ($1.val - (DOTVAL + 4))>>1; }
+offset	: expr					{ $$ = ($1.val - (DOTVAL + 4)); }
 	;
 
 address : expr					{ $$ = $1.val; }
 	;
 	
-reglist	: reg					{ if ($1 == 14 || $1 == 15) $1 = 8; $$ = (1<<$1); }
-	| '{' rlist '}'				{ $$ = $2; }
+reglist	: '{' rlist '}'				{ $$ = $2; }
 	;
 
 rlist	: reg					{ if ($1 == 14 || $1 == 15) $1 = 8; $$ = 1<<$1; }
@@ -191,6 +201,6 @@ reg	: REG					{ $$ = $1; }
 	| PC					{ $$ = $1; }
 	;
 
-reghl	: REG					{ $$ = $1; }
-	| REGHI					{ $$ = $1; }
+reghi	: REGHI					{ $$ = $1; }
+	| SP					{ $$ = $1; }
 	;

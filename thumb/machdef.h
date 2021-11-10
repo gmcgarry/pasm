@@ -36,15 +36,16 @@
 #define ADDR_T		int
 #define word_t		unsigned int
 
-#define ALIGNWORD	2
-#define ALIGNSECT	2
+#define WORDSIZE	4
+#define DWORDSIZE	8
+#define ALIGNWORD	4
+#define ALIGNSECT	4
 #define VALWIDTH	8
 
 /* Some character constants for scanner*/
 #define ASC_COMMENT     ';'
-#define ASC2_COMMENT	'@'
 #define CTRL(x)         ((x) & 037)
-#define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.' || (c) == '%')
-#define ISALNUM(c)      (isalnum(c) || (c) == '_' || (c) == '.')
+#define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.')
+#define ISALNUM(c)      (isalnum(c) || (c) == '_')
 
 #define DEFAULT_SECTION	(1)

@@ -100,40 +100,19 @@
 { 0,	LDRS,			0,		"LDRSB"	},
 { 0,	LDRS,			1,		"LDRSH"	},
 
+/* block data transfers */
+{ 0,	STACK,			0xB400,		"PUSH"	},
+{ 0,	STACK,			0xBC00,		"POP"	},
+{ 0,	LDM,			0xC800,		"LDMIA"	},	/* load multiple, increment after */
+{ 0,	LDM,			0xC000,		"STMIA"	},	/* store multiple, increment after */
+
 #if 0
-
-{ 0,	BDT,		0x09100000,	"LDMDB"	},
-{ 0,	BDT,		0x09100000,	"LDMEA"	},
-
-{ 0,	BDT,		0x08100000,	"LDMFA"	},
-{ 0,	BDT,		0x08100000,	"LDMDA"	},
-
-{ 0,	BDT,		0x09900000,	"LDMED"	},
-{ 0,	BDT,		0x09900000,	"LDMIB"	},
-
-{ 0,	BDT,		0x08900000,	"LDMFD"	},
-{ 0,	BDT,		0x08900000,	"LDMIA"	},
-
-{ 0,	BDT,		0x09000000,	"STMDB"	},
-{ 0,	BDT,		0x09000000,	"STMFD"	},
-
-{ 0,	BDT,		0x08000000,	"STMDA"	},
-{ 0,	BDT,		0x08000000,	"STMED"	},
-
-{ 0,	BDT,		0x08800000,	"STMEA"	},
-{ 0,	BDT,		0x08800000,	"STMIA"	},
-
-{ 0,	BDT,		0x09800000,	"STMIB"	},
-{ 0,	BDT,		0x09800000,	"STMFA"	},
-
- 
-{ 0,	ADR,		0x00000000,	"ADR"	},
-
+{ 0,	BDT,			0xE9100000,	"LDMDB"	},	/* aka POP */ /* thumb2 */
+{ 0,	BDT,			0xE9000000,	"STMDB"	},	/* aka PUSH */ /* thumb2 */
 #endif
 
+{ 0,	ADR,			0xA000,		"ADR"	},
 
-{ 0,	SWI,		0xDF00,		"SWI"	},
-{ 0,	SVC,		0xDF00,		"SVC"	},
+{ 0,	SWI,			0xDF00,		"SWI"	},
+{ 0,	SVC,			0xDF00,		"SVC"	},
 
-{ 0,	STACK,		0xB400,		"PUSH"	},
-{ 0,	STACK,		0xBC00,		"POP"	},

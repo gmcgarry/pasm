@@ -21,7 +21,7 @@
 #include "as.h"
 #include "error.h"
 
-int isa = ISA_ARMv7;
+int isa = ARMv7;
 
 extern sect_t sect[];
 
@@ -66,13 +66,13 @@ setarch(const char* arch)
 	 * armv7-m armv7e-m
 	 */
 	if (strcmp(arch, "armv4t") == 0)
-		isa = ISA_ARMv4T;
+		isa = ARMv4T;
 	else if (strncmp(arch, "arm5t", 5) == 0)
-		isa = ISA_ARMv5T;
+		isa = ARMv5T;
 	else if (strncmp(arch, "armv6", 5) == 0)
-		isa = ISA_ARMv6;
+		isa = ARMv6;
 	else if (strncmp(arch, "armv7", 5) == 0)
-		isa = ISA_ARMv7;
+		isa = ARMv7;
 	else
 		fatal("unsupported '%s' ISA", arch);
 }

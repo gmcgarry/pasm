@@ -16,10 +16,10 @@
 
 extern int isa;
 
-#define ISA_ARMv4T	0
-#define ISA_ARMv5T	1
-#define ISA_ARMv6	2
-#define ISA_ARMv7	3
+#define ARMv4T	0
+#define ARMv5T	1
+#define ARMv6	2
+#define ARMv7	3
 
 void setcpu(const char* id);
 void setarch(const char* id);

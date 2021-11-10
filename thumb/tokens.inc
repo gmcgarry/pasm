@@ -43,9 +43,11 @@
 %token <y_word> BRANCH
 %token <y_word> UBRANCH
 %token <y_word> LBRANCH
+%token <y_word> LDM
+%token <y_word> ADR
 
 %type <y_word> reg
-%type <y_word> reghl
+%type <y_word> reghi
 %type <y_word> format_01
 %type <y_word> format_02
 %type <y_word> format_03
@@ -67,5 +69,5 @@
 %type <y_word> format_18
 %type <y_word> format_19
 
-%type <y_word> optlink reglist rlist
+%type <y_word> reglist rlist
 %type <y_word> address offset
