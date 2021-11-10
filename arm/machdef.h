@@ -60,6 +60,8 @@
 #define ADDR_T		long
 #define word_t		unsigned int
 
+#define WORDSIZE	4
+#define DWORDSIZE	8
 #define ALIGNWORD	4
 #define ALIGNSECT	4
 #define VALWIDTH	8
