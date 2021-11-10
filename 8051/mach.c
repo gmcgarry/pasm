@@ -20,8 +20,8 @@
 
 extern int hash(const char *);
 
-item_t cseg = { 0, 0, S_UND, ".cseg" };
-item_t dseg = { 0, 0, S_UND, ".dseg" };
+item_t cseg = { 0, S_UND, 0, ".cseg" };
+item_t dseg = { 0, S_UND, 0, ".dseg" };
 
 void
 mflag(const char* flag)
@@ -32,9 +32,9 @@ void
 machstart(int pass)
 {
 	if (pass == PASS_1) {
-		item_insert(&cseg, hash(cseg.i_name));
+		item_insert(&cseg, H_GLOBAL+hash(cseg.i_name));
 		unresolved++;
-		item_insert(&dseg, hash(dseg.i_name));
+		item_insert(&dseg, H_GLOBAL+hash(dseg.i_name));
 		unresolved++;
 	}
 	newsect(&cseg, 0, NULL);

@@ -26,7 +26,7 @@
 extern sect_t sect[];
 extern int hash(const char *);
 
-static item_t cseg = { 0, 0, S_UND, ".cseg" };
+static item_t cseg = { 0, S_UND, 0, ".cseg" };
 
 
 static int config_addr = 0x2007;
@@ -155,7 +155,7 @@ void
 machstart(int pass)
 {
 	if (pass == PASS_1) {
-		item_insert(&cseg, hash(cseg.i_name));
+		item_insert(&cseg, H_GLOBAL+hash(cseg.i_name));
 		unresolved++;
 	}
 	newsect(&cseg, 0, NULL);

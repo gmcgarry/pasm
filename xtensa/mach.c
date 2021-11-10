@@ -23,8 +23,8 @@ extern int hash(const char* p);
 
 
 /* XXXGJM still cannot use sections with the same names as keywords */
-static item_t literals = { 0, 0, S_UND, ".literals" };
-static item_t litbase = { 0, 0, S_UND, ".litbase" };
+static item_t literals = { 0, S_UND, 0, ".literals" };
+static item_t litbase = { 0, S_UND, 0, ".litbase" };
 int use_litbase = 0;
 
 void
@@ -39,8 +39,8 @@ machstart(int pass)
 {
 	if (use_litbase) {
 		if (pass == PASS_1) {
-                	item_insert(&literals, hash(literals.i_name));
-                	item_insert(&litbase, hash(litbase.i_name));
+                	item_insert(&literals, H_GLOBAL+hash(literals.i_name));
+                	item_insert(&litbase, H_GLOBAL+hash(litbase.i_name));
 			unresolved += 2;
 		}
         	newsect(&literals, SHT_PROGBITS, "ax");

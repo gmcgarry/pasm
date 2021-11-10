@@ -26,7 +26,7 @@ extern int hash(const char *);
 #define fit7(x)		fitx(x, 7)
 #define fit12(x)	fitx(x, 12)
 
-static item_t cseg = { 0, 0, S_UND, ".text" };
+static item_t cseg = { 0, S_UND, 0, ".text" };
 
 void
 mflag(const char* flag)
@@ -37,7 +37,7 @@ void
 machstart(int pass)
 {
 	if (pass == PASS_1) {
-		item_insert(&cseg, hash(cseg.i_name));
+		item_insert(&cseg, H_GLOBAL+hash(cseg.i_name));
 		unresolved++;
 	}
 	newsect(&cseg, 0, NULL);
