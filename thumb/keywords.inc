@@ -55,6 +55,7 @@
 { 0,	ADD,			0x1a00,		"SUB"	},	/* register or immediate */
 
 { 0,	MOV,			0,		"MOV"	},	/* register or immediate */
+{ 0,	MOV,			0,		"CPY"	},	/* alias in pre-UAL */
 { 0,	CMP,			0,		"CMP"	},	/* register or immediate */
 
 { 0,	DATA1,			0x4140,		"ADC"	},	/* add with carry */
@@ -70,8 +71,8 @@
 { 0,	DATA1,			0x4200,		"TST"	},	/* test bits */
 { 0,	DATA1,			0x4340,		"MUL"	},	/* multiply */
 
-{ 0,	BREXCH,			0x4700,		"BX"	},	/* only available in 5T? */
-{ 0,	BREXCH,			0x4780,		"BLX"	},	/* only available in 5T? */
+{ 0,	BREXCH,			0x4700,		"BX"	},
+{ 0,	BREXCH,			0x4780,		"BLX"	},	/* ARMv5T */
 
 { 0,	UBRANCH,		0xE000,		"B"	},
 { 0,	LBRANCH,		0,		"BL"	},
@@ -107,12 +108,42 @@
 { 0,	LDM,			0xC000,		"STMIA"	},	/* store multiple, increment after */
 
 #if 0
-{ 0,	BDT,			0xE9100000,	"LDMDB"	},	/* aka POP */ /* thumb2 */
-{ 0,	BDT,			0xE9000000,	"STMDB"	},	/* aka PUSH */ /* thumb2 */
+{ 0,	BDT,			0xE9100000,	"LDMDB"	},	/* aka POP */ /* ARMv6T2 */
+{ 0,	BDT,			0xE9000000,	"STMDB"	},	/* aka PUSH */ /* ARMv6T2 */
 #endif
 
 { 0,	ADR,			0xA000,		"ADR"	},
 
 { 0,	SWI,			0xDF00,		"SWI"	},
 { 0,	SVC,			0xDF00,		"SVC"	},
+
+{ 0,	IMPL,			0xBF40,		"SEV"		},
+{ 0,	IMPL,			0xB658,		"SETENDBE"	},	/* ARMv6 except ARMv6-M and ARMv7-M */
+{ 0,	IMPL,			0xB650,		"SETENDLE"	},	/* ARMv6 except ARMv6-M and ARMv7-M */
+
+{ 0,	DATA1,			0xBA00,		"REV"		},	/* ARMv6 */
+{ 0,	DATA1,			0xBA40,		"REV16"		},	/* ARMv6 */
+{ 0,	DATA1,			0xBAC0,		"REVSH"		},	/* ARMv6 */
+
+{ 0,	SVC,			0xBF00,		"BKPT"		},	/* ARMv5T */
+{ 0,	CBNZ,			0xB900,		"CBNZ"		},	/* ARMv6T2 */
+{ 0,	CBNZ,			0xB100,		"CBZ"		},	/* ARMv6T2 */
+
+#if 0
+{ 0,	DATA1,			0,		"CPS"		},	/* ARMv6 */
+
+/* signal processing */
+{ 0,	DATA1,			0,		"SMULxy"	},	/* ARMv5TE - 32b */
+{ 0,	DATA1,			0,		"SMLAxy"	},	/* ARMv5TE - 32b */
+{ 0,	DATA1,			0,		"SMULWy"	},	/* ARMv5TE - 32b */
+{ 0,	DATA1,			0,		"SMLAWy"	},	/* ARMv5TE - 32b */
+{ 0,	DATA1,			0,		"SMLALxy "	},
+
+{ 0,	DATA1,			0,		"QADD"		},	/* ARMv5TE - 32b */
+{ 0,	DATA1,			0,		"QSUB"		},	/* ARMv5TE - 32b */
+{ 0,	DATA1,			0,		"QDADD"		},	/* ARMv5TE - 32b */
+{ 0,	DATA1,			0,		"QDSUB"		},	/* ARMv5TE - 32b */
+#endif
+
+
 

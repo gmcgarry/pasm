@@ -38,6 +38,8 @@ operation
 	| PSEUDOOP_CANTUNWIND			{ if (pass == PASS_1) warning("ignoring .cantunwind directive"); }
 #endif
 
+	| IMPL					{ emit2($1); }
+
 	| SHIFT format_01			{ emit2($1|$2); }
 	| SHIFT format_04			{ emit2(0x4000|BITS($1>>12,1,8)|BITS(~($1>>12),1,7)|BITS($1>>11,1,6)|$2); }
 
@@ -90,20 +92,22 @@ operation
 	| UBRANCH format_18			{ emit2($1|BITS($2,11,0)); }
 
 	| SVC format_17				{ emit2($1|BITS($2,8,0)); }
-	| SWI expr				{ emit2($1|BITS($2.val,8,0)); }
+	| SWI absexp				{ emit2($1|BITS($2,8,0)); }
+
+	| CBNZ format_20			{ emit2($1|$2); }
 	;
 
 format_01
-	: REG ',' REG ',' '#' expr		{ $$ = BITS($6.val,5,6)|BITS($3,3,3)|BITS($1,3,0); }
+	: REG ',' REG ',' '#' absexp		{ $$ = BITS($6,5,6)|BITS($3,3,3)|BITS($1,3,0); }
 	;
 
 format_02
 	: REG ',' REG ',' REG			{ $$ = BITS(0,1,10)|BITS($5,3,6)|BITS($3,3,3)|BITS($1,3,0); }
-	| REG ',' REG ',' '#' expr		{ $$ = BITS(1,1,10)|BITS($6.val,3,6)|BITS($3,3,3)|BITS($1,3,0); }
+	| REG ',' REG ',' '#' absexp		{ $$ = BITS(1,1,10)|BITS($6,3,6)|BITS($3,3,3)|BITS($1,3,0); }
 	;
 
 format_03
-	: REG ',' '#' expr			{ $$ = BITS($1,3,8)|BITS($4.val,8,0); }
+	: REG ',' '#' absexp			{ $$ = BITS($1,3,8)|BITS($4,8,0); }
 	;
 
 format_04
@@ -128,27 +132,27 @@ format_08
 	;
 
 format_09
-	: REG ',' '[' REG ',' '#' expr ']'	{ $$ = BITS($7.val>>2,5,6)|BITS($4,3,3)|BITS($1,3,0); }
+	: REG ',' '[' REG ',' '#' absexp ']'	{ $$ = BITS($7>>2,5,6)|BITS($4,3,3)|BITS($1,3,0); }
 	| REG ',' '[' REG ']'			{ $$ = BITS($4,3,3)|BITS($1,3,0); }
 	;
 
 format_09b
-	: REG ',' '[' REG ',' '#' expr ']'	{ $$ = BITS($7.val,5,6)|BITS($4,3,3)|BITS($1,3,0); }
+	: REG ',' '[' REG ',' '#' absexp ']'	{ $$ = BITS($7,5,6)|BITS($4,3,3)|BITS($1,3,0); }
 	| REG ',' '[' REG ']'			{ $$ = BITS($4,3,3)|BITS($1,3,0); }
 	;
 
 format_10
-	: REG ',' '[' REG ',' '#' expr ']'	{ $$ = BITS($7.val>>1,5,6)|BITS($4,3,3)|BITS($1,3,0); }
+	: REG ',' '[' REG ',' '#' absexp ']'	{ $$ = BITS($7>>1,5,6)|BITS($4,3,3)|BITS($1,3,0); }
 	| REG ',' '[' REG ']'			{ $$ = BITS($4,3,3)|BITS($1,3,0); }
 	;
 
 format_11
-	: REG ',' '[' SP ',' '#' expr ']'	{ $$ = BITS($1,3,8)|BITS($7.val>>2,8,0); }
+	: REG ',' '[' SP ',' '#' absexp ']'	{ $$ = BITS($1,3,8)|BITS($7>>2,8,0); }
 	| REG ',' '[' SP ']'			{ $$ = BITS($1,3,8); }
 	;
 
 format_12
-	: REG ',' '[' PC ',' '#' expr ']'	{ $$ = BITS($1,3,8)|BITS($7.val>>2,8,0); }
+	: REG ',' '[' PC ',' '#' absexp ']'	{ $$ = BITS($1,3,8)|BITS($7>>2,8,0); }
 	| REG ',' offset			{ $$ = BITS($1,3,8)|BITS($3>>2,8,0); }
 	;
 
@@ -171,7 +175,7 @@ format_16
 	;
 
 format_17
-	: '#' expr				{ $$ = $2.val; /* 8-bit immediate */ }
+	: '#' absexp				{ $$ = $2; /* 8-bit immediate */ }
 	;
 
 format_18
@@ -181,6 +185,9 @@ format_18
 format_19
 	: format_18				{ $$ = $1; /* 11-bit offset */ }
 	;
+
+format_20
+	: REG ',' '#' absexp			{ $$ = BITS($4>>6,1,9)|BITS($4,5,3)|BITS($1,3,0); }
 
 offset	: expr					{ $$ = ($1.val - (DOTVAL+4)); }
 	;

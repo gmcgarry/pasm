@@ -30,6 +30,7 @@
 
 %token <y_word> SP LR PC REG REGHI
 
+%token <y_word> IMPL
 %token <y_word> STACK
 %token <y_word> SHIFT
 %token <y_word> ADD
@@ -45,6 +46,7 @@
 %token <y_word> LBRANCH
 %token <y_word> LDM
 %token <y_word> ADR
+%token <y_word> CBNZ
 
 %type <y_word> reg
 %type <y_word> reghi
@@ -68,6 +70,7 @@
 %type <y_word> format_17
 %type <y_word> format_18
 %type <y_word> format_19
+%type <y_word> format_20
 
 %type <y_word> reglist rlist
 %type <y_word> offset

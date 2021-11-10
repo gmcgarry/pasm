@@ -49,6 +49,8 @@ Encodings:
  1 1 1 0 0|offset11-------------|	| unconditional branch				[ FORMAT 18 ]
  1 1 1 1 H|offset---------------|	| long branch with link				[ FORMAT 19 ]
 
+ 1 0 1 1 1 0 i 1|offset5--|Rn---|	| system instructions 				[ FORMAT 20 ]
+
 H :
 L : 0=store, 1=load
 R :
