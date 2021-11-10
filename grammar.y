@@ -172,8 +172,8 @@ operation: /* empty */
 	| PSEUDOOP_MESSAGE STRING		{ puts(stringbuf); }
 	| PSEUDOOP_SECTION IDENT		{ newsect($2, 0, NULL); }
 	| PSEUDOOP_SECTION IDENT ',' STRING ',' ELF_SHTYPE	{ newsect($2, $<y_word>6, stringbuf); }
-	| PSEUDOOP_END				{ }
-	| PSEUDOOP_GLOBAL IDENT		{ $2->i_type |= S_EXTERN; }
+	| PSEUDOOP_END				{ ON_END(); }
+	| PSEUDOOP_GLOBAL IDENT			{ $2->i_type |= S_EXTERN; }
 	| PSEUDOOP_LOCAL IDENT			{ $2->i_type &= ~S_EXTERN; }
 	| PSEUDOOP_SIZE IDENT ',' expr		{ /* if (PASS_SYMB) $2->i_size = $4.valu; */ }
 	| PSEUDOOP_TYPE IDENT ',' ELF_SYMTYPE	{ if (PASS_SYMB) $2->i_type |= $4; }
@@ -192,7 +192,9 @@ operation: /* empty */
 									sect[DOTSCT].s_flag |= SOUGHT;
 								DOTVAL = $2;
 							}
+#ifdef THREE_PASS
 							sect[DOTSCT].s_gain = 0;
+#endif
 						}
 #if 0
 	| PSEUDOOP_LINE optabs			{

@@ -280,10 +280,6 @@ extern FILE	*tempfile;
 extern char	*stringbuf;	/* contains last string value */
 extern int	stringlen;	/* contains length of last string value */
 
-#ifndef ELFM
-#define ELFM	"@"
-#endif
-
 /*
  * specials for the location counter
  */
@@ -291,10 +287,10 @@ extern ADDR_T	DOTVAL;		/* &sect[DOTSCT]->s_size + &sect[DOTSCT]->s_base */
 extern short	DOTSCT;
 
 /* symbol table management */
-#define H_SIZE          307             /* hash size, must be od */
-#define H_KEY           (0*H_SIZE)      /* key symbol headers */
-#define H_LOCAL         (1*H_SIZE)      /* module symbol headers */
-#define H_GLOBAL        (2*H_SIZE)      /* external symbol headers */
+#define H_SIZE          307             /* hash size, must be odd */
+#define H_KEY           (0*H_SIZE)      /* keywords */
+#define H_LOCAL         (1*H_SIZE)      /* module symbols */
+#define H_GLOBAL        (2*H_SIZE)      /* external symbols */
 #define H_TOTAL         (3*H_SIZE)
 
 /* numeric label table management */
@@ -331,7 +327,6 @@ void	 item_remove(item_t *);
 item_t	*item_alloc(int);
 item_t	*fb_alloc(int);
 item_t	*fb_shift(int);
-
 
 /* pseuodo.c -> main.c */
 void	 newmodule(char *);
@@ -372,6 +367,10 @@ void mflag(const char *flag);
 void machstart(int pass);
 void machfinish(int pass);
 
+#ifndef ON_END
+#define ON_END()	/* not implemented */
+#endif
+
 /* out.c */
 void outstart();
 void outfinish();
@@ -386,6 +385,10 @@ void outfinish();
 #define RELWR   0x8000		/* High order word lowest address. */
 
 #include "elf.h"
+
+#ifndef ELFM
+#define ELFM	"@"
+#endif
 
 #ifdef ELF64
 typedef Elf64_Ehdr Elf_Ehdr;
@@ -414,7 +417,6 @@ typedef Elf32_Sym Elf_Sym;
 /* ========== Machine dependent C declarations ========== */
 
 #include "mach.h"
-
 
 #if YYDEBUG
 extern int yydebug;
