@@ -60,8 +60,8 @@ operation
 	| LDST format_07			{ emit2(0x5000|BITS($1,1,11)|$2); }
 	| LDST format_09			{ emit2(0x6000|BITS($1,1,11)|$2); }
 	| LDST format_11			{ emit2(0x9000|BITS($1,1,11)|$2); }
-	| LDST format_12			{ emit2(0x4800|$2); }
-	| LDST format_06			{ emit2(0x4800|$2); } /* emit2(0x8800|BITS($2,3,3)|BITS($2,3,0); */
+	| LDST format_12			{ emit2(0x4800|$2); if ($1 != 1) serror("invalid format"); }
+	| LDST format_06			{ emit2(0x4800|$2); if ($1 != 1) serror("invalid format"); }
 
 	| LDSTB format_07			{ emit2(0x5400|BITS($1,1,11)|$2); }
 	| LDSTB format_09b			{ emit2(0x7000|BITS($1,1,11)|$2); }

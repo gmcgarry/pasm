@@ -92,7 +92,7 @@ static int nliterals;
 ADDR_T
 add_literal(ADDR_T v)
 {
-	printf("adding literal[%d]=0x%x @ 0x%x\n", nliterals, v, literals_address+nliterals*4);
+	DPRINTF(("adding literal[%d]=0x%x @ 0x%x\n", nliterals, v, literals_address+nliterals*4));
 	literals[nliterals] = v;
 	return literals_address + nliterals++ * 4;
 }
@@ -105,7 +105,7 @@ emit_literals()
 	align(4,0,0);
 	literals_address = DOTVAL;
 	for (i = 0; i < nliterals; i++) {
-		printf("emitting literal[%d]=0x%x @ 0x%x\n", i, literals[i], literals_address+(i*4));
+		DPRINTF(("emitting literal[%d]=0x%x @ 0x%x\n", i, literals[i], literals_address+(i*4)));
 		emit4(literals[i]);
 	}
 	nliterals = 0;
