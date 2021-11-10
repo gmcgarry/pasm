@@ -706,11 +706,13 @@ item_search(const char* p)
 {
 	int h;
 	item_t* ip;
+	int rc;
 
 	for (h = hash(p); h < H_TOTAL; h += H_SIZE) {
 		ip = hashtab[h];
 		while (ip != 0) {
-			if (strcompare(p, ip->i_name) == 0)
+			rc = h < H_LOCAL ? strcompare(p, ip->i_name) : strcmp(p, ip->i_name);
+			if (rc == 0)
 				goto done;
 			ip = ip->i_next;
 		}
