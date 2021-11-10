@@ -27,7 +27,7 @@ operation
 	: PSEUDOOP_ARCH IDENT			{ setarch($2->i_name); }
 	| PSEUDOOP_CPU IDENT 			{ setcpu($2->i_name); }
 	| PSEUDOOP_FPU IDENT			{ setfpu($2->i_name); }
-	| PSEUDOOP_MODE				{ if (pass == PASS_1) warning("ignoring .thumb/.thumbx directive"); }
+	| PSEUDOOP_MODE				{ if (pass == PASS_1) warning("ignoring .thumb directive"); }
 	| PSEUDOOP_THUMBFUNC			{ if (pass == PASS_1) warning("ignoring .thumb_func directive"); }
 #ifdef notyet
 	| PSEUDOOP_EABIATTR NUMBER8 ',' NUMBER8	{ if (pass == PASS_1) warning("ignoring .eabi directive"); }
@@ -44,7 +44,6 @@ operation
 	| ADD format_02				{ emit2($1|$2); }
 	| ADD format_03				{ ISA(ARMv6); emit2(0x3000|BITS($1>>9,1,11)|$2); }		/* XXXGJM: thumb2 */
 	| ADD format_13				{ emit2(0xB000|BITS($1>>9,1,7)|$2); }
-	;
 
 	| MOV format_03				{ emit2(0x2000|$2); }
 	| MOV format_04				{ emit2(0x0000|$2); }
@@ -62,6 +61,7 @@ operation
 	| LDST format_09			{ emit2(0x6000|BITS($1,1,11)|$2); }
 	| LDST format_11			{ emit2(0x9000|BITS($1,1,11)|$2); }
 	| LDST format_12			{ emit2(0x4800|$2); }
+	| LDST format_06			{ emit2(0x4800|$2); } /* emit2(0x8800|BITS($2,3,3)|BITS($2,3,0); */
 
 	| LDSTB format_07			{ emit2(0x5400|BITS($1,1,11)|$2); }
 	| LDSTB format_09b			{ emit2(0x7000|BITS($1,1,11)|$2); }
@@ -116,7 +116,7 @@ format_05
 	;
 
 format_06
-	: REG ',' '=' offset			{ $$ = BITS($1,3,8)|BITS($4>>2,8,0); }
+	: REG ',' '=' expr			{ ADDR_T addr = add_literal($4.val); ADDR_T offset = addr - DOTVAL; $$ = BITS($1,3,8)|BITS(offset>>2,8,0); }
 	;
 
 format_07
@@ -182,12 +182,9 @@ format_19
 	: format_18				{ $$ = $1; /* 11-bit offset */ }
 	;
 
-offset	: expr					{ $$ = ($1.val - (DOTVAL + 4)); }
+offset	: expr					{ $$ = ($1.val - (DOTVAL+4)); }
 	;
 
-address : expr					{ $$ = $1.val; }
-	;
-	
 reglist	: '{' rlist '}'				{ $$ = $2; }
 	;
 

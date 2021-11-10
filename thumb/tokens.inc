@@ -70,4 +70,4 @@
 %type <y_word> format_19
 
 %type <y_word> reglist rlist
-%type <y_word> address offset
+%type <y_word> offset

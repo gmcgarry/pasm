@@ -1,0 +1,174 @@
+THUMB ISA:
+
+
+Registers:
+
+R0-R7
+SP
+LR
+PC
+CPSR
+
+
+Encodings:
+
+ 1 1 1 1 1 1 9 8 7 6 5 4 3 2 1 0
+ 5 4 3 2 1 0
+
+|--opcode---|-operands----------|	| general encoding
+
+ 0 0 0 opc|Offset5--|Rs---|Rd---|	| move shifted register				[ FORMAT 01 ]
+ 0 0 0 1 1 1|o|Offs3|Rs---|Rd---|	| add/sub					[ FORMAT 02 ]
+ 0 0 1 opc|Rd---|Offset8--------|	| move, compare, add/sub immediate		[ FORMAT 03 ]
+
+ 0 1 0 0 0 0|opc----|Rs---|Rd---|	| data processing / ALU operation		[ FORMAT 04 ]
+ 0 1 0 0 0 1|opc|H12|Rs/Hs|Rd/Hd|	| high register operations and branch/exchange	[ FORMAT 05 ]
+
+ 0 1 0 0 1|Rd---|Word8----------|	| PC-relative literal pool (LDR literal)	[ FORMAT 06 ]
+
+ 0 1 0 1 L B 0|Ro---|Rb---|Rd---|	| load/store single data item			[ FORMAT 07 ]
+ 0 1 0 1 H S 1|Ro---|Rb---|Rd---|	| load/store sign-extend and halfword		[ FORMAT 08 ]
+ 0 1 1 B L|offset5--|Rb---|Rd---|	| load/store with immediate offset		[ FORMAT 09 ]
+
+ 1 0 0 0 L|offset5--|Rb---|Rd---|	| load/store halfword				[ FORMAT 10 ]
+
+ 1 0 0 1 L|Rd---|Word8----------|	| generate SP-relative load/store		[ FORMAT 11 ]
+ 1 0 1 0 x|Rd---|Word8----------|	| generate PC-relative address			[ FORMAT 12 ]
+
+ 1 0 1 1 x x				| misc 16-bit instruction
+ 1 0 1 1 0 0 0 S|SWord7---------|	| add offset to stack pointer			[ FORMAT 13 ]
+ 1 0 1 1 L 1 0 R|Rlist----------|	| push and pop registers			[ FORMAT 14 ]
+
+ 1 1 0 0 0|Rb---|Rlist----------|	| store multiple registers (stmia, stmea)	[ FORMAT 15 ]
+ 1 1 0 0 1|Rb---|Rlist----------|	| load multiple registers (ldm, ldmia, ldmfd)	[ FORMAT 15 ]
+
+ 1 1 0 1|cond---|Soffset8-------|	| conditional branch and supervisor call	[ FORMAT 16 ]
+
+ 1 1 0 1 1 1 1 1|Value8---------|	| software interrupt				[ FORMAT 17 ]
+
+ 1 1 1 0 0|offset11-------------|	| unconditional branch				[ FORMAT 18 ]
+ 1 1 1 1 H|offset---------------|	| long branch with link				[ FORMAT 19 ]
+
+H :
+L : 0=store, 1=load
+R :
+S :
+B :
+
+16-bit load/store instructions are not available (in thumb-1).
+
+IT block puts processor in mode to generate condition flags (overflow, carry, etc).
+
+; shift-immediate, add, subtract, move and compare
+; format_01
+MOV 000 00 00 000 mmm ddd (register move)			- done
+LSL 000 00 ii iii mmm ddd (5-bit immediate)			- done
+LSR 000 01 ii iii mmm ddd (5-bit immediate)			- done
+ASR 000 10 ii iii mmm ddd (5-bit immediate)			- done
+;format_02
+ADD 000 11 10 iii nnn ddd (3-bit immediate)			- done
+SUB 000 11 11 iii nnn ddd (3-bit immediate)			- done
+ADD 000 11 00 mmm nnn ddd (register)
+SUB 000 11 01 mmm nnn ddd (register)
+; format_03
+MOV 001 00 dd diiiiiiii (8-bit immediate)			- done
+CMP 001 01 dd diiiiiiii (8-bit immediate)			- done
+ADD 001 10 nn niiiiiiii (8-bit immediate) - THUMB2
+SUB 001 11 nn niiiiiiii (8-bit immediate) - THUMB2
+
+; data processing
+; format_04
+LSL 010000 0010 dddmmm (register)				- done
+LSR 010000 0011 dddmmm (register)				- done
+ASR 010000 0100 dddmmm (register)				- done
+
+AND 010000 0000 dddmmm (register) - Rd &= Rm			- done 
+EOR 010000 0001 dddmmm (register)				- done
+ADC 010000 0101 dddmmm (register)				- done
+SBC 010000 0110 dddmmm (register)				- done
+ROR 010000 0111 dddmmm (register)				- done
+TST 010000 1000 dddmmm (register)				- done
+RSB 010000 1001 dddmmm (register)				- done (but not in naken)
+CMP 010000 1010 dddmmm (register)				- done
+CMN 010000 1011 dddmmm (register)				- done
+ORR 010000 1100 dddmmm (register)				- done
+MUL 010000 1101 dddmmm (register)				- done
+BIC 010000 1110 dddmmm (register)				- done
+MVN 010000 1111 dddmmm (register)				- done
+
+; special data instructions and branch/exchange
+; format_05
+ADD 010001 00xm mmmnnn (register) - THUMB2 (access high registers) - done
+CMP 010001 01xm mmmnnn (register) - THUMB2 (access high registers) - done
+MOV 010001 10xm mmmnnn (register) - THUMB2 (access high registers) - done
+;format_05
+BX  010001 110m mmmccc (register)				- done
+BLX 010001 111m mmmccc (register)				- done
+
+; load/store
+; format_07
+; 0 1 0 1 L B 0|Ro---|Rb---|Rd---|	| load/store single data item			[ FORMAT 07 ]
+STR   0101 000 mmmnnnttt (register)				- done
+LDR   0101 100 mmmnnnttt (register)				- done
+STRB  0101 010 mmmnnnttt (register)				- done
+LDRB  0101 110 mmmnnnttt (register)				- done 
+
+;format_08
+; 0 1 0 1 H S 1|Ro---|Rb---|Rd---|	| load/store sign-extend and halfword		[ FORMAT 08 ]
+STRH  0101 001 mmmnnnttt (register)				- done
+LDRH  0101 101 mmmnnnttt (register)				- done
+LDRSB 0101 011 mmmnnnttt (register)				- done
+LDRSH 0101 111 mmmnnnttt (register)				- done
+
+; format_09
+; 0 1 1 B L|offset5--|Rb---|Rd---|	| load/store with immediate offset		[ FORMAT 09 ]
+STR   0110 0ii iiinnnttt (unsigned 5-bit immediate)		- done
+LDR   0110 1ii iiinnnttt (unsigned 5-bit immediate)	; all T	- done
+STRB  0111 0ii iiinnnttt (unsigned 5-bit immediate)		- done
+LDRB  0111 1ii iiinnnttt (unsigned 5-bit immediate)	; all T	- done
+
+; format_10
+STRH  1000 0ii iiinnnttt (unsigned 5-bit immediate)		- done
+LDRH  1000 1ii iiinnnttt (unsigned 5-bit immediate)		- done
+
+; format_11
+STR   1001 0tt tiiiiiiii (SP-relative, 8-bit offset)		- done
+LDR   1001 1tt tiiiiiiii (SP-relative, 8-bit offset)		- done
+
+; format_12
+STR   1111 1
+LDR
+
+; conditional branches
+B   1101 0ccc iiiiiiii	(8-bit immediate)			- done
+
+UDF 1101 1110 xxxxxxxx- permanently undefined			- done
+SVC 1101 1111 iiiiiiii - previously SWI (8-bit immediate)	- done
+
+
+.map
+.field
+ADR Rd, label
+
+---
+
+Conditional affixes are not used in THUMB.
+
+If Rd is not specified, Rd=Rn is assumed. (this is the unified syntax).
+
+'=' indicates an immediate value that should be loaded from code address space.
+
+In Thumb state on processors before ARMv6T2, most data processing instructions update
+the condition flags automatically according to the result of the operation. There is no
+option to leave the flags unchanged and not update them. Other instructions cannot
+update the flags.  Consequently, almost all thumb instructions not in UAL end in .s
+because they modify the flags: [This might be true for ARM/Keil assembler.  Other
+assemblers may just imply the .s extension].
+
+	subs r3,#1
+	orrs r2,r0
+	lsls r2,r2,#29
+	lsrs r2,r3,#2
+	adds r2,#1
+	bics r4,r3
+	ands r0,r1

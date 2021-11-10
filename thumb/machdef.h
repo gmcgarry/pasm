@@ -43,9 +43,15 @@
 #define VALWIDTH	8
 
 /* Some character constants for scanner*/
-#define ASC_COMMENT     ';'
+#define ASC_COMMENT	';'
+#define ASC2_COMMENT	'@'
 #define CTRL(x)         ((x) & 037)
-#define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.')
+#define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.' || (c) == '%')
 #define ISALNUM(c)      (isalnum(c) || (c) == '_')
 
 #define DEFAULT_SECTION	(1)
+
+#define ON_END()	{ emit_literals(); }
+
+#define ELFM		"%"
+

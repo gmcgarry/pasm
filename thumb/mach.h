@@ -21,6 +21,9 @@ extern int isa;
 #define ARMv6	2
 #define ARMv7	3
 
+ADDR_T add_literal(ADDR_T v);
+void emit_literals();
+
 void setcpu(const char* id);
 void setarch(const char* id);
 void setfpu(const char* fpu);
