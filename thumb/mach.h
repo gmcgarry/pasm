@@ -16,10 +16,11 @@
 
 extern int isa;
 
-#define ARMv4T	0
-#define ARMv5T	1
-#define ARMv6	2
-#define ARMv7	3
+#define ARMv4T		0
+#define ARMv5T		1
+#define ARMv6		2
+#define ARMv6T2		3
+#define ARMv7		4
 
 ADDR_T add_literal(ADDR_T v);
 void emit_literals();

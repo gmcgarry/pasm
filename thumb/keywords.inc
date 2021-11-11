@@ -70,6 +70,8 @@
 { 0,	DATA1,			0x42c0,		"CMN"	},	/* compare negative */
 { 0,	DATA1,			0x4200,		"TST"	},	/* test bits */
 { 0,	DATA1,			0x4340,		"MUL"	},	/* multiply */
+{ 0,	DATA1,			0xB240,		"UXTH"	},	/* unsigned extend */ /* ARMv6 */
+{ 0,	DATA1,			0xB2C0,		"UXTB"	},	/* unsigned extend */ /* ARMv6 */
 
 { 0,	BREXCH,			0x4700,		"BX"	},
 { 0,	BREXCH,			0x4780,		"BLX"	},	/* ARMv5T */
@@ -120,17 +122,22 @@
 { 0,	IMPL,			0xBF40,		"SEV"		},
 { 0,	IMPL,			0xB658,		"SETENDBE"	},	/* ARMv6 except ARMv6-M and ARMv7-M */
 { 0,	IMPL,			0xB650,		"SETENDLE"	},	/* ARMv6 except ARMv6-M and ARMv7-M */
+{ 0,	IMPL,			0xBf20,		"WFE"		},	/* ARMv6 */
+{ 0,	IMPL,			0xBf30,		"WFI"		},	/* ARMv6 */
+{ 0,	IMPL,			0xBf10,		"YIELD"		},	/* ARMv6 */
 
 { 0,	DATA1,			0xBA00,		"REV"		},	/* ARMv6 */
 { 0,	DATA1,			0xBA40,		"REV16"		},	/* ARMv6 */
 { 0,	DATA1,			0xBAC0,		"REVSH"		},	/* ARMv6 */
+{ 0,	DATA1,			0xB662,		"CPSIE"		},	/* ARMv6 */
+{ 0,	DATA1,			0xB672,		"CPSID"		},	/* ARMv6 */
+{ 0,	DATA1,			0xBF00,		"IT"		},	/* ARMv6T2 */
 
 { 0,	SVC,			0xBF00,		"BKPT"		},	/* ARMv5T */
 { 0,	CBNZ,			0xB900,		"CBNZ"		},	/* ARMv6T2 */
 { 0,	CBNZ,			0xB100,		"CBZ"		},	/* ARMv6T2 */
 
 #if 0
-{ 0,	DATA1,			0,		"CPS"		},	/* ARMv6 */
 
 /* signal processing */
 { 0,	DATA1,			0,		"SMULxy"	},	/* ARMv5TE - 32b */

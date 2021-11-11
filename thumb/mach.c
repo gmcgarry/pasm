@@ -53,7 +53,43 @@ machfinish(int pass)
 void
 setcpu(const char* cpu)
 {
-	warning("ignoring .cpu directive (%s)", cpu);
+	static const struct { const char *name; int isa; } Cpus[] = {
+		{ "arm7tdmi", ARMv4T },
+		{ "arm9tdmi", ARMv4T },
+		{ "arm720t", ARMv4T },
+		{ "arm740t", ARMv4T },
+		{ "arm920t", ARMv4T },
+		{ "arm922t", ARMv4T },
+		{ "arm940t", ARMv4T },
+		{ "sc100", ARMv4T },
+		{ "arm9e", ARMv5T },
+		{ "arm946e", ARMv5T },
+		{ "arm966e", ARMv5T },
+		{ "arm926ej", ARMv5T },
+		{ "arm1026ej", ARMv5T },
+		{ "sc200", ARMv5T },
+		{ "arm1136j", ARMv6 },
+		{ "arm1136jf", ARMv6 },
+		{ "cortex-m0", ARMv6 },
+		{ "cortex-m0+", ARMv6 },
+		{ "cortex-m1", ARMv6 },
+		{ "cortex-m3", ARMv7 },
+		{ "cortex-m4", ARMv7 },
+		{ "cortex-m7", ARMv7 },
+		{ "sc000", ARMv6 },
+		{ "arm1156t2", ARMv6T2 },
+		{ "arm1156t2f", ARMv6T2 },
+		{ "cortex-a5", ARMv7 },
+		{ "cortex-a7", ARMv7 },
+		{ "cortex-a8", ARMv7 },
+		{ "cortex-a9", ARMv7 },
+		{ "cortex-a15", ARMv6 },
+	};
+	int i;
+
+	for (i = 0; i < (int)(sizeof(Cpus)/sizeof(Cpus[0])); i++)
+		if (strcasecmp(Cpus[i].name, cpu) == 0)
+			isa = Cpus[i].isa;
 }
 
 void
