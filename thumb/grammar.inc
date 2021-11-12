@@ -192,7 +192,7 @@ format_18
 format_20
 	: REG ',' '#' absexp			{ $$ = BITS($4>>6,1,9)|BITS($4,5,3)|BITS($1,3,0); }
 
-offset	: expr					{ $$ = ($1.val - (DOTVAL+2)); }
+offset	: expr					{ $$ = ($1.val - (DOTVAL+4)); }
 	;
 
 offset32: expr					{ if (pass == PASS_1 && $1.val&3) serror("bad word alignment"); $$ = ($1.val - ((DOTVAL+4)&~3)); }
