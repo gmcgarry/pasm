@@ -69,8 +69,7 @@
 %type <y_word> format_16
 %type <y_word> format_17
 %type <y_word> format_18
-%type <y_word> format_19
 %type <y_word> format_20
 
 %type <y_word> reglist rlist
-%type <y_word> offset
+%type <y_word> offset offset32

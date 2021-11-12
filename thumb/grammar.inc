@@ -81,6 +81,7 @@ operation
 	| BREXCH PC				{ emit2($1|BITS($2,4,3)); }
 	| BREXCH LR				{ emit2($1|BITS($2,4,3)); }
 	| LBRANCH offset			{
+							/* if (pass == PASS_2 && $2&1) serror("bad alignment"); */
 							int off = $2>>1;
 							emit2(0xf000|BITS(off>>21,1,10)|BITS(off>>11,10,0));
 							emit2(0xf800|BITS(off,11,0));
@@ -120,7 +121,13 @@ format_05
 	;
 
 format_06
-	: REG ',' '=' expr			{ ADDR_T addr = add_literal($4.val); ADDR_T offset = addr - DOTVAL; $$ = BITS($1,3,8)|BITS(offset>>2,8,0); }
+	: REG ',' '=' expr			{
+							ADDR_T addr = add_literal($4.val);
+							ADDR_T offset = addr - DOTVAL;
+							if (pass == PASS_2 && offset&3)
+								serror("bad alignment");
+							$$ = BITS($1,3,8)|BITS(offset>>2,8,0);
+						}
 	;
 
 format_07
@@ -152,8 +159,8 @@ format_11
 	;
 
 format_12
-	: REG ',' '[' PC ',' '#' absexp ']'	{ $$ = BITS($1,3,8)|BITS($7>>2,8,0); }
-	| REG ',' offset			{ $$ = BITS($1,3,8)|BITS($3>>2,8,0); }
+	: REG ',' '[' PC ',' '#' absexp ']'	{ $$ = BITS($1,3,8)|BITS($7,8,0);}
+	| REG ',' offset32			{ $$ = BITS($1,3,8)|BITS($3>>2,8,0); }
 	;
 
 format_13
@@ -171,7 +178,7 @@ format_15
 	;
 
 format_16
-	: offset				{ $$ = $1>>1; }
+	: offset				{ $$ = $1>>1; /* if (pass == PASS_2 && ($1&1)) serror("bad branch alignment"); */ }
 	;
 
 format_17
@@ -182,14 +189,13 @@ format_18
 	: offset				{ $$ = $1>>1; /* 11-bit offset */ }
 	;
 
-format_19
-	: format_18				{ $$ = $1; /* 11-bit offset */ }
-	;
-
 format_20
 	: REG ',' '#' absexp			{ $$ = BITS($4>>6,1,9)|BITS($4,5,3)|BITS($1,3,0); }
 
-offset	: expr					{ $$ = ($1.val - (DOTVAL+4)); }
+offset	: expr					{ $$ = ($1.val - (DOTVAL+2)); }
+	;
+
+offset32: expr					{ if (pass == PASS_1 && $1.val&3) serror("bad word alignment"); $$ = ($1.val - ((DOTVAL+4)&~3)); }
 	;
 
 reglist	: '{' rlist '}'				{ $$ = $2; }

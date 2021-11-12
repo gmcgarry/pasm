@@ -125,6 +125,7 @@
 { 0,	IMPL,			0xBf20,		"WFE"		},	/* ARMv6 */
 { 0,	IMPL,			0xBf30,		"WFI"		},	/* ARMv6 */
 { 0,	IMPL,			0xBf10,		"YIELD"		},	/* ARMv6 */
+{ 0,	IMPL,			0xBF00,		"NOP"		},	/* ARMV6 */
 
 { 0,	DATA1,			0xBA00,		"REV"		},	/* ARMv6 */
 { 0,	DATA1,			0xBA40,		"REV16"		},	/* ARMv6 */
@@ -151,6 +152,3 @@
 { 0,	DATA1,			0,		"QDADD"		},	/* ARMv5TE - 32b */
 { 0,	DATA1,			0,		"QDSUB"		},	/* ARMv5TE - 32b */
 #endif
-
-
-
