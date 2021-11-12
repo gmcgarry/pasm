@@ -94,6 +94,24 @@ operation
 
 	| SVC format_17				{ emit2($1|BITS($2,8,0)); }
 	| SWI absexp				{ emit2($1|BITS($2,8,0)); }
+	| IT					{ emit2(0xBF08); }
+	| IT COND				{
+							int opc = 0xBF00|BITS($2&0xe,4,4);
+							int mask = 0x1;
+							int v = $2&mask;
+							while ($1&mask == 0) {
+								mask <<= 1;
+								v <<= 1;
+							}
+							opc |= mask;
+							mask <<= 1;
+							v <<= 1;
+							while (mask != 0x10) {
+								opc |= ($1&mask) ^ v;
+								mask <<= 1;
+								v <<= 1;
+							}
+						}
 
 	| CBNZ format_20			{ emit2($1|$2); }
 	;

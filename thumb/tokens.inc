@@ -37,9 +37,10 @@
 %token <y_word> MOV
 %token <y_word> CMP
 %token <y_word> DATA1
-%token <y_word> SVC SWI
+%token <y_word> SVC SWI IT
 %token <y_word> LDST LDSTB LDSTH LDRS
 
+%token <y_word> COND
 %token <y_word> BREXCH
 %token <y_word> BRANCH
 %token <y_word> UBRANCH
