@@ -29,12 +29,14 @@ operation
 	| PSEUDOOP_FPU IDENT			{ setfpu($2->i_name); }
 	| PSEUDOOP_MODE				{ if (pass == PASS_1) warning("ignoring .thumb directive"); }
 	| PSEUDOOP_THUMBFUNC			{ if (pass == PASS_1) warning("ignoring .thumb_func directive"); }
-#ifdef notyet
+	| PSEUDOOP_POOL				{ emit_literals(); }
+#ifdef COMPAT_GAS
 	| PSEUDOOP_EABIATTR NUMBER8 ',' NUMBER8	{ if (pass == PASS_1) warning("ignoring .eabi directive"); }
-	| PSEUDOOP_CODE NUMBER8			{ if (pass == PASS_1) warning("ignoring .code directive"); }
 	| PSEUDOOP_SYNTAX IDENT			{ if (pass == PASS_1) warning("ignoring .syntax directive"); }
+	| PSEUDOOP_CODE NUMBER8			{ if (pass == PASS_1) warning("ignoring .code directive"); }
+#endif
+#ifdef notyet
 	| PSEUDOOP_FUNC				{ if (pass == PASS_1) warning("ignoring .fnstart/.fnend directive"); }
-	| PSEUDOOP_POOL				{ if (pass == PASS_1) warning("ignoring .pool directive"); }
 	| PSEUDOOP_CANTUNWIND			{ if (pass == PASS_1) warning("ignoring .cantunwind directive"); }
 #endif
 
@@ -134,9 +136,10 @@ format_04
 	;
 
 format_05
-	: reghi ',' reg				{ $$ = BITS($3,3,3)|BITS($1,3,0)|BITS($1>>3,1,7)|BITS($3>>3,1,8); }
-	| REG ',' reghi				{ $$ = BITS($3,3,3)|BITS($1,3,0)|BITS($1>>3,1,7)|BITS($3>>3,1,8); }
+	: reghi ',' reg				{ $$ = BITS(1,1,7)|BITS($1,4,3)|BITS($3,3,0); }
+	| REG ',' reghi				{ $$ = BITS(0,1,7)|BITS($3,4,3)|BITS($1,3,0); }
 	;
+
 
 format_06
 	: REG ',' '=' expr			{

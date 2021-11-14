@@ -26,13 +26,15 @@
 { 0,	PSEUDOOP_MODE,		0,		".thumbx"	},	/* UAL syntax */
 { 0,	PSEUDOOP_MODE,		0,		".code16"	},	/* pre-UAL syntax */
 { 0,	PSEUDOOP_THUMBFUNC,	0,		".thumb_func"	},
-#if notyet
+{ 0,	PSEUDOOP_POOL,		0,		".pool"		},
+#ifdef COMPAT_GAS
 { 0,	PSEUDOOP_EABIATTR,	0,		".eabi_attribute"	},
 { 0,	PSEUDOOP_SYNTAX,	0,		".syntax"	},
 { 0,	PSEUDOOP_CODE,		0,		".code"		},
+#endif
+#ifdef notyet
 { 0,	PSEUDOOP_FUNC,		0,		".fnstart"	},
 { 0,	PSEUDOOP_FUNC,		1,		".fnend"	},
-{ 0,	PSEUDOOP_POOL,		0,		".pool"		},
 { 0,	PSEUDOOP_CANTUNWIND,	0,		".cantunwind"	},
 #endif
 
@@ -137,7 +139,7 @@
 { 0,	DATA1,			0xB662,		"CPSIE"		},	/* ARMv6 */
 { 0,	DATA1,			0xB672,		"CPSID"		},	/* ARMv6 */
 
-/* 1 0 1 1  1 1 1 1  firstcond(3) mask(5)
+/* 1 0 1 1  1 1 1 1  firstcond(3) mask(5) */
 { 0,	IT,			0x4,		"IT"		},	/* ARMv6T2 */
 { 0,	IT,			0x2,		"ITT"		},	/* ARMv6T2, except ARMV6-M */
 { 0,	IT,			0xC,		"ITE"		},	/* ARMv6T2, except ARMV6-M */
@@ -180,4 +182,17 @@
 { 0,	DATA1,			0,		"QSUB"		},	/* ARMv5TE - 32b */
 { 0,	DATA1,			0,		"QDADD"		},	/* ARMv5TE - 32b */
 { 0,	DATA1,			0,		"QDSUB"		},	/* ARMv5TE - 32b */
+#endif
+
+/* unified syntax */
+#ifdef COMPAT_GAS
+{ 0,	SHIFT,			0x0000,		"LSLS"		},	/* register or immediate */
+{ 0,	SHIFT,			0x0800,		"LSRS"		},	/* register or immediate */
+{ 0,	SHIFT,			0x1000,		"ASRS"		},	/* register or immediate */
+{ 0,	ADD,			0x1800,		"ADDS"		},	/* register or immediate */
+{ 0,	ADD,			0x1a00,		"SUBS"		},	/* register or immediate */
+{ 0,	MOV,			0,		"MOVS"		},	/* register or immediate */
+{ 0,	DATA1,			0x4380,		"BICS"		},	/* bit clear */
+{ 0,	DATA1,			0x4040,		"EORS"		},	/* exclusive or */
+{ 0,	DATA1,			0x4300,		"ORRS"		},	/* logical or */
 #endif

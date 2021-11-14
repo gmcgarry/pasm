@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define COMPAT_GAS
+
 #define LISTING
 #define THREE_PASS
 
@@ -46,8 +48,14 @@
 #define ASC_COMMENT	';'
 #define ASC2_COMMENT	'@'
 #define CTRL(x)         ((x) & 037)
+
+#ifdef COMPAT_GAS
 #define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.' || (c) == '%')
+#define ISALNUM(c)      (isalnum(c) || (c) == '_' || (c) == '.')
+#else
+#define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.')
 #define ISALNUM(c)      (isalnum(c) || (c) == '_')
+#endif
 
 #define DEFAULT_SECTION	(1)
 

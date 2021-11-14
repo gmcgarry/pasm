@@ -19,12 +19,14 @@
 %token <y_word> PSEUDOOP_FPU
 %token <y_word> PSEUDOOP_MODE
 %token <y_word> PSEUDOOP_THUMBFUNC
-#ifdef notyet
-%token <y_word> PSEUDOOP_EABIATTR
-%token <y_word> PSEUDOOP_CODE
-%token <y_word> PSEUDOOP_SYNTAX
-%token <y_word> PSEUDOOP_FUNC
 %token <y_word> PSEUDOOP_POOL
+#ifdef COMPAT_GAS
+%token <y_word> PSEUDOOP_EABIATTR
+%token <y_word> PSEUDOOP_SYNTAX
+%token <y_word> PSEUDOOP_CODE
+#endif
+#ifdef notyet
+%token <y_word> PSEUDOOP_FUNC
 %token <y_word> PSEUDOOP_CANTUNWIND
 #endif
 
