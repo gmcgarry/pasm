@@ -133,6 +133,9 @@ format_03
 
 format_04
 	: REG ',' REG				{ $$ = BITS($3,3,3)|BITS($1,3,0); }
+#ifdef COMPAT_GAS
+	| REG ',' REG ',' REG			{ $$ = BITS($5,3,3)|BITS($1,3,0); if ($1 != $3) serror("bad operands"); }
+#endif
 	;
 
 format_05

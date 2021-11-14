@@ -192,6 +192,8 @@
 { 0,	ADD,			0x1800,		"ADDS"		},	/* register or immediate */
 { 0,	ADD,			0x1a00,		"SUBS"		},	/* register or immediate */
 { 0,	MOV,			0,		"MOVS"		},	/* register or immediate */
+{ 0,	DATA1,			0x4140,		"ADCS"		},	/* add with carry */
+{ 0,	DATA1,			0x4000,		"ANDS"		},	/* logical and */
 { 0,	DATA1,			0x4380,		"BICS"		},	/* bit clear */
 { 0,	DATA1,			0x4040,		"EORS"		},	/* exclusive or */
 { 0,	DATA1,			0x4300,		"ORRS"		},	/* logical or */
