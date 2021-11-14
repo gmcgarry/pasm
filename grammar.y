@@ -83,6 +83,7 @@ static item_t	*last_it;
 %token NUMBERF
 %token DOT
 %token PSEUDOOP_EXTERN
+%token PSEUDOOP_WEAK
 %token <y_word> PSEUDOOP_DATA
 %token PSEUDOOP_DATA8
 #ifdef USE_FLOAT
@@ -92,8 +93,7 @@ static item_t	*last_it;
 %token PSEUDOOP_MODULE
 %token PSEUDOOP_SECTION
 %token PSEUDOOP_END
-%token PSEUDOOP_GLOBAL
-%token PSEUDOOP_LOCAL
+%token <y_word> PSEUDOOP_GLOBAL
 %token PSEUDOOP_TYPE
 %token PSEUDOOP_SIZE
 %token PSEUDOOP_IDENT
@@ -109,8 +109,8 @@ static item_t	*last_it;
 %token PSEUDOOP_SPACE
 %token PSEUDOOP_SEEK
 %token PSEUDOOP_CFI_IGNORE
-%token <y_word> PSEUDOOP_LINE
 %token PSEUDOOP_FILE
+%token <y_word> PSEUDOOP_LINE
 %token <y_word> PSEUDOOP_LIST
 %token <y_word> ELF_SHTYPE
 %token <y_word> ELF_SYMTYPE
@@ -128,7 +128,7 @@ static item_t	*last_it;
 %left '*' '/' '%'
 %nonassoc '~'
 
-%type <y_valu> absexp optabs optsize
+%type <y_valu> absexp optabs optsize optelfshtype
 %type <y_expr> expr
 %type <y_item> id_fb
 
@@ -171,10 +171,10 @@ operation: /* empty */
 #endif
 	| PSEUDOOP_MESSAGE STRING		{ puts(stringbuf); }
 	| PSEUDOOP_SECTION IDENT		{ newsect($2, 0, NULL); }
-	| PSEUDOOP_SECTION IDENT ',' STRING ',' ELF_SHTYPE	{ newsect($2, $<y_word>6, stringbuf); }
+	| PSEUDOOP_SECTION IDENT ',' STRING optelfshtype	{ newsect($2, $<y_word>5, stringbuf); }
 	| PSEUDOOP_END				{ ON_END(); }
-	| PSEUDOOP_GLOBAL IDENT			{ $2->i_type |= S_EXTERN; }
-	| PSEUDOOP_LOCAL IDENT			{ $2->i_type &= ~S_EXTERN; }
+	| PSEUDOOP_GLOBAL IDENT			{ if ($1) $2->i_type |= S_EXTERN; else $2->i_type &= ~S_EXTERN; }
+	| PSEUDOOP_WEAK IDENT			{ }
 	| PSEUDOOP_SIZE IDENT ',' expr		{ /* if (PASS_SYMB) $2->i_size = $4.valu; */ }
 	| PSEUDOOP_TYPE IDENT ',' ELF_SYMTYPE	{ if (PASS_SYMB) $2->i_type |= $4; }
 	| PSEUDOOP_IDENT STRING			{ }
@@ -337,6 +337,11 @@ optsize : /* empty */				{ $$ = 1; }
 	| ',' absexp				{ $$ = $2; }
 	;
 
+optelfshtype
+	: /* empty */				{ $$ = 0; }
+	| ',' ELF_SHTYPE     			{ $$ = $2; }
+	;
+ 
 /* ========== Machine dependent rules ========== */
 
 #include	"grammar.inc"

@@ -69,9 +69,10 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_ORG,		0,		".org" },
 	{ 0,	PSEUDOOP_SECTION,	0,		".section" },
 	{ 0,	PSEUDOOP_END,		0,		".end" },
-	{ 0,	PSEUDOOP_GLOBAL,	0,		".globl" },
-	{ 0,	PSEUDOOP_GLOBAL,	0,		".global" },
-	{ 0,	PSEUDOOP_LOCAL,		0,		".local" },
+	{ 0,	PSEUDOOP_GLOBAL,	1,		".globl" },
+	{ 0,	PSEUDOOP_GLOBAL,	1,		".global" },
+	{ 0,	PSEUDOOP_GLOBAL,	0,		".local" },
+	{ 0,	PSEUDOOP_WEAK,		0,		".weak" },
 	{ 0,	PSEUDOOP_EQU,		0,		".equ" },
 	{ 0,	PSEUDOOP_EQU,		0,		".set" },
 	{ 0,	PSEUDOOP_LINE,		0,		".line" },
@@ -79,7 +80,6 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_TYPE,		0,		".type" },
 	{ 0,	PSEUDOOP_SIZE,		0,		".size" },
 	{ 0,	PSEUDOOP_IDENT,		0,		".ident" },
-
 #ifdef LISTING
 	{ 0,	PSEUDOOP_LIST,		0,		".nolist" },
 	{ 0,	PSEUDOOP_LIST,		1,		".list" },
