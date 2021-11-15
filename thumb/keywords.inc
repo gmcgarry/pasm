@@ -139,6 +139,26 @@
 { 0,	DATA1,			0xB662,		"CPSIE"		},	/* ARMv6 */
 { 0,	DATA1,			0xB672,		"CPSID"		},	/* ARMv6 */
 
+{ 0,	MSR,			0,		"MSR"		},	/* ARMv6T2 */
+{ 0,	MSR,			0,		"MRS"		},	/* ARMv6T2 */
+
+{ 0,	APSR,			0x0000,		"APSR"		},	/* application psr */ /* ARMv6M */
+{ 0,	APSR,			0x8000,		"SPSR"		},	/* system psr */ /* ARMv6M */
+{ 0,	PSR,			0x0001,		"IAPSR"		},	/* I and A psrs */ /* ARMv6M */
+{ 0,	PSR,			0x0002,		"EAPSR"		},	/* E and A psrs */ /* ARMv6M */
+{ 0,	PSR,			0x0003,		"XPSR"		},	/* A, I and E psrs */ /* ARMv6M */
+{ 0,	PSR,			0x0005,		"IPSR"		},	/* interrupt psr */ /* ARMv6M */
+{ 0,	PSR,			0x0006,		"EPSR"		},	/* execution psr */ /* ARMv6M */
+{ 0,	PSR,			0x0007,		"IEPSR"		},	/* I and E psrs */ /* ARMv6M */
+{ 0,	PSR,			0x0008,		"MSP"		},	/* main stack pointer */ /* ARMv6M */
+{ 0,	PSR,			0x0009,		"PSP"		},	/* process stack pointer */ /* ARMv6M */
+{ 0,	PSR,			0x0010,		"PRIMASK"	},	/* mask out configurable exceptions */ /* ARMv6M */
+{ 0,	PSR,			0x0000,		"BASEPRI"	},	/* ARMv6M */
+{ 0,	PSR,			0x0000,		"BASEPRI_MAX"	},	/* ARMv6M */
+{ 0,	PSR,			0x0000,		"FAULTMASK"	},	/* ARMv6M */
+{ 0,	PSR,			0x0014,		"CONTROL"	},	/* ARMv6M */
+{ 0,	PSR,			0x0000,		"SCTLR"		},	/* CP15 register */ /* ARMv6M */
+
 /* 1 0 1 1  1 1 1 1  firstcond(3) mask(5) */
 { 0,	IT,			0x4,		"IT"		},	/* ARMv6T2 */
 { 0,	IT,			0x2,		"ITT"		},	/* ARMv6T2, except ARMV6-M */

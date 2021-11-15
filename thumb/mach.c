@@ -71,7 +71,7 @@ setcpu(const char* cpu)
 		{ "arm1136j", ARMv6 },
 		{ "arm1136jf", ARMv6 },
 		{ "cortex-m0", ARMv6M },
-		{ "cortex-m0+", ARMv6M },
+		{ "cortex-m0plus", ARMv6M },
 		{ "cortex-m1", ARMv6M },
 		{ "cortex-m3", ARMv7 },
 		{ "cortex-m4", ARMv7 },

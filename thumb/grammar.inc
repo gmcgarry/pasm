@@ -115,7 +115,10 @@ operation
 							}
 						}
 
-	| CBNZ format_20			{ emit2($1|$2); }
+	| MSR PSR ',' REG			{ if ($1&0x8000) ISA(ARMv6M); emit2(0xF380|BITS($2>>15,1,4)|BITS($4,4,0)); emit2(0x8800|BITS($2,8,0)); }
+	| MSR REG ',' PSR			{ if ($1&0x8000) ISA(ARMv6M); emit2(0xF3EF|BITS($4>>15,1,4)|BITS($4,0,0)); emit2(0x8000|BITS($2,4,8)|BITS($4,8,0)); }
+
+	| CBNZ format_20			{ ISA(ARMv6T2); emit2($1|$2); }
 	;
 
 format_01
@@ -183,7 +186,7 @@ format_11
 	;
 
 format_12
-	: REG ',' '[' PC ',' '#' absexp ']'	{ $$ = BITS($1,3,8)|BITS($7,8,0);}
+	: REG ',' '[' PC ',' '#' absexp ']'	{ $$ = BITS($1,3,8)|BITS($7>>2,8,0);}
 	| REG ',' offset32			{ $$ = BITS($1,3,8)|BITS($3>>2,8,0); }
 	;
 

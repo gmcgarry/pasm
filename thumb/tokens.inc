@@ -30,7 +30,7 @@
 %token <y_word> PSEUDOOP_CANTUNWIND
 #endif
 
-%token <y_word> SP LR PC REG REGHI
+%token <y_word> SP LR PC REG REGHI PSR APSR
 
 %token <y_word> IMPL
 %token <y_word> STACK
@@ -39,7 +39,7 @@
 %token <y_word> MOV
 %token <y_word> CMP
 %token <y_word> DATA1
-%token <y_word> SVC SWI IT
+%token <y_word> SVC SWI IT MSR
 %token <y_word> LDST LDSTB LDSTH LDRS
 
 %token <y_word> COND
