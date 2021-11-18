@@ -1,0 +1,254 @@
+
+
+
+
+
+
+
+
+
+
+
+%token <y_word> GPR
+%token <y_word> FPR
+%token <y_word> FCOND
+
+%token <y_word> OP_LI
+
+%token <y_word> HI16
+%token <y_word> HA16
+%token <y_word> LO16
+
+%type <y_word> gpr fpr
+%type <y_word> e16 e9
+%type <y_word> u25 u20 u16 u5 u3
+%type <y_word> abs26 offset16
+
+%type <y_word> fmt fmt3
+%type <y_word> fcond
+
+%type <y_word> extmsblsb insmsblsb
+%type <y_valu> extabsexp
+
+%token <y_word> OP_TNEI 
+%token <y_word> OP_CTC2 
+%token <y_word> OP_SSNOP 
+%token <y_word> OP_MTHC0 
+%token <y_word> OP_LDC2 
+%token <y_word> OP_MFHI 
+%token <y_word> OP_SBE 
+%token <y_word> OP_PREFE 
+%token <y_word> OP__DOT_EQ 
+%token <y_word> OP_CTC1 
+%token <y_word> OP_SDC2 
+%token <y_word> OP_LBE 
+%token <y_word> OP__DOT_LT 
+%token <y_word> OP_LWL 
+%token <y_word> OP_PREFX 
+%token <y_word> OP_BEQL 
+%token <y_word> OP_LBU 
+%token <y_word> OP_PAUSE 
+%token <y_word> OP_RDHWR 
+%token <y_word> OP_JALR_DOT_HB 
+%token <y_word> OP_SEH 
+%token <y_word> OP__DOT_PL 
+%token <y_word> OP_SRLV 
+%token <y_word> OP_TGEI 
+%token <y_word> OP_SDBBP 
+%token <y_word> OP_MFHC2 
+%token <y_word> OP_ROTR 
+%token <y_word> OP_SCE 
+%token <y_word> OP_ORI 
+%token <y_word> OP_SUBU 
+%token <y_word> OP__DOT_ULE 
+%token <y_word> OP_MTHI 
+%token <y_word> OP_DIV 
+%token <y_word> OP_DI 
+%token <y_word> OP_EI 
+%token <y_word> OP__DOT_NGL 
+%token <y_word> OP_BEQ 
+%token <y_word> OP_ABS 
+%token <y_word> OP_MUL 
+%token <y_word> OP_DIVU 
+%token <y_word> OP_DERET 
+%token <y_word> OP_XOR 
+%token <y_word> OP_SYNCI 
+%token <y_word> OP_ROUND 
+%token <y_word> OP_EHB 
+%token <y_word> OP_MULT 
+%token <y_word> OP_PUL 
+%token <y_word> OP_MOVZ 
+%token <y_word> OP__DOT_SEQ 
+%token <y_word> OP_MTLO 
+%token <y_word> OP_LHU 
+%token <y_word> OP_CEIL 
+%token <y_word> OP_BLTZALL 
+%token <y_word> OP_SRAV 
+%token <y_word> OP_MTHC2 
+%token <y_word> OP_SLLV 
+%token <y_word> OP_MSUB 
+%token <y_word> OP_MTC2 
+%token <y_word> OP__DOT_F 
+%token <y_word> OP_SWR 
+%token <y_word> OP_RDPGPR 
+%token <y_word> OP_SLL 
+%token <y_word> OP_MTC0 
+%token <y_word> OP_SHE 
+%token <y_word> OP_BC2T 
+%token <y_word> OP_MFC2 
+%token <y_word> OP_PLL 
+%token <y_word> OP_MFC0 
+%token <y_word> OP_LWR 
+%token <y_word> OP__DOT_W 
+%token <y_word> OP_JALR 
+%token <y_word> OP_BGTZL 
+%token <y_word> OP_COP2 
+%token <y_word> OP_SUXC1 
+%token <y_word> OP_CFC2 
+%token <y_word> OP_PREF 
+%token <y_word> OP_MOVF 
+%token <y_word> OP_BGEZ 
+%token <y_word> OP__DOT_UEQ 
+%token <y_word> OP_MFHC0 
+%token <y_word> OP_NOR 
+%token <y_word> OP__DOT_D 
+%token <y_word> OP_BC2F 
+%token <y_word> OP_SQRT 
+%token <y_word> OP_BGEZAL 
+%token <y_word> OP_BC1TL 
+%token <y_word> OP_BC1T 
+%token <y_word> OP_BC1FL 
+%token <y_word> OP_BC1F 
+%token <y_word> OP_SLTI 
+%token <y_word> OP_TLTI 
+%token <y_word> OP_TRUNC 
+%token <y_word> OP_MFLO 
+%token <y_word> OP_MOV 
+%token <y_word> OP_MADD 
+%token <y_word> OP_SWXC1 
+%token <y_word> OP__DOT_ULT 
+%token <y_word> OP_SWC1 
+%token <y_word> OP_SDXC1 
+%token <y_word> OP_SDC1 
+%token <y_word> OP_RSQRT 
+%token <y_word> OP_LBUE 
+%token <y_word> OP_RECIP_DOT_ 
+%token <y_word> OP_ROTRV 
+%token <y_word> OP_BLTZ 
+%token <y_word> OP_INS 
+%token <y_word> OP_SW 
+%token <y_word> OP_NMSUB 
+%token <y_word> OP_MADDU 
+%token <y_word> OP_TNE 
+%token <y_word> OP_NEG 
+%token <y_word> OP_JR 
+%token <y_word> OP_MTHC1 
+%token <y_word> OP_BNE 
+%token <y_word> OP_CACHE 
+%token <y_word> OP_MFC1 
+%token <y_word> OP_MTC1 
+%token <y_word> OP_MOVT 
+%token <y_word> OP_MFHC1 
+%token <y_word> OP_LWXC1 
+%token <y_word> OP_SEB 
+%token <y_word> OP_CFC1 
+%token <y_word> OP_LWLE 
+%token <y_word> OP__DOT_PU 
+%token <y_word> OP_WAIT 
+%token <y_word> OP_EXT 
+%token <y_word> OP_LWC1 
+%token <y_word> OP_SWLE 
+%token <y_word> OP_LUXC1 
+%token <y_word> OP_JR_DOT_HB 
+%token <y_word> OP_LDXC1 
+%token <y_word> OP_LDC1 
+%token <y_word> OP__DOT_NGLE 
+%token <y_word> OP_SRL 
+%token <y_word> OP__DOT_L 
+%token <y_word> OP_LW 
+%token <y_word> OP_FLOOR 
+%token <y_word> OP_TGEIU 
+%token <y_word> OP_OR 
+%token <y_word> OP_BC2FL 
+%token <y_word> OP_LWC2 
+%token <y_word> OP_SWC2 
+%token <y_word> OP_TGEU 
+%token <y_word> OP__DOT_UN 
+%token <y_word> OP_NMADD 
+%token <y_word> OP__DOT_PS 
+%token <y_word> OP_LUI 
+%token <y_word> OP_ALNV 
+%token <y_word> OP_SUB 
+%token <y_word> OP_XORI 
+%token <y_word> OP_WSBH 
+%token <y_word> OP_ADDIU 
+%token <y_word> OP_WRPGPR 
+%token <y_word> OP_LB 
+%token <y_word> OP_C 
+%token <y_word> OP_LL 
+%token <y_word> OP_ADDI 
+%token <y_word> OP_LHUE 
+%token <y_word> OP_NOP 
+%token <y_word> OP_TLT 
+%token <y_word> OP_SWRE 
+%token <y_word> OP_TLBINV 
+%token <y_word> OP__DOT_NGE 
+%token <y_word> OP_TLBWR 
+%token <y_word> OP_TLBWI 
+%token <y_word> OP_LWRE 
+%token <y_word> OP_TLBR 
+%token <y_word> OP_TEQ 
+%token <y_word> OP_CLO 
+%token <y_word> OP_BGEZL 
+%token <y_word> OP_TGE 
+%token <y_word> OP_MOVN 
+%token <y_word> OP__DOT_S 
+%token <y_word> OP_BGEZALL 
+%token <y_word> OP_TLBINVF 
+%token <y_word> OP_TEQI 
+%token <y_word> OP_SYSCALL 
+%token <y_word> OP_ADD 
+%token <y_word> OP_ANDI 
+%token <y_word> OP_BLTZAL 
+%token <y_word> OP_SLT 
+%token <y_word> OP_LLE 
+%token <y_word> OP_SWL 
+%token <y_word> OP_SWE 
+%token <y_word> OP__DOT_OLT 
+%token <y_word> OP_AND 
+%token <y_word> OP_PLU 
+%token <y_word> OP_SB 
+%token <y_word> OP_TLBP 
+%token <y_word> OP_LWE 
+%token <y_word> OP_SH 
+%token <y_word> OP_BC2TL 
+%token <y_word> OP_CVT 
+%token <y_word> OP_SLTU 
+%token <y_word> OP_SLTIU 
+%token <y_word> OP_SRA 
+%token <y_word> OP_TLTU 
+%token <y_word> OP__DOT_LE 
+%token <y_word> OP__DOT_OLE 
+%token <y_word> OP_TLTIU 
+%token <y_word> OP_LHE 
+%token <y_word> OP__DOT_NGT 
+%token <y_word> OP_CACHEE 
+%token <y_word> OP_J 
+%token <y_word> OP_MSUBU 
+%token <y_word> OP_BLEZL 
+%token <y_word> OP__DOT_SF 
+%token <y_word> OP_BLTZL 
+%token <y_word> OP_BGTZ 
+%token <y_word> OP_SC 
+%token <y_word> OP_BAL 
+%token <y_word> OP_PUU 
+%token <y_word> OP_B 
+%token <y_word> OP_JAL 
+%token <y_word> OP_MULTU 
+%token <y_word> OP_LH 
+%token <y_word> OP_BNEL 
+%token <y_word> OP_BLEZ 
+%token <y_word> OP_ADDU 
+%token <y_word> OP_JALX 
+%token <y_word> OP_CLZ 
+
