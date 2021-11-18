@@ -33,16 +33,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if 0
-#define fitb(x)		((((x) + 0x80) & ~((int)0xFF)) == 0)
-#define fitw(x)		((((x) + 0x8000) & ~((int)0xFFFF)) == 0)
-#endif
-
-#define fitx(x, d)      ((((x) + (1<<(d-1))) & ~((int)(1<<(d))-1)) == 0)
-#define fitu(x, d)      (((x) & ~((int)(1<<(d))-1)) == 0)
-
-#define fitb(x)		fitu(x, 8)
-#define fitw(x)		fitx(x, 16)
+#define fitb(x)		fitx(x, 8)
+#define fitw(x)		fitx(x+32768, 16)
 
 #define check(x)	do { if (deviceid < x) serror("invalid instruction or addressing mode for device"); } while (0)
 #define stm8()		check(DEVICE_STM8)
@@ -204,7 +196,7 @@ RM sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx
 
 
 	| MOV expr ',' imm8		{ emit1(0x30|$1); emit1($4.val); emit2($2.val); }
-	| MOV expr ',' expr		{ if (fitu($2.val,8) && fitu($4.val,8)) { emit1(0x40|$1); emit1($2.val); emit1($4.val); } else { emit1(0x50|$1); emit2($2.val); emit2($4.val); } }
+	| MOV expr ',' expr		{ if (fitx($2.val,8) && fitx($4.val,8)) { emit1(0x40|$1); emit1($2.val); emit1($4.val); } else { emit1(0x50|$1); emit2($2.val); emit2($4.val); } }
 
 	| LD XH ',' A			{ emit1(0x95); }
 	| LD XL ',' A			{ emit1(0x97); }

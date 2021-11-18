@@ -71,5 +71,4 @@ flags	: flag optflags		{ }
 flag	: IDENT			{ $1->i_type = S_ABS; }
 	| IDENT '=' expr	{ $1->i_type = S_ABS; $3.typ = S_ABS; }
 	| PSEUDOOP_GLOBAL	{ }
-	| PSEUDOOP_LOCAL	{ }
 	;

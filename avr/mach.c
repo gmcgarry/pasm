@@ -22,9 +22,8 @@
 extern sect_t sect[];
 extern int hash(const char *);
 
-#define fitx(x, d)	((((x) + (1<<(d-1))) & ~((int)(1<<(d))-1)) == 0)
-#define fit7(x)		fitx(x, 7)
-#define fit12(x)	fitx(x, 12)
+#define fit7(x)		fitx(x+64, 7)
+#define fit12(x)	fitx(x+2048, 12)
 
 static item_t cseg = { 0, S_UND, 0, ".text" };
 

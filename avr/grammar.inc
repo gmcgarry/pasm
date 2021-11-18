@@ -7,14 +7,12 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
  * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * MERCHANTABILITY AND fituNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
  * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROfituS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-
-#define FIT(x,b)	(((x) & ~((1 << (b))-1)) == 0)
 
 operation
 	: BASICOP				{ emit2($1); }
@@ -91,17 +89,17 @@ operation
 port:	imm6					{ $$ = $1; }
 	;
 
-imm3:	expr					{ $$ = $1.val; if (!FIT($$, 3)) serror("3-bit constant out of range"); }
+imm3:	expr					{ $$ = $1.val; fit(fitx($$, 3)); }
 	;
 
-imm6:	expr					{ $$ = $1.val; if (!FIT($$, 6)) serror("6-bit constant out of range"); }
+imm6:	expr					{ $$ = $1.val; fit(fitx($$, 6)); }
 	;
 
-imm8:	expr					{ $$ = $1.val; if (!FIT($$, 8)) serror("8-bit constant out of range"); }
+imm8:	expr					{ $$ = $1.val; fit(fitx($$, 8)); }
 	| SHIFTFUNC '(' expr ')'		{ $$ = ($3.val >> $1) & 0xff; }
 	;
 
-imm16:	expr					{ $$ = $1.val; if (!FIT($$, 16)) serror("16-bit constant out of range"); }
+imm16:	expr					{ $$ = $1.val; fit(fitx($$, 16)); }
 	;
 
 reg8:	REG8					{ if ($1 < 0 && $1 > 31) serror("bad register"); $$ = $1; }

@@ -14,12 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* 
- * Note: the original Z8 assembler uses '(' rather than ']' syntax
- * for indexed addressing.
- */
-
-#define fitx(x,b)	(((x) & ~((1 << (b))-1)) == 0)
 #define fitb(x)		fitx(x,8)
 #define fitw(x)		fitx(x,16)
 
@@ -123,7 +117,7 @@ imm	: '#' absexp	{ $$ = $2; }
 address	: expr		{ $$ = $1.val; }
 	;
 
-offset	: expr		{ $$ = $1.val - DOT; fit(fitw($$+128)); }
+offset	: expr		{ $$ = $1.val - DOT; fit(fitw($$+32768)); }
 	;
 
 optcond	:		{ $$ = 0; }

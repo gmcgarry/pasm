@@ -37,10 +37,10 @@
  * INTEL 80386 C declarations
  */
 
-#define fitx(x, d)	((((x) + (1<<(d-1))) & ~((int)(1<<(d))-1)) == 0)
-#define fitb(x)         ((((x) + 0x80) & ~((int)0xFF)) == 0)
-#define fitw(x)         ((((x) + 0x8000L) & ~0xFFFFL) == 0)
-#define fit(x)          if (!(x)) nofit()
+
+#define fitb(x)		fitx(x+0x80, 8)
+#define fitw(x)		fitx(x+0x8000L, 16)
+#define ufitb(z)       ((unsigned)(z) <= 255)
 
 #define low6(z)		(z & 0x3f)
 #define fit6(z)		(low6(z) == z)
@@ -50,8 +50,6 @@
 #define RELOMOVE(a,b)   {a = b; b = 0;}
 
 #define FESC		0xD8		/* escape for 80[23]87 processor */
-
-#define ufitb(z)	((unsigned)(z) <= 255)
 
 #define IS_R8		0x0100
 #define IS_R16		0x0200

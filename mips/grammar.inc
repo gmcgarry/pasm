@@ -1,5 +1,3 @@
-#define  fitx(v,n)	(((v) & ~((1<<(n))-1)) == 0)
-
 operation
 	: OP_MOV gpr ',' gpr					{ emit4($1 | (($2 & 0x1f) << 11) | (($4 & 0x1f) << 21)); }
 	| OP_ADD gpr ',' gpr ',' gpr					{ emit4($1 | (($2 & 0x1f) << 11) | (($4 & 0x1f) << 21) | (($6 & 0x1f) << 16)); }

@@ -375,6 +375,8 @@ void machfinish(int pass);
 void outstart();
 void outfinish();
 
+#define fitx(x,n)	(((x)&~((1<<(n))-1)) == 0)
+
 /* =============== Output C declarations ================ */
 
 #define RELO1        1		/* 1 byte */
