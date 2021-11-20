@@ -26,16 +26,11 @@
 { 0,	PSEUDOOP_MODE,		0,		".thumbx"	},	/* UAL syntax */
 { 0,	PSEUDOOP_MODE,		0,		".code16"	},	/* pre-UAL syntax */
 { 0,	PSEUDOOP_THUMBFUNC,	0,		".thumb_func"	},
-{ 0,	PSEUDOOP_POOL,		0,		".pool"		},
+{ 0,	PSEUDOOP_POOL,		0,		".pool"		},	/* literal pool */
 #ifdef COMPAT_GAS
 { 0,	PSEUDOOP_EABIATTR,	0,		".eabi_attribute"	},
 { 0,	PSEUDOOP_SYNTAX,	0,		".syntax"	},
 { 0,	PSEUDOOP_CODE,		0,		".code"		},
-#endif
-#ifdef notyet
-{ 0,	PSEUDOOP_FUNC,		0,		".fnstart"	},
-{ 0,	PSEUDOOP_FUNC,		1,		".fnend"	},
-{ 0,	PSEUDOOP_CANTUNWIND,	0,		".cantunwind"	},
 #endif
 
 { 0,	REG,			0,		"R0"		},

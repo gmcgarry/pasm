@@ -15,10 +15,8 @@
  */
 
 /*
- *  Pre-UAL syntax.
+ *  Pre-UAL syntax.  COMPAT_GAS includes support for common UAL syntax.
  */
-
-#define  ISLOREG(x)				(((x)&~7) == 0)
 
 #define MASK(val,nbits)				((val)&((1<<(nbits))-1))
 #define BITS(val,nbits,shift)			(MASK((val),(nbits))<<(shift))
@@ -36,10 +34,6 @@ operation
 	| PSEUDOOP_EABIATTR NUMBER8 ',' NUMBER8	{ if (pass == PASS_1) warning("ignoring .eabi directive"); }
 	| PSEUDOOP_SYNTAX IDENT			{ if (pass == PASS_1) warning("ignoring .syntax directive"); }
 	| PSEUDOOP_CODE NUMBER8			{ if (pass == PASS_1) warning("ignoring .code directive"); }
-#endif
-#ifdef notyet
-	| PSEUDOOP_FUNC				{ if (pass == PASS_1) warning("ignoring .fnstart/.fnend directive"); }
-	| PSEUDOOP_CANTUNWIND			{ if (pass == PASS_1) warning("ignoring .cantunwind directive"); }
 #endif
 
 	| IMPL					{ emit2($1); }

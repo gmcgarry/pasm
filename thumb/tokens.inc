@@ -25,10 +25,6 @@
 %token <y_word> PSEUDOOP_SYNTAX
 %token <y_word> PSEUDOOP_CODE
 #endif
-#ifdef notyet
-%token <y_word> PSEUDOOP_FUNC
-%token <y_word> PSEUDOOP_CANTUNWIND
-#endif
 
 %token <y_word> SP LR PC REG REGHI PSR APSR
 
