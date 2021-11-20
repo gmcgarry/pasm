@@ -18,6 +18,8 @@
  *  Pre-UAL syntax.
  */
 
+#define  ISLOREG(x)				(((x)&~7) == 0)
+
 #define MASK(val,nbits)				((val)&((1<<(nbits))-1))
 #define BITS(val,nbits,shift)			(MASK((val),(nbits))<<(shift))
 
@@ -48,14 +50,16 @@ operation
 	| ADD format_02				{ emit2($1|$2); }
 	| ADD format_03				{ ISA(ARMv6); emit2(0x3000|BITS($1>>9,1,11)|$2); }		/* XXXGJM: thumb2 */
 	| ADD format_13				{ emit2(0xB000|BITS($1>>9,1,7)|$2); }
+	| ADD format_05b			{ emit2(0x4400|$2); }
+	| ADD format_12b			{ emit2(0xa000|$2); }
 
 	| MOV format_03				{ emit2(0x2000|$2); }
 	| MOV format_04				{ emit2(0x0000|$2); }
-	| MOV format_05				{ ISA(ARMv6); emit2(0x4600|$2); }	/* thumb2 */
+	| MOV format_05				{ emit2(0x4600|$2); }
 
 	| CMP format_03				{ emit2(0x2800|$2); }
 	| CMP format_04				{ emit2(0x4280|$2); }
-	| CMP format_05				{ ISA(ARMv6); emit2(0x4500|$2); }	/* thumb2 */
+	| CMP format_05				{ emit2(0x4500|$2); }
 
 	| ADR format_12				{ emit2($1|$2); }
 
@@ -83,7 +87,7 @@ operation
 	| BREXCH PC				{ emit2($1|BITS($2,4,3)); }
 	| BREXCH LR				{ emit2($1|BITS($2,4,3)); }
 	| LBRANCH offset			{
-							/* if (pass == PASS_2 && $2&1) serror("bad alignment"); */
+							if (pass == PASS_3 && $2&1) serror("bad alignment");
 							int off = $2>>1;
 							emit2(0xf000|BITS(off>>21,1,10)|BITS(off>>11,10,0));
 							emit2(0xf800|BITS(off,11,0));
@@ -137,22 +141,57 @@ format_03
 format_04
 	: REG ',' REG				{ $$ = BITS($3,3,3)|BITS($1,3,0); }
 #ifdef COMPAT_GAS
+	| REG ',' REG ',' zero			{ $$ = BITS($5,3,3)|BITS($1,3,0); }
 	| REG ',' REG ',' REG			{ $$ = BITS($5,3,3)|BITS($1,3,0); if ($1 != $3) serror("bad operands"); }
 #endif
 	;
 
+//        46de            mov     lr, fp
+//        46de            mov     r14, r11
+//	0x46de -> 0 1 0 0 | 0 1 1 0 | 1 | 1 0 1 1 | 1 1 0
+//        4673            mov     r3, r14
+//	0x4673 -> 0 1 0 0 | 0 1 1 0 | 0 | 1 1 1 0 | 0 1 1
+
 format_05
-	: reghi ',' reg				{ $$ = BITS(1,1,7)|BITS($1,4,3)|BITS($3,3,0); }
-	| REG ',' reghi				{ $$ = BITS(0,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+	: REGHI ',' REGHI			{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+	| SP ',' REGHI				{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+	| LR ',' REGHI				{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+	| PC ',' REGHI				{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+
+	| REGHI ',' REG				{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+	| SP ',' REG				{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+	| LR ',' REG				{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+	| PC ',' REG				{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+
+	| REG ',' REGHI				{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+	| REG ',' SP				{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+	| REG ',' LR				{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
+	| REG ',' PC				{ $$ = BITS($1>>3,1,7)|BITS($3,4,3)|BITS($1,3,0); }
 	;
 
+//	add ip,ip,7
+//	bc
+//	1 0111 100
+
+format_05b
+#ifdef COMPAT_GAS
+	: format_05 optimm			{ $$ = $1; if ($2 != 0) serror("bad syntax"); }
+	| REGHI ',' format_05			{ $$ = $1; if ($1 != (BITS($3>>7,1,3)|BITS($3,3,0))) serror("bad syntax"); }
+	| SP ',' format_05			{ $$ = $1; if ($1 != (BITS($3>>7,1,3)|BITS($3,3,0))) serror("bad syntax"); }
+	| LR ',' format_05			{ $$ = $1; if ($1 != (BITS($3>>7,1,3)|BITS($3,3,0))) serror("bad syntax"); }
+	| PC ',' format_05			{ $$ = $1; if ($1 != (BITS($3>>7,1,3)|BITS($3,3,0))) serror("bad syntax"); }
+	| REG ',' format_05			{ $$ = $1; if ($1 != (BITS($3>>7,1,3)|BITS($3,3,0))) serror("bad syntax"); }
+#else
+	: format_05				{ $$ = $1; }
+#endif
+	;
 
 format_06
 	: REG ',' '=' expr			{
 							ADDR_T addr = add_literal($4.val);
-							ADDR_T offset = addr - DOTVAL;
-							if (pass == PASS_2 && offset&3)
+							if (pass == PASS_3 && (addr&3))
 								serror("bad alignment");
+							ADDR_T offset = addr - DOTVAL;
 							$$ = BITS($1,3,8)|BITS(offset>>2,8,0);
 						}
 	;
@@ -182,8 +221,14 @@ format_11
 	;
 
 format_12
-	: REG ',' '[' PC optimm ']'		{ $$ = BITS($1,3,8)|BITS($5>>2,8,0);}
-	| REG ',' offset32			{ $$ = BITS($1,3,8)|BITS($3>>2,8,0); }
+	: REG ',' '[' SP optimm ']'		{ $$ = BITS(1,1,10)|BITS($1,3,8)|BITS($5>>2,8,0);}
+	| REG ',' '[' PC optimm ']'		{ $$ = BITS(0,1,10)|BITS($1,3,8)|BITS($5>>2,8,0);}
+	| REG ',' offset32			{ $$ = BITS(0,1,10)|BITS($1,3,8)|BITS($3>>2,8,0); }
+	;
+
+format_12b
+	: REG ',' SP optimm 			{ $$ = BITS(1,1,10)|BITS($1,3,8)|BITS($4>>2,8,0);}
+	| REG ',' PC optimm 			{ $$ = BITS(0,1,10)|BITS($1,3,8)|BITS($4>>2,8,0);}
 	;
 
 format_13
@@ -229,19 +274,22 @@ optimm
 	| ',' '#' absexp			{ $$ = $3; }
 	;
 
-reglist	: '{' rlist '}'				{ $$ = $2; }
+zero
+	: '#' absexp				{ if ($2 != 0) serror("must be zero"); }
 	;
 
-rlist	: reg					{ if ($1 == 14 || $1 == 15) $1 = 8; $$ = 1<<$1; }
+reglist
+	: '{' rlist '}'				{ $$ = $2; }
+	;
+
+rlist
+	: reg					{ if ($1 == 14 || $1 == 15) $1 = 8; $$ = 1<<$1; }
 	| rlist ',' reg				{ if ($3 == 14 || $3 == 15) $3 = 8; $$ = $1|1<<$3; }
 	| REG '-' REG				{ for ($$ = 0; $1 <= $3; $1++) { $$ |= (1<<$1); } }
 	;
 
-reg	: REG					{ $$ = $1; }
+reg
+	: REG					{ $$ = $1; }
 	| LR					{ $$ = $1; }
 	| PC					{ $$ = $1; }
-	;
-
-reghi	: REGHI					{ $$ = $1; }
-	| SP					{ $$ = $1; }
 	;

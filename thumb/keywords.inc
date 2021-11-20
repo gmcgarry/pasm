@@ -51,6 +51,13 @@
 { 0,	REGHI,			10,		"R10"		},
 { 0,	REGHI,			11,		"R11"		},
 { 0,	REGHI,			12,		"R12"		},
+{ 0,	REGHI,			13,		"R13"		},
+{ 0,	REGHI,			14,		"R14"		},
+{ 0,	REGHI,			15,		"R15"		},
+#ifdef  COMPAT_GAS
+{ 0,	REGHI,			11,		"FP"		},
+{ 0,	REGHI,			12,		"IP"		},
+#endif
 { 0,	SP,			13,		"SP"		},
 { 0,	LR,			14,		"LR"		},
 { 0,	PC,			15,		"PC"		},
@@ -213,8 +220,11 @@
 { 0,	ADD,			0x1a00,		"SUBS"		},	/* register or immediate */
 { 0,	MOV,			0,		"MOVS"		},	/* register or immediate */
 { 0,	DATA1,			0x4140,		"ADCS"		},	/* add with carry */
+{ 0,	DATA1,			0x4180,		"SBCS"		},	/* subtract with carry */
 { 0,	DATA1,			0x4000,		"ANDS"		},	/* logical and */
 { 0,	DATA1,			0x4380,		"BICS"		},	/* bit clear */
 { 0,	DATA1,			0x4040,		"EORS"		},	/* exclusive or */
 { 0,	DATA1,			0x4300,		"ORRS"		},	/* logical or */
+{ 0,	DATA1,			0x4240,		"RSBS"		},	/* reverse subtract */
+{ 0,	DATA1,			0x4340,		"MULS"		},	/* multiply */
 #endif

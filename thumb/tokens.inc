@@ -52,12 +52,12 @@
 %token <y_word> CBNZ
 
 %type <y_word> reg
-%type <y_word> reghi
 %type <y_word> format_01
 %type <y_word> format_02
 %type <y_word> format_03
 %type <y_word> format_04
 %type <y_word> format_05
+%type <y_word> format_05b
 %type <y_word> format_06
 %type <y_word> format_07
 %type <y_word> format_08
@@ -66,6 +66,7 @@
 %type <y_word> format_10
 %type <y_word> format_11
 %type <y_word> format_12
+%type <y_word> format_12b
 %type <y_word> format_13
 %type <y_word> format_14
 %type <y_word> format_15
@@ -76,4 +77,4 @@
 
 %type <y_word> reglist rlist
 %type <y_valu> offset offset32
-%type <y_valu> optimm
+%type <y_valu> optimm zero

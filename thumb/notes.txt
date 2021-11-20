@@ -9,7 +9,6 @@ LR
 PC
 CPSR
 
-
 Encodings:
 
  1 1 1 1 1 1 9 8 7 6 5 4 3 2 1 0
@@ -140,6 +139,7 @@ LDR   1001 1tt tiiiiiiii (SP-relative, 8-bit offset)		- done
 ; format_12
 STR   1111 1
 LDR
+b48:       af00            add     r7, sp, #0
 
 ; conditional branches
 B   1101 0ccc iiiiiiii	(8-bit immediate)			- done
