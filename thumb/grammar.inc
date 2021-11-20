@@ -115,8 +115,8 @@ operation
 							}
 						}
 
-	| MSR PSR ',' REG			{ if ($1&0x8000) ISA(ARMv6M); emit2(0xF380|BITS($2>>15,1,4)|BITS($4,4,0)); emit2(0x8800|BITS($2,8,0)); }
-	| MSR REG ',' PSR			{ if ($1&0x8000) ISA(ARMv6M); emit2(0xF3EF|BITS($4>>15,1,4)|BITS($4,0,0)); emit2(0x8000|BITS($2,4,8)|BITS($4,8,0)); }
+	| MSR PSR ',' REG			{ ISA(ARMv6M); if ($1&0x8000) ISA(ARMv6M); emit2(0xF380|BITS($2>>15,1,4)|BITS($4,4,0)); emit2(0x8800|BITS($2,8,0)); }
+	| MSR REG ',' PSR			{ ISA(ARMv6M); if ($1&0x8000) ISA(ARMv6M); emit2(0xF3EF|BITS($4>>15,1,4)|BITS($4,0,0)); emit2(0x8000|BITS($2,4,8)|BITS($4,8,0)); }
 
 	| CBNZ format_20			{ ISA(ARMv6T2); emit2($1|$2); }
 	;

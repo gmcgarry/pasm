@@ -21,7 +21,7 @@
 #include "as.h"
 #include "error.h"
 
-int isa = ARMv7;
+int isa = ARMv4T;
 
 extern sect_t sect[];
 
@@ -33,6 +33,12 @@ static item_t cseg = { 0, S_UND, 0, ".text" };
 void
 mflag(const char* flag)
 {
+	if (strncasecmp(flag, "cpu=", 4) == 0)
+		setcpu(&flag[4]);
+	else if (strncasecmp(flag, "arch=", 4) == 0)
+		setarch(&flag[5]);
+	else if (strncasecmp(flag, "fpu=", 4) == 0)
+		setfpu(&flag[4]);
 }
 
 void
@@ -103,10 +109,12 @@ setarch(const char* arch)
 	 */
 	if (strcmp(arch, "armv4t") == 0)
 		isa = ARMv4T;
-	else if (strncmp(arch, "arm5t", 5) == 0)
+	else if (strcmp(arch, "arm5t") == 0)
 		isa = ARMv5T;
-	else if (strncmp(arch, "armv6", 5) == 0)
+	else if (strcmp(arch, "armv6") == 0)
 		isa = ARMv6;
+	else if (strcmp(arch, "armv6-m") == 0 || strcmp(arch, "armv6m") == 0)
+		isa = ARMv6M;
 	else if (strncmp(arch, "armv7", 5) == 0)
 		isa = ARMv7;
 	else
@@ -116,7 +124,8 @@ setarch(const char* arch)
 void
 setfpu(const char* fpu)
 {
-	warning("ignoring .fpu directive (%s)", fpu);
+	if (pass == PASS_1) 
+		warning("ignoring .fpu directive (%s)", fpu);
 }
 
 
