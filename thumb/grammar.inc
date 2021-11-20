@@ -166,32 +166,31 @@ format_08
 	;
 
 format_09
-	: REG ',' '[' REG ',' '#' absexp ']'	{ $$ = BITS($7>>2,5,6)|BITS($4,3,3)|BITS($1,3,0); }
-	| REG ',' '[' REG ']'			{ $$ = BITS($4,3,3)|BITS($1,3,0); }
+	: REG ',' '[' REG optimm ']'		{ $$ = BITS($5>>2,5,6)|BITS($4,3,3)|BITS($1,3,0); }
 	;
 
 format_09b
-	: REG ',' '[' REG ',' '#' absexp ']'	{ $$ = BITS($7,5,6)|BITS($4,3,3)|BITS($1,3,0); }
-	| REG ',' '[' REG ']'			{ $$ = BITS($4,3,3)|BITS($1,3,0); }
+	: REG ',' '[' REG optimm ']'		{ $$ = BITS($5,5,6)|BITS($4,3,3)|BITS($1,3,0); }
 	;
 
 format_10
-	: REG ',' '[' REG ',' '#' absexp ']'	{ $$ = BITS($7>>1,5,6)|BITS($4,3,3)|BITS($1,3,0); }
-	| REG ',' '[' REG ']'			{ $$ = BITS($4,3,3)|BITS($1,3,0); }
+	: REG ',' '[' REG optimm ']'		{ $$ = BITS($5>>1,5,6)|BITS($4,3,3)|BITS($1,3,0); }
 	;
 
 format_11
-	: REG ',' '[' SP ',' '#' absexp ']'	{ $$ = BITS($1,3,8)|BITS($7>>2,8,0); }
-	| REG ',' '[' SP ']'			{ $$ = BITS($1,3,8); }
+	: REG ',' '[' SP optimm ']'		{ $$ = BITS($1,3,8)|BITS($5>>2,8,0); }
 	;
 
 format_12
-	: REG ',' '[' PC ',' '#' absexp ']'	{ $$ = BITS($1,3,8)|BITS($7>>2,8,0);}
+	: REG ',' '[' PC optimm ']'		{ $$ = BITS($1,3,8)|BITS($5>>2,8,0);}
 	| REG ',' offset32			{ $$ = BITS($1,3,8)|BITS($3>>2,8,0); }
 	;
 
 format_13
 	: SP ',' '#' absexp			{ $$ = BITS($4>>2,7,0); }
+#ifdef COMPAT_GAS
+	| SP ',' SP ',' '#' absexp		{ $$ = BITS($6>>2,7,0); }
+#endif
 	;
 
 format_14
@@ -223,6 +222,11 @@ offset	: expr					{ $$ = ($1.val - (DOTVAL+4)); }
 	;
 
 offset32: expr					{ if (pass == PASS_1 && $1.val&3) serror("bad word alignment"); $$ = ($1.val - ((DOTVAL+4)&~3)); }
+	;
+
+optimm
+	: /* empty */				{ $$ = 0; }
+	| ',' '#' absexp			{ $$ = $3; }
 	;
 
 reglist	: '{' rlist '}'				{ $$ = $2; }

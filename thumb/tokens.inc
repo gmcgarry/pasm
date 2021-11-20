@@ -75,4 +75,5 @@
 %type <y_word> format_20
 
 %type <y_word> reglist rlist
-%type <y_word> offset offset32
+%type <y_valu> offset offset32
+%type <y_valu> optimm
