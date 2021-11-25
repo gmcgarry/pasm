@@ -87,5 +87,4 @@
 %token <y_word> AREG
 %token <y_word> SFR
 %token <y_word> PSEUDOOP_AREA
-%token <y_word> PSEUDOOP_MODULE
 %token <y_word> PSEUDOOP_SEG

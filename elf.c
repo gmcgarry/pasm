@@ -47,7 +47,7 @@ elfstart(void)
 	printf("---------------------------------------\n");
 	int offset = 0;
 	for (i = 0; i < nsect; i++) {
-		printf("%d: %s, address=%ld, file-offset=%d, size=%ld\n", i, sect[i].s_item ? sect[i].s_item->i_name : "<null>", sect[i].s_base, offset, sect[i].s_size);
+		DPRINTF(("%d: %s, address=%ld, file-offset=%d, size=%ld\n", i, sect[i].s_item ? sect[i].s_item->i_name : "<null>", sect[i].s_base, offset, sect[i].s_size));
 		offset += sect[i].s_size;
 	}
 	printf("---------------------------------------\n");
@@ -139,7 +139,7 @@ elffinish()
 	printf("---------------------------------------\n");
 	int offset = 0;
 	for (i = 0; i < nsect; i++) {
-		printf("%d: %s, address=%ld, file-offset=%d, size=%ld\n", i, sect[i].s_item ? sect[i].s_item->i_name : "<null>", sect[i].s_base, offset, sect[i].s_size);
+		DPRINTF(("%d: %s, address=%ld, file-offset=%d, size=%ld\n", i, sect[i].s_item ? sect[i].s_item->i_name : "<null>", sect[i].s_base, offset, sect[i].s_size));
 		offset += sect[i].s_size;
 	}
 	printf("---------------------------------------\n");
@@ -150,7 +150,7 @@ elffinish()
 	for (i = 1; i < nsect; i++) {
 
 		sect_t *sp = &sect[i];
-		printf("SECTION %d: offset=%ld, size=%ld, nameidx=%d, link=%ld, info=%ld\n", i, off, sp->s_size - sp->s_zero, sp->s_item ? sp->s_item->i_type : 0, sp->s_link, sp->s_info);
+		DPRINTF(("SECTION %d: offset=%ld, size=%ld, nameidx=%d, link=%ld, info=%ld\n", i, off, sp->s_size - sp->s_zero, sp->s_item ? sp->s_item->i_type : 0, sp->s_link, sp->s_info));
 
 		Elf_Shdr shdr = {
 			.sh_name = newstr(sp->s_item->i_name),

@@ -425,5 +425,4 @@ extern int yydebug;
 #define DPRINTF(x)	if (yydebug) printf x
 #else
 #define DPRINTF(x)	/* nothing */
-#error
 #endif

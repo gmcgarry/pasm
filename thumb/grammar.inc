@@ -99,7 +99,7 @@ operation
 							int opc = 0xBF00|BITS($2&0xe,4,4);
 							int mask = 0x1;
 							int v = $2&mask;
-							while ($1&mask == 0) {
+							while (($1&mask) == 0) {
 								mask <<= 1;
 								v <<= 1;
 							}

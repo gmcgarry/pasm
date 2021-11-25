@@ -225,8 +225,8 @@ RM sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx
 	| CPW X ',' immediate		{ emit1($1-0x10); emit2($4.val); }
 	| CPW X ',' direct		{ if (fitb($4.val)) { emit1($1); emit1($4.val); } else { emit1($1+0x20); emit2($4.val); } }
 
-	| CPW Y ',' immediate		{ emit2(0x9000|$1-0x10); emit2($4.val); }
-	| CPW Y ',' direct		{ if (fitb($4.val)) { emit2(0x9000|$1); emit1($4.val); } else { emit2(0x9000|$1+0x20); emit2($4.val); } }
+	| CPW Y ',' immediate		{ emit2((0x9000|$1)-0x10); emit2($4.val); }
+	| CPW Y ',' direct		{ if (fitb($4.val)) { emit2(0x9000|$1); emit1($4.val); } else { emit2((0x9000|$1)+0x20); emit2($4.val); } }
 	
 	| RMR A				{ emit1($1 - 0x30 + 0x40); }
 	| RMR direct			{

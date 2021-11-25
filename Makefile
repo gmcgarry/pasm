@@ -1,6 +1,7 @@
 CC = gcc
 
-COPTIONS = -Wall -Wunused -DYYDEBUG=1 -g
+COPTIONS = -Wall -Wunused -g
+COPTIONS += -DYYDEBUG=1
 LDOPTIONS =
 
 #COPTIONS += --std=c89
