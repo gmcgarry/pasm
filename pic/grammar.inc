@@ -48,8 +48,8 @@ d	: expr			{ $$ = $1.val ? 0x80 : 0; }
 b	: expr			{ $$ = ($1.val & 0x07) << 7; }
 	;
 
-f	: expr			{ $$ = $1.val & 0x7f; }
-	| PSEUDOOP_BANKMASK '(' f ')'	{ $$ = $3; }
+f	: expr					{ $$ = $1.val; }
+	| PSEUDOOP_BANKMASK '(' expr ')'	{ $$ = $3.val&0x7f; }
 	;
 
 k8	: expr			{ $$ = $1.val & 0xff; }
