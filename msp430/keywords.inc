@@ -29,16 +29,14 @@
  */
 
 /*
- * Some constants are encoded in S/As using CG1/CG2
+ * Some constants are encoded in S/As using SR/CG
  */
-#define ADDR0	0x0210
 #define VAL4	0x0220
 #define VAL8	0x0230
 #define VAL0	0x0300
 #define VAL1	0x0310
 #define VAL2	0x0320
 #define VALN1	0x0330
-
 
 /* compatibility with ASM430 (CCS) */
 { 0,	PSEUDOOP_CDECLS,	0,		".cdecls"	},
@@ -71,8 +69,7 @@
 { 0,	REG,			0,		"PC"		},
 { 0,	REG,			1,		"SP"		},
 { 0,	REG,			2,		"SR"		},
-{ 0,	REG,			2,		"CG1"		},
-{ 0,	REG,			3,		"CG2"		},
+{ 0,	REG,			3,		"CG"		},
 
 { 0,	DATASIZE,		0x0040,		".B"		},
 { 0,	DATASIZE,		0x0000,		".W"		},
@@ -85,7 +82,7 @@
 
 /* single operands - destination only */
 /* O O O O O O O O | B/W | As As | D D D D */
-{ 0,	RM,			0x6000|VAL0,	"ADC"		},	/* alias */ /* ADDC #0, dst */
+{ 0,	RM,		0x6000|VAL0,	"ADC"		},	/* alias */ /* ADDC #0, dst */
 { 0,	RM,		0x1280,		"CALL"		},
 { 0,	RM,		0x4000|VAL0,	"CLR"		},	/* alias */ /* MOV #0, dst */
 { 0,	RM,		0xA000|VAL0,	"DADC"		},	/* alias */ /* DADD #0, dst */
@@ -94,10 +91,8 @@
 { 0,	RM,		0x5000|VAL1,	"INC"		},	/* alias */ /* ADD #1, dst */
 { 0,	RM,		0x5000|VAL2,	"INCD"		},	/* alias */ /* ADD #2, dst */ /* double increment */
 { 0,	RM,		0xE000|VALN1,	"INV"		},	/* alias */ /* XOR #0FFFFh, dst */
-{ 0,	RM,		0x4120,		"POP"		},	/* alias */ /* MOV @SP, dst */
+{ 0,	RM,		0x4130,		"POP"		},	/* alias */ /* MOV @SP+, dst */
 { 0,	RM,		0x1200,		"PUSH"		},
-{ 0,	RM,		0x4130,		"RET"		}, 	/* alias */ /* MOV @SP+, PC */
-{ 0,	RM,		0x1300,		"RETI"		}, 
 { 0,	RM2,		0x5000,		"RLA"		}, 	/* alias */ /* ADD dst, dst */
 { 0,	RM2,		0x6000,		"RLC"		}, 	/* alias */ /* ADDC dst, dst */
 { 0,	RM,		0x1100,		"RRA"		}, 
@@ -141,10 +136,12 @@
 { 0,	RBRANCH,	0x3800,		"JL"		},
 { 0,	RBRANCH,	0x3C00,		"JMP"		},
 
-{ 0,	BRANCH,		0,		"BR"		},
-{ 0,	BRANCH,		0,		"BRANCH"	},	/* alias for previous */
+{ 0,	BRANCH,		0x4000,		"BR"		},	/* alias */ /* MOV src, PC */
+{ 0,	BRANCH,		0x4000,		"BRANCH"	},	/* alias for previous */
 
 /* implicit */
+{ 0,	IMPL,		0x4130,		"RET"		}, 	/* alias */ /* MOV @SP+, PC */
+{ 0,	IMPL,		0x1300,		"RETI"		}, 
 { 0,	IMPL,		0xC002|VAL1,	"CLRC"		},	/* alias */ /* BIC #1, SR */
 { 0,	IMPL,		0xC002|VAL4,	"CLRN"		},	/* alias */ /* BIC #4, SR */
 { 0,	IMPL,		0xC002|VAL2,	"CLRZ"		},	/* alias */ /* BIC #2, SR */

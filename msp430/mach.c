@@ -47,3 +47,32 @@ void
 machfinish(int pass)
 {
 }
+
+
+/*
+ * Encode specific source constants.
+ */
+word_t
+constant(expr_t exp)
+{
+	int val = exp.val & 0xFFFF;
+	int sm = (val == 0xFFFF || val == 0 || val == 1 || val == 2 || val == 4 || val == 8);
+
+	if (small(sm, 2)) {
+		if (val == 4)
+			return 0x0220;
+		else if (val == 8)
+			return 0x0230;
+		else if (val == 0)
+			return 0x0300;
+		else if (val == 1)
+			return 0x0310;
+		else if (val == 2)
+			return 0x0320;
+		else if (val == 0xFFFF)
+			return 0x0330;
+		fatal("something went wrong");
+	}
+	/* encoded as @PC+ val */
+	return (exp.val<<16)|(0x0<<8)|0x30;
+}

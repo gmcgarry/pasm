@@ -30,4 +30,4 @@
 
 %type <y_word> src dst
 %type <y_word> optsiz
-%type <y_valu> offset
+%type <y_valu> offset offset10

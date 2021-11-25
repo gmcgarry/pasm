@@ -14,12 +14,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* values for As bits */
 #define OPR_REGISTER	0x00
 #define OPR_INDEXED	0x10
 #define OPR_INDIRECT	0x20
 #define OPR_INDIRECTINC	0x30
 
-#define SRCOP(x)	(((x) & 0x30) == OPR_INDEXED || ((x) & 0x0f30) == OPR_INDIRECTINC)
+#define SRCOP(x)	((((x) & 0x30) == OPR_INDEXED || ((x) & 0x0f30) == OPR_INDIRECTINC) && (((x)>>8) != 2 && (((x)>>8) != 3)))
 #define DSTOP(x)	(((x) & 0x80) != 0)
 
 #define NOTCGR(x)	do { if ((x) == 2 || (x) == 3) serror("bad use of CG register"); } while(0)
@@ -56,17 +57,23 @@ instr
 	: IMPL				{ emit2($1); }
 	| RM optsiz dst			{ emit2($1|$2|($3&0xFFFF)); if (SRCOP($3)) emit2($3>>16); }
 	| RMW optsiz src ',' dst	{ emit2($1|$2|($3&0xFFFF)|($5&0xFFFF)); if (SRCOP($3)) emit2($3>>16); if (DSTOP($5)) emit2($5>>16); }
-	| RBRANCH offset		{ emit2($1|($2&0x3F)); }
-	| BRANCH absexp			{ emit2($1|($2&0x3F)); }
+	| RBRANCH offset10		{ emit2($1|$2); }
+	| BRANCH src			{ emit2($1|($2&0xFFFF)); if (SRCOP($2)) emit2($2>>16); }
 	;
 
 src
-	: '#' expr			{ $$ = ($2.val<<16)|(0x0<<8)|OPR_INDIRECTINC; }
+	: '#' expr			{ $$ = constant($2); }
 	| REG				{ $$ = ($1<<8)|OPR_REGISTER; }
 	| '&' expr			{ $$ = ($2.val<<16)|(0x2<<8)|OPR_INDEXED; }
 	| '@' REG			{ $$ = ($2<<8)|OPR_INDIRECT; NOTCGR($2); }
 	| '@' REG '+'			{ $$ = ($2<<8)|OPR_INDIRECTINC; NOTCGR($2); }
-	| expr '(' REG ')'		{ $$ = ($1.val<<16)|($3<<8)|OPR_INDEXED; NOTCGR($3); }
+	| expr '(' REG ')'		{
+						NOTCGR($3);
+						if (small($1.val == 0, 2)) 
+							$$ = ($3<<8)|OPR_INDIRECT;
+						else 
+							$$ = ($1.val<<16)|($3<<8)|OPR_INDEXED;
+					}
 	| offset			{ $$ = ($1<<16)|(0x0<<8)|OPR_INDEXED; }	
 	;
 
@@ -78,7 +85,11 @@ dst
 	;
 
 offset
-	: expr				{ $$ = $1.val - DOTVAL; }
+	: expr				{ $$ = $1.val - (DOTVAL + 2); }
+	;
+
+offset10
+	: offset			{ fit(fitx($1+1024,11)); $$ = ($1>>1) & 0x3FF; }
 	;
 
 optsiz
