@@ -45,13 +45,16 @@
 
 { 0,	NUMBER8,		0x05,	"PORTA" },
 { 0,	NUMBER8,		0x06,	"PORTB" },
-{ 0,	NUMBER8,		0x08,	"EEDATA" },
-{ 0,	NUMBER8,		0x09,	"EEADR" },
+{ 0,	NUMBER8,		0x07,	"PORTC" },
 
-{ 0,	NUMBER8,		0x05,	"TRISA" },
-{ 0,	NUMBER8,		0x06,	"TRISB" },
-{ 0,	NUMBER8,		0x08,	"EECON1" },
-{ 0,	NUMBER8,		0x09,	"EECON2" },
+{ 0,	NUMBER8,		0x85,	"TRISA" },
+{ 0,	NUMBER8,		0x86,	"TRISB" },
+{ 0,	NUMBER8,		0x87,	"TRISC" },
+
+{ 0,	NUMBER8,		0x08,	"EEDATA" },	/* 16F84 */
+{ 0,	NUMBER8,		0x09,	"EEADR" },	/* 16F84 */
+{ 0,	NUMBER8,		0x88,	"EECON1" },	/* 16F84 */
+{ 0,	NUMBER8,		0x89,	"EECON2" },	/* 16F84 */
 
 /* register direction */
 { 0,	D,			0x00,	"W" },
