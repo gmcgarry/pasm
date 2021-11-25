@@ -16,6 +16,8 @@
 
 %token <y_word> PSEUDOOP_CDECLS
 %token <y_word> PSEUDOOP_SECT
+%token <y_word> PSEUDOOP_RETAIN
+%token <y_word> PSEUDOOP_USECT
 
 %token <y_word> REG SFR
 

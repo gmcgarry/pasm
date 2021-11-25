@@ -14,17 +14,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define OPR_SRCMASK	0xB0
-#define OPR_IMMEDIATE	0x30
 #define OPR_REGISTER	0x00
-#define OPR_ABSOLUTE	0x90
-#define OPR_SYMBOLIC	0x90
+#define OPR_INDEXED	0x10
 #define OPR_INDIRECT	0x20
-#define OPR_INDINC	0x30
+#define OPR_INDIRECTINC	0x30
 
-#define OPR_DSTMASK	0x00
-#define SRCOP(x)	(((x) & OPR_SRCMASK) != 0)
-#define DSTOP(x)	(((x) & OPR_DSTMASK) != 0)
+#define SRCOP(x)	(((x) & 0x30) == OPR_INDEXED || ((x) & 0x0f30) == OPR_INDIRECTINC)
+#define DSTOP(x)	(((x) & 0x80) != 0)
 
 #define NOTCGR(x)	do { if ((x) == 2 || (x) == 3) serror("bad use of CG register"); } while(0)
 
@@ -46,6 +42,9 @@ operation
 				 		newsect(ip, 0, NULL);
 					}
 	| PSEUDOOP_CDECLS IDENT ',' IDENT ',' STRING	{ }
+	| PSEUDOOP_RETAIN		{ if (pass == PASS_1) warning("ignoring .retain/.retainrfs directive"); }
+	| PSEUDOOP_USECT STRING ',' expr ',' expr
+					{ warning("ignoring .usect directive"); }
 	;
 	
 optlabel
@@ -62,21 +61,20 @@ instr
 	;
 
 src
-	: '#' expr			{ $$ = ($2.val<<16)|OPR_IMMEDIATE; }			/* FIXME */ /* N is stored in the following word; check for -1,0,1,2,8 */
+	: '#' expr			{ $$ = ($2.val<<16)|(0x0<<8)|OPR_INDIRECTINC; }
 	| REG				{ $$ = ($1<<8)|OPR_REGISTER; }
-	| '&' expr			{ $$ = ($2.val<<16)|OPR_ABSOLUTE; }			/* FIXME */ /* N is stored in the following word */
+	| '&' expr			{ $$ = ($2.val<<16)|(0x2<<8)|OPR_INDEXED; }
 	| '@' REG			{ $$ = ($2<<8)|OPR_INDIRECT; NOTCGR($2); }
-	| '@' REG '+'			{ $$ = ($2<<8)|OPR_INDINC; NOTCGR($2); }
-	| absexp '(' REG ')'		{ $$ = ($1<<16)|($3<<8)|OPR_SYMBOLIC; NOTCGR($3); }	/* FIXME */ /* offset is stored in the following word */
-	| offset			{ $$ = ($1<<16)|OPR_SYMBOLIC; }				/* FIXME */ /* offset is stored in the following word */
+	| '@' REG '+'			{ $$ = ($2<<8)|OPR_INDIRECTINC; NOTCGR($2); }
+	| expr '(' REG ')'		{ $$ = ($1.val<<16)|($3<<8)|OPR_INDEXED; NOTCGR($3); }
+	| offset			{ $$ = ($1<<16)|(0x0<<8)|OPR_INDEXED; }	
 	;
 
 dst
 	: REG				{ $$ = $1; }
-	| '&' expr 			{ $$ = ($2.val<<16); }
-	| '@' REG			{ $$ = $2; NOTCGR($2); }
-	| absexp '(' REG ')'		{ $$ = $3; NOTCGR($3); }
-	| offset			{ $$ = ($1<<16); }
+	| '&' expr 			{ $$ = ($2.val<<16)|0x80|0x02; }		/* expr (SR) */
+	| expr '(' REG ')'		{ $$ = ($1.val<<16)|$3|0x80; NOTCGR($3); }	/* expr (REG) */
+	| offset			{ $$ = ($1<<16)|0x80; }				/* offset (PC) */
 	;
 
 offset

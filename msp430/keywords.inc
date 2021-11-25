@@ -40,10 +40,15 @@
 #define VALN1	0x0330
 
 
-/* compatibility  with launchpad */
+/* compatibility with ASM430 (CCS) */
 { 0,	PSEUDOOP_CDECLS,	0,		".cdecls"	},
 { 0,	PSEUDOOP_SECT,		0,		".sect"		},
 { 0,	PSEUDOOP_DATA,		WORDSIZE,	".short"	},
+{ 0,	PSEUDOOP_EXTERN,	0,		".def"		},
+{ 0,	PSEUDOOP_RETAIN,	0,		".retain"	},
+{ 0,	PSEUDOOP_RETAIN,	1,		".retainrefs"	},
+{ 0,	PSEUDOOP_USECT,		1,		".usect"	},
+{ 0,	DOT,			0,		"$"		},
 
 /* registers */
 { 0,	REG,			0,		"R0"		},	/* PC */
