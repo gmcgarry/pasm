@@ -14,6 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+%token <y_word> PSEUDOOP_CDECLS
+%token <y_word> PSEUDOOP_SECT
+
 %token <y_word> REG SFR
 
 %token <y_word> IMPL

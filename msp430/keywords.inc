@@ -39,36 +39,48 @@
 #define VAL2	0x0320
 #define VALN1	0x0330
 
-/* registers */
-{ 0,	REG,		0,	"R0"		},	/* PC */
-{ 0,	REG,		1,	"R1"		},	/* SP */
-{ 0,	REG,		2,	"R2"		},	/* SR/CG1 */
-{ 0,	REG,		3,	"R3"		},	/* CG2 */
-{ 0,	REG,		4,	"R4"		},
-{ 0,	REG,		5,	"R5"		},
-{ 0,	REG,		6,	"R6"		},
-{ 0,	REG,		7,	"R7"		},
-{ 0,	REG,		8,	"R8"		},
-{ 0,	REG,		9,	"R9"		},
-{ 0,	REG,		10,	"R10"		},
-{ 0,	REG,		11,	"R11"		},
-{ 0,	REG,		12,	"R12"		},
-{ 0,	REG,		13,	"R13"		},
-{ 0,	REG,		14,	"R14"		},
-{ 0,	REG,		15,	"R15"		},
 
-{ 0,	DATASIZE,	0x0040,	".B"		},
-{ 0,	DATASIZE,	0x0000,	".W"		},
+/* compatibility  with launchpad */
+{ 0,	PSEUDOOP_CDECLS,	0,		".cdecls"	},
+{ 0,	PSEUDOOP_SECT,		0,		".sect"		},
+{ 0,	PSEUDOOP_DATA,		WORDSIZE,	".short"	},
+
+/* registers */
+{ 0,	REG,			0,		"R0"		},	/* PC */
+{ 0,	REG,			1,		"R1"		},	/* SP */
+{ 0,	REG,			2,		"R2"		},	/* SR/CG1 */
+{ 0,	REG,			3,		"R3"		},	/* CG2 */
+{ 0,	REG,			4,		"R4"		},
+{ 0,	REG,			5,		"R5"		},
+{ 0,	REG,			6,		"R6"		},
+{ 0,	REG,			7,		"R7"		},
+{ 0,	REG,			8,		"R8"		},
+{ 0,	REG,			9,		"R9"		},
+{ 0,	REG,			10,		"R10"		},
+{ 0,	REG,			11,		"R11"		},
+{ 0,	REG,			12,		"R12"		},
+{ 0,	REG,			13,		"R13"		},
+{ 0,	REG,			14,		"R14"		},
+{ 0,	REG,			15,		"R15"		},
+
+{ 0,	REG,			0,		"PC"		},
+{ 0,	REG,			1,		"SP"		},
+{ 0,	REG,			2,		"SR"		},
+{ 0,	REG,			2,		"CG1"		},
+{ 0,	REG,			3,		"CG2"		},
+
+{ 0,	DATASIZE,		0x0040,		".B"		},
+{ 0,	DATASIZE,		0x0000,		".W"		},
 
 /* special function registers */
-{ 0,	SFR,		0,	"IER1"		},	/* interrupt enable */
-{ 0,	SFR,		1,	"IER2"		},
-{ 0,	SFR,		0,	"IFR1"		},	/* interrupt flags */
-{ 0,	SFR,		1,	"IFR2"		},
+{ 0,	SFR,			0,		"IER1"		},	/* interrupt enable */
+{ 0,	SFR,			1,		"IER2"		},
+{ 0,	SFR,			2,		"IFR1"		},	/* interrupt flags */
+{ 0,	SFR,			3,		"IFR2"		},
 
 /* single operands - destination only */
 /* O O O O O O O O | B/W | As As | D D D D */
-{ 0,	RM,		0x6000|VAL0,	"ADC"		},	/* alias */ /* ADDC #0, dst */
+{ 0,	RM,			0x6000|VAL0,	"ADC"		},	/* alias */ /* ADDC #0, dst */
 { 0,	RM,		0x1280,		"CALL"		},
 { 0,	RM,		0x4000|VAL0,	"CLR"		},	/* alias */ /* MOV #0, dst */
 { 0,	RM,		0xA000|VAL0,	"DADC"		},	/* alias */ /* DADD #0, dst */

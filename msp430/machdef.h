@@ -33,19 +33,19 @@
 #define BYTES_REVERSED
 */
 
-#define ADDR_T		long
+#define ADDR_T		short
 #define word_t		unsigned int
 
-#define WORDSIZE	4
-#define DWORDSIZE	8
+#define WORDSIZE	2
+#define DWORDSIZE	4
 #define ALIGNWORD	4
 #define ALIGNSECT	4
 #define VALWIDTH	8
 
 /* Some character constants for scanner*/
-#define ASC_COMMENT     '#'
+#define ASC_COMMENT     ';'
 #define CTRL(x)         ((x) & 037)
-#define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.' || (c) == '%')
-#define ISALNUM(c)      (isalnum(c) || (c) == '_' || (c) == '.')
+#define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.')
+#define ISALNUM(c)      (isalnum(c) || (c) == '_')
 
 #define ELFM		"@"
