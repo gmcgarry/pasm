@@ -11,6 +11,10 @@
 #define OUTPUT_FORMAT "hex"
 #endif
 
+#if defined(mach_msp430)
+#define OUTPUT_FORMAT "ti"
+#endif
+
 #if defined(mach_6800)
 #define OUTPUT_FORMAT "srec2"
 #endif

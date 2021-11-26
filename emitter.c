@@ -59,6 +59,11 @@ static void close_bin(void);
 static void addr_bin(unsigned long a);
 static void byte_bin(unsigned char b);
 
+static int open_ti(const char *file, const char *ftype, const char *arg);
+static void close_ti(void);
+static void addr_ti(unsigned long a);
+static void byte_ti(unsigned char b);
+
 /* ----------------------------------------------------------------------
  * ADD an entry to this table to register your
  * output format routines. Give your object format
@@ -82,6 +87,7 @@ static struct {
 	{ "tdr",   "tdr",  "TDR Format (.tdr)", open_tdr,  close_tdr,  addr_tdr,  byte_tdr },
 	{ "byte",  "byte", "BYTE list (.byte)",  open_byte, close_byte, addr_byte, byte_byte },
 	{ "od",    "od",   "Octal Dump (.od)", open_od,   close_od,   addr_od,   byte_od },
+	{ "ti",    "hex",  "TI-TXT (.hex)", open_ti,  close_ti,  addr_ti,  byte_ti },
 	{ "srec2", "srec", "S Record, 16 bit Address (.srec)", open_srec, close_srec, addr_srec, byte_srec },
 	{ "srec3", "srec", "S Record, 24 bit Address (.srec)", open_srec, close_srec, addr_srec, byte_srec },
 	{ "srec4", "srec", "S Record, 32 bit Address (.srec)", open_srec, close_srec, addr_srec, byte_srec }
@@ -629,4 +635,63 @@ static void byte_srec(unsigned char b)
 		srec_finishline();
 		srec_address += SREC_BYTESPERLINE;
 	}
+}
+
+
+/* ----------------------------------------------------------------------
+ * TI-TXT format.
+ */
+
+static void ti_hexdump(void)     /* dumps one line into file */
+{
+	int i;
+
+	if (fout == NULL) return;
+	if (newaddr) {
+		fprintf(fout,"@%04lX\n", addr & 0xFFFF);
+		newaddr = 0;
+	}
+	for (i=0; i < pos; i++)
+		fprintf(fout,"%02X ", bytes[i] & 0xFF);
+	fprintf(fout,"\n");
+	addr += pos;
+	pos = 0;
+}
+
+static int open_ti(const char *file, const char *ftype, const char *arg)
+{
+	if (file == NULL) fout = stdout;
+	else fout = fopen(file, "w");
+
+	if (fout == NULL) {
+		fatal("Cannot open %s for writing.\n", file);
+		return -1;
+	}
+	pos = 0;
+	newaddr = 1;
+	return 0;
+}
+
+static void close_ti(void)
+{
+	if (fout == NULL) return;
+	if (pos > 0) ti_hexdump();
+	fprintf(fout, "q\n");
+	fclose(fout);
+}
+
+static void addr_ti(unsigned long a)
+{
+	if (a == addr+pos)
+		return;
+	if (pos > 0) ti_hexdump();
+	addr = a;
+	newaddr = 1;
+}
+
+static void byte_ti(unsigned char b)
+{
+	bytes[pos] = b;
+	pos += 1;
+	if (pos == 16) ti_hexdump();
 }
