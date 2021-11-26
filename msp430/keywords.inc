@@ -75,10 +75,17 @@
 { 0,	DATASIZE,		0x0000,		".W"		},
 
 /* special function registers */
-{ 0,	SFR,			0,		"IER1"		},	/* interrupt enable */
-{ 0,	SFR,			1,		"IER2"		},
-{ 0,	SFR,			2,		"IFR1"		},	/* interrupt flags */
-{ 0,	SFR,			3,		"IFR2"		},
+{ 0,	SFR,			0x00,		"IE1"		},	/* interrupt enable */
+{ 0,	SFR,			0x01,		"IE2"		},
+{ 0,	SFR,			0x02,		"IFG1"		},	/* interrupt flags */
+{ 0,	SFR,			0x03,		"IFG2"		},
+
+{ 0,	SFR,			0x21,		"P1OUT"		},
+{ 0,	SFR,			0x22,		"P1DIR"		},
+
+{ 0,	SFR,			0x5400,		"WDTPW"		},
+{ 0,	SFR,			0x0080,		"WDTHOLD"	},
+{ 0,	SFR,			0x0120,		"WDTCTL"	},
 
 /* single operands - destination only */
 /* O O O O O O O O | B/W | As As | D D D D */
