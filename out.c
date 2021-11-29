@@ -12,7 +12,7 @@
 #endif
 
 #if defined(mach_msp430)
-#define OUTPUT_FORMAT "ti"
+#define OUTPUT_FORMAT "hex"
 #endif
 
 #if defined(mach_6800)
