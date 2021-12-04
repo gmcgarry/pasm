@@ -14,10 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-%token <y_word> REG CREG
+%token PSEUDOOP_LITERALS
+
+%token <y_word> LOREG HIREG CREG
 
 %token <y_word> IMPL
-%token <y_word> BRANCH
 %token <y_word> JTYPE
 %token <y_word> ITYPE3
 %token <y_word> ITYPE5_1 ITYPE5_2 ITYPE5_3 
@@ -25,3 +26,16 @@
 %token <y_word> ITYPE8_1 ITYPE8_2
 %token <y_word> RTYPE2 RTYPE3
 %token <y_word> XXX
+
+%token <y_word> LRW
+%token <y_word> MTCR
+%token <y_word> MOVI
+%token <y_word> JSR
+%token <y_word> LDST
+%token <y_word> BIT BITO
+%token <y_word> TWOOP TWOOPI TWOOPIO
+
+%token <y_word> BRANCH
+
+%type <y_valu> offset
+%type <y_word> reg
