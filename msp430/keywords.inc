@@ -82,6 +82,8 @@
 
 { 0,	SFR,			0x21,		"P1OUT"		},
 { 0,	SFR,			0x22,		"P1DIR"		},
+{ 0,	SFR,			0x29,		"P2OUT"		},
+{ 0,	SFR,			0x2A,		"P2DIR"		},
 
 { 0,	SFR,			0x5A00,		"WDTPW"		},
 { 0,	SFR,			0x0080,		"WDTHOLD"	},
