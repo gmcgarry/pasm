@@ -50,7 +50,7 @@
 #define CTRL(x)         ((x) & 037)
 
 #ifdef COMPAT_GAS
-#define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.' || (c) == '%')
+#define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.')
 #define ISALNUM(c)      (isalnum(c) || (c) == '_' || (c) == '.')
 #else
 #define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.')
