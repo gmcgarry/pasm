@@ -84,6 +84,8 @@
 %token <y_word> BITPOS
 %token <y_word> SHIFTFUNC
 
+%token <y_word> PSEUDOOP_BIT
+
 %token <y_word> AREG
 %token <y_word> SFR
 %token <y_word> PSEUDOOP_AREA

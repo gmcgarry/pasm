@@ -127,9 +127,16 @@ subbop(int add)
 void
 movxop(int add)
 {
+/*
+                | MOVX A ',' '@' regi           { movxop($5); }			0xE2/E3
+                | MOVX A ',' '@' DPTR           { movxop(2); }			0xE0
+                | MOVX '@' regi ',' A           { movxop($3+3); }		0xF2/F3
+                | MOVX '@' DPTR ',' A           { movxop(2+3); }		0xF0
+*/
+
 	static unsigned char opcodes[] = { 0xe2, 0xe3, 0xe0, 0xf2, 0xf3, 0xf0 };
-	unsigned int newop = opcodes[ get_md(mode) + add ];
-	emitop(newop);
+	unsigned int newop = opcodes[add];
+	emit1(newop);
 }
 	
 void

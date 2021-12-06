@@ -66,6 +66,8 @@
 { 0,	'|',			0,		"or"	},
 #endif
 
+{ 0,	PSEUDOOP_BIT,		0,		".bit"	},
+
 { 0,	SHIFTFUNC,		0,		"low" },
 { 0,	SHIFTFUNC,		8,		"high" },
 

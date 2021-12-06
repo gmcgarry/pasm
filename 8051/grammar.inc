@@ -93,9 +93,10 @@ operation	: NOP			{ emit1($1); }
 		| MOVX A ',' '@' regi		{ movxop($5); }
 		| MOVX A ',' '@' DPTR		{ movxop(2); }
 		| MOVX '@' regi ',' A		{ movxop($3+3); }
-		| MOVX '@' DPTR ',' A		{ movxop(5); }
+		| MOVX '@' DPTR ',' A		{ movxop(2+3); }
 		| IDENT '=' bit			{ newequate($1, S_ABS); store($1, $3); }
 		| IDENT '=' AREG		{ item_remove($1); $1->i_type = AREG; item_insert($1, H_KEY+hash($1->i_name)); }
+		| PSEUDOOP_BIT IDENT ',' bit	{ newequate($2, S_ABS); store($2, $4); }
 #ifdef COMPAT_SDCC
 		| PSEUDOOP_MODULE IDENT 	{ if ((sflag & SYM_LIN) && PASS_SYMB) newsymb($2->i_name, (S_ABS | S_FILE), DOTVAL); }
 		| PSEUDOOP_AREA IDENT optflags	{ newsect($2, 0, NULL); }
