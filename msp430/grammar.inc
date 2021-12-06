@@ -26,7 +26,7 @@
 #define NOTCGR(x)	do { if ((x) == 2 || (x) == 3) serror("bad use of CG register"); } while(0)
 
 /* O O O O | S S S S | Ad | B/W | As As | D D D D | 16-bit source/destination | 16-bit destination */
-/* O O O O O O O O | O | As As | D D D D | 16-bit distination */
+/* O O O O O O O O | B/W | Ad Ad | D D D D | 16-bit distination */
 /* O O O O | C C C | 10-bit offset */
 
 operation
@@ -56,7 +56,7 @@ optlabel
 
 instr
 	: IMPL				{ emit2($1); }
-	| RM optsiz dst			{ emit2($1|$2|($3&0xFFFF)); if (DSTOP($3)) emit2($3>>16); }
+	| RM optsiz src			{ emit2($1|$2|($3&0x0030)|(($3>>8)&0x000F)); if (SRCOP($3)) emit2($3>>16); }
 	| RMW optsiz src ',' dst	{ emit2($1|$2|($3&0xFFFF)|($5&0xFFFF)); if (SRCOP($3)) emit2($3>>16); if (DSTOP($5)) emit2($5>>16); }
 	| RBRANCH offset10		{ emit2($1|$2); }
 	| BRANCH src			{ emit2($1|($2&0xFFFF)); if (SRCOP($2)) emit2($2>>16); }
