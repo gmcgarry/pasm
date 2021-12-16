@@ -42,9 +42,9 @@ operation
 	| PSEUDOOP_CODE NUMBER8					{ warning("ignoring .code directive"); }
 	| PSEUDOOP_SYNTAX IDENT					{ warning("ignoring .syntax directive"); }
 #ifdef COMPAT_GAS
-	| BRANCH optlink optexch expr				{ branch($1,$2,$4.val|$3); }
+	| BRANCH optlink expr					{ branch($1,$2,$3.val); }
 #endif
-	| DATA1 optcond optlink optexch expr			{ branch($1|$2,$2,$5.val|$3); }
+	| DATA1 optcond optlink expr				{ branch($1|$2,$2,$4.val); }
 	| DATA1 optcond opts optp REG ',' REG ',' operand	{ data($1,$2|$3|$4|$5<<12|$7<<16,$9.val,$9.typ); }
 #ifdef notyet
 	| DATA1 optcond opts optp REG ',' operand		{ data($1,$2|$3|$4|$5<<12|$5<<16,$7.val,$7.typ); }
@@ -69,11 +69,6 @@ optlink	: 			{ $$ = 0; }
 
 optcond	: 			{ $$ = 0xE0000000; }
 	| COND			{ $$ = $1; }
-	;
-
-/* thumb */
-optexch	:			{ $$ = 0; }
-	| EXCHANGE		{ $$ = $1; }
 	;
 
 opts	: 			{ $$ = 0; }
