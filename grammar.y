@@ -68,6 +68,7 @@ static item_t	*last_it;
 	item_t *y_item;
 };
 
+%token END
 %token STRING
 %token <y_item> IDENT
 %token <y_item> FBSYM
@@ -110,6 +111,7 @@ static item_t	*last_it;
 %token PSEUDOOP_SEEK
 %token PSEUDOOP_CFI_IGNORE
 %token PSEUDOOP_FILE
+%token PSEUDOOP_INCLUDE
 %token <y_word> PSEUDOOP_LINE
 %token <y_word> PSEUDOOP_LIST
 %token <y_word> ELF_SHTYPE
@@ -149,6 +151,7 @@ static item_t	*last_it;
 #define	RELODONE	{ assert(relonami == RELO_UNDEF); } while (0)
 
 program	: /* empty */
+	| program END				{ if (!pop_include()) YYACCEPT; }
 	| program IDENT ':'			{ newident($2, DOTSCT); newlabel($2); RELODONE; }
 	| program NUMBER8 ':'			{ if ($2 < 0 || $2 > 9) { serror("bad f/b label"); $2 = 0; } newlabel(fb_shift((int)$2)); RELODONE; }
 	| program CODE1				{ emit1((int)$2); LISTLINE(0); }
@@ -158,6 +161,7 @@ program	: /* empty */
 	| program operation '\n'		{ lineno++; LISTLINE(1); RELODONE; }
 	| program '#' NUMBER8 STRING '\n'	{ lineno = $3; if (modulename) strncpy(modulename, stringbuf, STRINGMAX-1); LISTLINE(1); RELODONE; }
 	| program error '\n'			{ serror("syntax error"); yyerrok; lineno++; LISTLINE(1); RELODONE; }
+	| program PSEUDOOP_INCLUDE STRING	{ push_include(stringbuf); }
 	;
 #undef LISTLINE
 #undef RELODONE
@@ -172,7 +176,7 @@ operation: /* empty */
 	| PSEUDOOP_MESSAGE STRING		{ puts(stringbuf); }
 	| PSEUDOOP_SECTION IDENT		{ newsect($2, 0, NULL); }
 	| PSEUDOOP_SECTION IDENT ',' STRING optelfshtype	{ newsect($2, $<y_word>5, stringbuf); }
-	| PSEUDOOP_END				{ ON_END(); }
+	| PSEUDOOP_END				{ }
 	| PSEUDOOP_GLOBAL IDENT			{ if ($1) $2->i_type |= S_EXTERN; else $2->i_type &= ~S_EXTERN; }
 	| PSEUDOOP_WEAK IDENT			{ }
 	| PSEUDOOP_SIZE IDENT ',' expr		{ /* if (PASS_SYMB) $2->i_size = $4.valu; */ }
@@ -329,7 +333,7 @@ id_fb	: IDENT
 absexp	: expr					{ if (($1.typ & S_SCTMASK) != S_ABS) serror("must be absolute"); $$ = $1.val; }
 	;
 
-optabs : /* empty */				{ $$ = 0; }
+optabs	: /* empty */				{ $$ = 0; }
 	| absexp				{ $$ = $1; }
 	;
 
@@ -341,7 +345,7 @@ optelfshtype
 	: /* empty */				{ $$ = 0; }
 	| ',' ELF_SHTYPE     			{ $$ = $2; }
 	;
- 
+
 /* ========== Machine dependent rules ========== */
 
 #include	"grammar.inc"

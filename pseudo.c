@@ -309,3 +309,41 @@ new_common(item_t *ip)
 	cp->c_it = ip;
 	commons = cp;
 }
+
+
+#ifndef INCDEPTH
+#define INCDEPTH	16
+#endif
+FILE *include_stack[INCDEPTH];
+int include_stack_top;
+
+void
+push_include(const char* filename)
+{
+	FILE *fp;
+
+	DPRINTF(("push_include: %d %s\n", include_stack_top, filename));
+
+	if (include_stack_top >= INCDEPTH)
+		fatal("too many nested include statements");
+
+	fp = fopen(filename, "r");
+	if (!fp)
+		fatal("cannot open %s", filename);
+	include_stack[include_stack_top++] = input;
+	input = fp;
+}
+
+int
+pop_include()
+{
+	DPRINTF(("pop_include: %d\n", include_stack_top));
+
+	if (!include_stack_top)
+		return 0;
+
+	fclose(input);
+	input = include_stack[--include_stack_top];
+
+	return 1;
+}

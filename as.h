@@ -342,6 +342,10 @@ void	 newrelo(int, int);
 long	 new_string(const char *);
 void	 newsymb(const char *, int, ADDR_T);
 
+void	push_include(const char* filename);
+int	pop_include();
+
+
 /* misc.c */
 ADDR_T	 load(const item_t *);
 int	 store(item_t *, ADDR_T);
@@ -366,10 +370,6 @@ void	 emitf(int size, int negative);
 void mflag(const char *flag);
 void machstart(int pass);
 void machfinish(int pass);
-
-#ifndef ON_END
-#define ON_END()	/* not implemented */
-#endif
 
 /* out.c */
 void outstart();

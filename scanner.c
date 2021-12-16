@@ -107,9 +107,9 @@ yylex(void)
 				case ASC2_COMMENT:
 #endif
 				case ASC_COMMENT:
-					do
+					do {
 						c = nextchar();
-					while (c != '\n' && c != '\0');
+					} while (c != '\n' && c != '\0');
 					break;
 #endif
 #ifdef HEXPREFIX
@@ -139,7 +139,7 @@ yylex(void)
 
 		/* produce the intermediate token file */
 		if (c <= 0)
-			return 0;
+			return END;
 		if (c < 256) {
 			putc(c, tempfile);
 			putc(0, tempfile);
@@ -150,10 +150,10 @@ yylex(void)
 		/* read from intermediate token file */
 		c0 = getc(tempfile);
 		if (c0 == EOF)
-			return 0;
+			return END;
 		c1 = getc(tempfile);
 		if (c1 == EOF)
-			return 0;
+			return END;
 
 		c = c0 + (c1 << 8);
 		if (c >= 256)

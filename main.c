@@ -237,8 +237,8 @@ pass_1(int argc, char **argv)
 		parse(p);
 		fclose(input);
 	}
-	commfinish();
 	machfinish(PASS_1);
+	commfinish();
 
 #ifdef ASLD
 	if (unresolved) {
@@ -362,8 +362,8 @@ pass_23(int n)
         newmodule(modulename);
 	rewind(tempfile);
 	yyparse();
-	commfinish();
 	machfinish(n);
+	commfinish();
 
 	DPRINTF(("------------- end of pass %d (2/3) -------------\n", pass));
 }

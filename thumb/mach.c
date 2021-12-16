@@ -54,6 +54,8 @@ machstart(int pass)
 void
 machfinish(int pass)
 {
+	if (pass == PASS_3)
+		emit_literals();
 }
 
 void

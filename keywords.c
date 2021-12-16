@@ -77,6 +77,7 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_EQU,		0,		".set" },
 	{ 0,	PSEUDOOP_LINE,		0,		".line" },
 	{ 0,	PSEUDOOP_FILE,		0,		".file" },
+	{ 0,	PSEUDOOP_INCLUDE,	0,		".include" },
 	{ 0,	PSEUDOOP_TYPE,		0,		".type" },
 	{ 0,	PSEUDOOP_SIZE,		0,		".size" },
 	{ 0,	PSEUDOOP_IDENT,		0,		".ident" },

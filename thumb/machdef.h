@@ -59,7 +59,4 @@
 
 #define DEFAULT_SECTION	(1)
 
-#define ON_END()	{ emit_literals(); }
-
 #define ELFM		"%"
-
