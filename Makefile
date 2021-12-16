@@ -1,6 +1,6 @@
 CC = gcc
 
-COPTIONS = -Wall -Wunused -g
+COPTIONS = -Wall -Wunused -g -P
 COPTIONS += -DYYDEBUG=1
 LDOPTIONS =
 
@@ -12,7 +12,7 @@ LIBOBJ	=
 
 INCL	= -I. -I./$(MACH)
 CFLAGS	= $(INCL) $(COPTIONS) -Dmach_$(MACH) -DMACH=$(MACH)
-YFLAGS	= -d
+YFLAGS	= -d -l
 LDFLAGS	= $(LDOPTIONS)
 
 CSRC	= \
