@@ -29,8 +29,12 @@ extern int hash(const char *);
 static item_t cseg = { 0, S_UND, 0, ".cseg" };
 
 
-static int config_addr = 0x2007;
-static int config = 0x3fff;
+static int config_addr = 0x400E;
+static int config_word = 0x3fff;
+
+#define ISTRUE(v)	(strcasecmp(v, "ON") == 0 || strcasecmp(v, "TRUE") == 0 || strcasecmp(v, "ENABLED") == 0)
+#define SET_IF_FALSE(v,f)	do { if (ISTRUE(v)) config_word &= ~(f); } while (0)
+#define SET_IF_TRUE(v,f)	do { if (!ISTRUE(v)) config_word &= ~(f); } while (0)
 
 #define CFG_FOSC_LP		0x0000		/* low-power crystal */
 #define CFG_FOSC_XT		0x0001		/* crystal/resonator */
@@ -42,66 +46,116 @@ static int config = 0x3fff;
 #define CFG_FOSC_EXTRCIO	0x0012		/* external RC oscillator on CLKIN pin; I/O function on CLKOUT pin */
 #define CFG_FOSC_EXTRCCLK	0x0013		/* external RC oscillator on CLKIN; clock out on CLKOUT pin */
 
-#define CFG_WDTE		(1<<2)		/* watchdog timer enable */
-#define CFG_PWRTE		(1<<3)		/* powerup timer enable */
-#define CFG_MCLRE		(1<<5)
-#define CFG_BOREN		(1<<6)		/* brown-out reset enable */
-#define CFG_LVP			(1<<7)		/* low-voltage programming enable */
-#define CFG_IESO		(1<<7)
-#define CFG_CPD			(1<<8)		/* data code protection */
-#define CFG_FCMEN		(1<<8)
-
-#define CFG_CP_F84A		0x3ff0		/* PIC16F84A */
-#define CFG_CP			(1<<13)		/* PIC16F628A */
-
-void
-setconfig(const char *s, const char *v)
+static void
+setfosc(const char* v)
 {
-#define ISTRUE(v) (strcasecmp(v, "ON") == 0 || strcasecmp(v, "TRUE") == 0 || strcasecmp(v, "ENABLED") == 0)
+	/* XXXGJM some of these won't be valid for all devices and will cause problems if selected */
+	if (strcasecmp(v, "LP") == 0)
+		config_word |= CFG_FOSC_LP;
+	else if (strcasecmp(v, "XT") == 0)
+		config_word |= CFG_FOSC_XT;
+	else if (strcasecmp(v, "HS") == 0)
+		config_word |= CFG_FOSC_HS;
+	else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "RC") == 0)
+		config_word |= CFG_FOSC_RC;
+	else if (strcasecmp(v, "INTRC") == 0 || strcasecmp(v, "INTOSC") == 0 || strcasecmp(v, "INTOSCIO") == 0 || strcasecmp(v, "INTRCIO") == 0)
+		config_word |= CFG_FOSC_INTRCIO;
+ 	else if (strcasecmp(v, "INTRCCLK") == 0 || strcasecmp(v, "INTOSCCLK") == 0)
+		config_word |= CFG_FOSC_INTRCCLK;
+	else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "EXTOSC") == 0 || strcasecmp(v, "EXTRCIO") == 0 || strcasecmp(v, "EXTOSCIO") == 0)
+		config_word |= CFG_FOSC_EXTRCIO;
+ 	else if (strcasecmp(v, "EXTRCCLK") == 0 || strcasecmp(v, "EXTOSCCLK") == 0)
+		config_word |= CFG_FOSC_EXTRCCLK;
+	else
+		fatal("unrecognised FOSC value \"%s\"", v);
+}
 
-	DPRINTF(("%s = %s\n", s, v));
+/* PIC16F630/PIC16F676 */
+static void
+setconfig_630(const char *s, const char *v)
+{
+#define P630_CFG_WDTE		(1<<3)
+#define P630_CFG_PWRTE		(1<<4)		/* active low */
+#define P630_CFG_MCLRE		(1<<5)
+#define P630_CFG_BODEN		(1<<6)
+#define P630_CFG_CP		(1<<7)		/* active low */
+#define P630_CFG_CPD		(1<<8)		/* active low */
+
 	if (strcasecmp(s, "FOSC") == 0) {		/* Oscillator Selection bits */
-		if (strcasecmp(v, "LP") == 0)
-			config |= CFG_FOSC_LP;
-		else if (strcasecmp(v, "XT") == 0)
-			config |= CFG_FOSC_XT;
-		else if (strcasecmp(v, "HS") == 0)
-			config |= CFG_FOSC_HS;
-		else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "RC") == 0)
-			config |= CFG_FOSC_RC;
-		else if (strcasecmp(v, "INTRC") == 0 || strcasecmp(v, "INTOSC") == 0 || strcasecmp(v, "INTOSCIO") == 0 || strcasecmp(v, "INTRCIO") == 0)
-			config |= CFG_FOSC_INTRCIO;
- 		else if (strcasecmp(v, "INTRCCLK") == 0 || strcasecmp(v, "INTOSCCLK") == 0)
-			config |= CFG_FOSC_INTRCCLK;
-		else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "EXTOSC") == 0 || strcasecmp(v, "EXTRCIO") == 0 || strcasecmp(v, "EXTOSCIO") == 0)
-			config |= CFG_FOSC_EXTRCIO;
- 		else if (strcasecmp(v, "EXTRCCLK") == 0 || strcasecmp(v, "EXTOSCCLK") == 0)
-			config |= CFG_FOSC_EXTRCCLK;
-		else
-			fatal("unrecognised FOSC value \"%s\"", v);
+		config_word &= ~0x0007;
+		setfosc(v);
 	} else if (strcasecmp(s, "WDTE") == 0) {	/* Watchdog Timer Enable bit */
-		config |= ISTRUE(v) ? CFG_WDTE : 0;
+		SET_IF_TRUE(v, P630_CFG_WDTE);
 	} else if (strcasecmp(s, "PWRTE") == 0) {	/* Power-up Timer Enable bit */
-		config |= ISTRUE(v) ? 0 : CFG_PWRTE;
+		SET_IF_FALSE(v, P630_CFG_PWRTE);
 	} else if (strcasecmp(s, "MCLRE") == 0) {	/* MCLR Pin Function Select bit */
-		config |= ISTRUE(v) ? CFG_MCLRE : 0;
+		SET_IF_TRUE(v, P630_CFG_MCLRE);
+	} else if (strcasecmp(s, "BOREN") == 0 || strcasecmp(s, "BODEN") == 0) {	/* Brown-out Reset Selection bits */
+		SET_IF_TRUE(v, P630_CFG_BODEN);
 	} else if (strcasecmp(s, "CP") == 0) {		/* Program Memory Code Protection bit */
-		config |= ISTRUE(v) ? 0 : CFG_CP;
+		SET_IF_FALSE(v, P630_CFG_CP);
 	} else if (strcasecmp(s, "CPD") == 0) {		/* Data Memory Code Protection bit */
-		config |= ISTRUE(v) ? 0 : CFG_CPD;
-	} else if (strcasecmp(s, "BOREN") == 0) {	/* Brown-out Reset Selection bits */
-		config |= ISTRUE(v) ? CFG_BOREN : 0;
-	} else if (strcasecmp(s, "IESO") == 0) {	/* Internal/External Switchover bit */
-		config |= ISTRUE(v) ? 0 : CFG_IESO;
-	} else if (strcasecmp(s, "LVP") == 0) {		/* Low-Voltage Programming Enable bit */
-		config |= ISTRUE(v) ? CFG_LVP : 0;
-	} else if (strcasecmp(s, "FCMEN") == 0) {	/* Fail-Safe Clock Monitor Enabled bit */
-		config |= ISTRUE(v) ? 0 : CFG_FCMEN;
+		SET_IF_FALSE(v, P630_CFG_CPD);
 	} else {
 		fatal("unrecognised config option \"%s\"", s);
 	}
+}
 
-#undef ISTRUE
+/* PIC16F84/PIC16F84A */
+static void
+setconfig_84(const char *s, const char *v)
+{
+#define P84_CFG_WDTE		(1<<2)		/* watchdog timer enable */
+#define P84_CFG_PWRTE		(1<<3)		/* powerup timer enable */
+#define P84_CFG_CP		0x3ff0		/* PIC16F84A */
+
+	if (strcasecmp(s, "FOSC") == 0) {		/* Oscillator Selection bits */
+		config_word &= ~0x0007;
+		setfosc(v);
+	} else if (strcasecmp(s, "WDTE") == 0) {	/* Watchdog Timer Enable bit */
+		SET_IF_TRUE(v, P84_CFG_WDTE);
+	} else if (strcasecmp(s, "PWRTE") == 0) {	/* Power-up Timer Enable bit */
+		SET_IF_FALSE(v, P84_CFG_PWRTE);
+	} else if (strcasecmp(s, "CP") == 0) {		/* Program Memory Code Protection bit */
+		SET_IF_FALSE(v, P84_CFG_CP);
+	} else {
+		fatal("unrecognised config option \"%s\"", s);
+	}
+}
+
+
+/* PIC16F627/PIC16F628A */
+static void
+setconfig_62x(const char *s, const char *v)
+{
+#define P62x_CFG_WDTE		(1<<2)		/* watchdog timer enable */
+#define P62x_CFG_PWRTE		(1<<3)		/* powerup timer enable */
+#define P62x_CFG_MCLRE		(1<<5)		/* memory clear (reset) pin enable */
+#define P62x_CFG_BODEN		(1<<6)		/* brown-out reset enable */
+#define P62x_CFG_LVP		(1<<7)		/* low-voltage programming enable */
+#define P62x_CFG_CPD		(1<<8)		/* data code protection */
+#define P62x_CFG_CP		0x3C00
+
+	if (strcasecmp(s, "FOSC") == 0) {		/* Oscillator Selection bits */
+		config_word &= ~0x0013;
+		setfosc(v);
+	} else if (strcasecmp(s, "WDTE") == 0) {	/* Watchdog Timer Enable bit */
+		SET_IF_TRUE(v, P62x_CFG_WDTE);
+	} else if (strcasecmp(s, "PWRTE") == 0) {	/* Power-up Timer Enable bit */
+		SET_IF_FALSE(v, P62x_CFG_PWRTE);
+	} else if (strcasecmp(s, "MCLRE") == 0) {	/* MCLR Pin Function Select bit */
+		SET_IF_TRUE(v, P62x_CFG_MCLRE);
+	} else if (strcasecmp(s, "BOREN") == 0 || strcasecmp(s, "BODEN") == 0) {	/* Brown-out Reset Selection bits */
+		SET_IF_TRUE(v, P62x_CFG_BODEN);
+	} else if (strcasecmp(s, "LVP") == 0) {		/* Low-Voltage Programming Enable bit */
+		SET_IF_TRUE(v, P62x_CFG_LVP);
+	} else if (strcasecmp(s, "CPD") == 0) {		/* Data Memory Code Protection bit */
+		SET_IF_FALSE(v, P62x_CFG_CPD);
+	} else if (strcasecmp(s, "CP") == 0) {		/* Program Memory Code Protection bit */
+		SET_IF_TRUE(v, P62x_CFG_CP);
+	} else {
+		fatal("unrecognised config option \"%s\"", s);
+	}
 }
 
 void
@@ -116,11 +170,17 @@ banksel(int regno)
 	}
 }
 
-static const struct { int id; const char* name; } devices[] = {
-	{ DEVICE_PIC16F84, "p16f84" },
-	{ DEVICE_PIC16F84A, "p16f84a" },
-	{ DEVICE_PIC16F630, "p16f630" },
-	{ DEVICE_PIC16F676, "p16f676" },
+static const struct {
+	int id;
+	const char* name;
+	void (*setconfig)(const char *s, const char *v);
+} devices[] = {
+	{ DEVICE_PIC16F84, "p16f84", setconfig_84 },
+	{ DEVICE_PIC16F84A, "p16f84a", setconfig_84 },
+	{ DEVICE_PIC16F84A, "p16f627", setconfig_62x },
+	{ DEVICE_PIC16F84A, "p16f628", setconfig_62x },
+	{ DEVICE_PIC16F630, "p16f630", setconfig_630 },
+	{ DEVICE_PIC16F676, "p16f676", setconfig_630 },
 };
 
 #ifndef __TABLE_SIZE
@@ -128,6 +188,7 @@ static const struct { int id; const char* name; } devices[] = {
 #endif
 
 static int device = DEVICE_UNDEF;
+static void (*setconfig_p)(const char *s, const char *v) = NULL;
 
 void
 setdevice(const char *name)
@@ -137,11 +198,24 @@ setdevice(const char *name)
 	for (i = 0; i < (int)__TABLE_SIZE(devices); i++) {
 		if (strcasecmp(name, devices[i].name) == 0) {
 			device = devices[i].id;
+			setconfig_p = devices[i].setconfig;
 			break;
 		}
 	}
 	if (device == DEVICE_UNDEF)
 		fatal("unrecognised device \"%s\"", name);
+}
+
+void
+setconfig(const char *s, const char *v)
+{
+	DPRINTF(("%s = %s\n", s, v));
+
+	if (!setconfig_p)
+		fatal("device/processor not specified");
+	(*setconfig_p)(s,v);
+
+	printf("setconfig(%s,%s) => 0x%04x\n", s, v, config_word);
 }
 
 void
@@ -164,10 +238,7 @@ machstart(int pass)
 void
 machfinish(int pass)
 {
-#if 0
-	/* XXXGJM: called too late afte rthe sections have been cleared */
 	/* write config */
 	DOTVAL = config_addr;
-	emit2(config);
-#endif
+	emit2(config_word);
 }

@@ -31,3 +31,4 @@
 %token <y_word> PSEUDOOP_PSECT
 
 %type <y_word> b d f k8 k11
+%type <y_word> optdir

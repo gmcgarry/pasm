@@ -19,56 +19,66 @@ operation
 	| label instr
 	| instr
 	| PSEUDOOP_DEVICE IDENT			{ setdevice($2->i_name); }
-	| PSEUDOOP_CONFIG IDENT '=' IDENT	{ setconfig($2->i_name, $4->i_name); }
+	| PSEUDOOP_CONFIG cfglist
 	| PSEUDOOP_MAXRAM NUMBER8
 	| PSEUDOOP_BADRAM NUMBER8
 	| PSEUDOOP_BADRAM NUMBER8 '-' NUMBER8
-	| PSEUDOOP_BANKSEL expr		{ banksel($2.val); }
-	| PSEUDOOP_PAGESEL expr		{ }
+	| PSEUDOOP_BANKSEL expr			{ banksel($2.val); }
+	| PSEUDOOP_PAGESEL expr			{ }
 	| PSEUDOOP_PSECT IDENT optflags		{ newsect($2, 0, NULL); }
-	| PSEUDOOP_END IDENT		{ }
+	| PSEUDOOP_END IDENT			{ }
 	;
 
-label	: IDENT			{ newident($1, DOTSCT); newlabel($1); }
+cfglist: cfglist ',' cfg
+	| cfg
 	;
 
-instr	: NOOP			{ emit2($1); }
-	| BYTEOP f ',' d	{ emit2($1 | $4 | $2); }
-	| BYTEOP f		{ emit2($1 | 0x80 | $2); }
-	| ONEOP f 		{ emit2($1 | $2); }
-	| BITOP f ',' b		{ emit2($1 | $4 | $2); }
-	| LITOP k8		{ emit2($1 | $2); }
-	| JMPOP k11		{ emit2($1 | $2); }
+cfg	: IDENT '=' IDENT			{ setconfig($1->i_name, $3->i_name); }
 	;
 
-d	: expr			{ $$ = $1.val ? 0x80 : 0; }
-	| D			{ $$ = $1; }
+label	: IDENT					{ newident($1, DOTSCT); newlabel($1); }
 	;
 
-b	: expr			{ $$ = ($1.val & 0x07) << 7; }
+instr	: NOOP					{ emit2($1); }
+	| BYTEOP f optdir			{ emit2($1 | $3 | $2); }
+	| ONEOP f 				{ emit2($1 | $2); }
+	| BITOP f ',' b				{ emit2($1 | $4 | $2); }
+	| LITOP k8				{ emit2($1 | $2); }
+	| JMPOP k11				{ emit2($1 | $2); }
 	;
 
-f	: expr					{ $$ = $1.val; }
-	| PSEUDOOP_BANKMASK '(' expr ')'	{ $$ = $3.val&0x7f; }
+optdir	: /* empty  */				{ $$ = 0x80; }
+	| ',' d					{ $$ = $2; }
 	;
 
-k8	: expr			{ $$ = $1.val & 0xff; }
+d	: expr					{ $$ = $1.val ? 0x80 : 0; }
+	| D					{ $$ = $1; }
 	;
 
-k11	: expr 			{ $$ = ($1.val >> 1) & 0x7ff; }
+b	: expr					{ $$ = ($1.val & 0x07) << 7; }
 	;
 
-expr	: '$' absexp		{ $$.typ = S_ABS; $$.val = $2; }
+f	: expr							{ $$ = $1.val; }
+	| PSEUDOOP_BANKMASK '(' expr ')'			{ $$ = $3.val&0x7f; }
 	;
 
-optflags: /* empty */		{ }
-	| ',' flags		{ }
+k8	: expr					{ $$ = $1.val & 0xff; }
 	;
 
-flags	: flag optflags		{ }
+k11	: expr 					{ $$ = ($1.typ & S_ABS ? $1.val : $1.val >> 1) & 0x7ff; }
 	;
 
-flag	: IDENT			{ $1->i_type = S_ABS; }
-	| IDENT '=' expr	{ $1->i_type = S_ABS; $3.typ = S_ABS; }
-	| PSEUDOOP_GLOBAL	{ }
+expr	: '$' absexp				{ $$.typ = S_ABS; $$.val = $2; }
+	;
+
+optflags: /* empty */				{ }
+	| ',' flags				{ }
+	;
+
+flags	: flag optflags				{ }
+	;
+
+flag	: IDENT					{ $1->i_type = S_ABS; }
+	| IDENT '=' expr			{ $1->i_type = S_ABS; $3.typ = S_ABS; }
+	| PSEUDOOP_GLOBAL			{ }
 	;
