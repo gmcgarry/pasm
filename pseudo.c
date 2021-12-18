@@ -314,8 +314,11 @@ new_common(item_t *ip)
 #ifndef INCDEPTH
 #define INCDEPTH	16
 #endif
-FILE *include_stack[INCDEPTH];
-int include_stack_top;
+static struct {
+	FILE *fp;
+	int lineno;
+} include_stack[INCDEPTH];
+static int include_stack_top;
 
 void
 push_include(const char* filename)
@@ -330,7 +333,10 @@ push_include(const char* filename)
 	fp = fopen(filename, "r");
 	if (!fp)
 		fatal("cannot open %s", filename);
-	include_stack[include_stack_top++] = input;
+	include_stack[include_stack_top].fp = input;
+	include_stack[include_stack_top].lineno = lineno;
+	include_stack_top++;
+	lineno = 0;
 	input = fp;
 }
 
@@ -343,7 +349,10 @@ pop_include()
 		return 0;
 
 	fclose(input);
-	input = include_stack[--include_stack_top];
+
+	include_stack_top--;
+	input = include_stack[include_stack_top].fp;
+	lineno = include_stack[include_stack_top].lineno;
 
 	return 1;
 }
