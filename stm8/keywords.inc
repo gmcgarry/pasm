@@ -35,6 +35,7 @@
 
 /*
  * Derived from 6800/6805, since they're essentially the same.
+ *
  */
 
 /* for compatibility */
@@ -52,10 +53,11 @@
 /* registers */
 { 0,	A,		A,		"A"	}, /* DONE */
 { 0,	X,		X,		"X"	}, /* DONE */
-{ 0,	Y,		0,		"Y"	}, /* DONE */
+{ 0,	Y,		Y,		"Y"	}, /* DONE */
 { 0,	XL,		XL,		"XL"	}, /* DONE */
 { 0,	YL,		YL,		"YL"	}, /* DONE */
 { 0,	SP,		SP,		"SP"	}, /* DONE */
+{ 0,	CC,		CC,		"CC"	}, /* DONE */
 
 /* Bit test and branch */
 { 0,	BBRANCH,	0x7200,		"btjt"	}, /* DONE */
@@ -68,18 +70,18 @@
 { 0,	BIT,		0x9011,		"bccm"	}, /* DONE */ /* copy carry bit to memory */
 
 /* implied stuff */
-{ 0,	NOARG,		0x80,		"iret"	}, /* DONE */ /* SAME OPCODE!! */
-{ 0,	NOARG,		0x81,		"ret"	}, /* DONE */ /* SAME OPCODE!! */
+{ 0,	IMPL,		0x80,		"iret"	}, /* DONE */ /* SAME OPCODE!! */
+{ 0,	IMPL,		0x81,		"ret"	}, /* DONE */ /* SAME OPCODE!! */
 { 0,	BRANCH,		0x82,		"int"	}, /* DONE */ /* SAME OPCODE!! */
-{ 0,	NOARG,		0x87,		"retf"	}, /* DONE */
-{ 0,	NOARG,		0x83,		"trap"	}, /* DONE */ /* SAME OPCODE!! */
-{ 0,	NOARG,		0x8C,		"ccf"	}, /* DONE */ /* complement carry flag */
-{ 0,	NOARG,		0x98,		"rcf"	}, /* DONE */ /* SAME OPCODE!! */
-{ 0,	NOARG,		0x99,		"scf"	}, /* DONE */ /* SAME OPCODE!! */
-{ 0,	NOARG,		0x9a,		"rim"	}, /* DONE */ /* SAME OPCODE!! */
-{ 0,	NOARG,		0x9b,		"sim"	}, /* DONE */ /* SAME OPCODE!! */
-{ 0,	NOARG,		0x9c,		"rvf"	}, /* DONE */ /* SAME OPCODE!! */
-{ 0,	NOARG,		0x9d,		"nop"	}, /* DONE */ /* SAME OPCODE!! */
+{ 0,	IMPL,		0x87,		"retf"	}, /* DONE */
+{ 0,	IMPL,		0x83,		"trap"	}, /* DONE */ /* SAME OPCODE!! */
+{ 0,	IMPL,		0x8C,		"ccf"	}, /* DONE */ /* complement carry flag */
+{ 0,	IMPL,		0x98,		"rcf"	}, /* DONE */ /* SAME OPCODE!! */
+{ 0,	IMPL,		0x99,		"scf"	}, /* DONE */ /* SAME OPCODE!! */
+{ 0,	IMPL,		0x9a,		"rim"	}, /* DONE */ /* SAME OPCODE!! */
+{ 0,	IMPL,		0x9b,		"sim"	}, /* DONE */ /* SAME OPCODE!! */
+{ 0,	IMPL,		0x9c,		"rvf"	}, /* DONE */ /* SAME OPCODE!! */
+{ 0,	IMPL,		0x9d,		"nop"	}, /* DONE */ /* SAME OPCODE!! */
 
 /* Branches */ /* SAME OPCODE!! */
 { 0,	BRANCH,		0x20,		"jra"	}, /* always */
@@ -116,21 +118,24 @@
 { 0,	BRANCH,		0xad,		"callr"	}, /* DONE */ /* SAME OPCODE */
 
 /* Read modify write on anything but registers */
-{ 0,	RMR,		0x30,		"neg"	}, /* DONE */
-{ 0,	RMR,		0x33,		"cpl"	}, /* DONE */
-{ 0,	RMR,		0x34,		"srl"	}, /* DONE */
-{ 0,	RMR,		0x36,		"rrc"	}, /* DONE */
-{ 0,	RMR,		0x36,		"sra"	}, /* DONE */ /* alias */
-{ 0,	RMR,		0x38,		"sll"	}, /* DONE */
-{ 0,	RMR,		0x38,		"sla"	}, /* DONE */ /* alias */
-{ 0,	RMR,		0x39,		"rlc"	}, /* DONE */
-{ 0,	RMR,		0x3a,		"dec"	}, /* DONE */
-{ 0,	RMR,		0x3c,		"inc"	}, /* DONE */
-{ 0,	RMR,		0x3d,		"cp"	}, /* DONE */
-{ 0,	RMR,		0x3f,		"clr"	}, /* DONE */
-{ 0,	RMR,		0x01,		"swap"	}, /* DONE */ /* swap low and high nibbles */
-{ 0,	RMR,		0x4d,		"tnz"	}, /* DONE */ /* test not zero */
-{ 0,	RMR,		0xcd,		"call"	}, /* DONE */ 
+/* default addressing mode is 8-bit direct and all other
+ * addressing modes are relative to the 8-bit direct opcode.
+ */
+{ 0,	RMW,		0x30,		"neg"	}, /* DONE */
+{ 0,	RMW,		0x33,		"cpl"	}, /* DONE */
+{ 0,	RMW,		0x34,		"srl"	}, /* DONE */
+{ 0,	RMW,		0x36,		"rrc"	}, /* DONE */
+{ 0,	RMW,		0x36,		"sra"	}, /* DONE */ /* alias */
+{ 0,	RMW,		0x38,		"sll"	}, /* DONE */
+{ 0,	RMW,		0x38,		"sla"	}, /* DONE */ /* alias */
+{ 0,	RMW,		0x39,		"rlc"	}, /* DONE */
+{ 0,	RMW,		0x3a,		"dec"	}, /* DONE */
+{ 0,	RMW,		0x3c,		"inc"	}, /* DONE */
+{ 0,	RMW,		0x3d,		"cp"	}, /* DONE */
+{ 0,	RMW,		0x3f,		"clr"	}, /* DONE */
+{ 0,	RMW,		0x01,		"swap"	}, /* DONE */ /* swap low and high nibbles */
+{ 0,	RMW,		0x4d,		"tnz"	}, /* DONE */ /* test not zero */
+{ 0,	RMW,		0xad,		"call"	}, /* DONE */ 
 
 { 0,	OPW,		0x50,		"negw"	}, /* DONE */
 { 0,	OPW,		0x53,		"cplw"	}, /* DONE */
@@ -146,17 +151,18 @@
 { 0,	OPW,		0x89,		"pushw"	}, /* DONE */
 { 0,	OPW,		0x85,		"popw"	}, /* DONE */
 
-{ 0,	CPW,		0xb3,		"cpw"	}, /* YES */
+{ 0,	CPW,		0xA3,		"cpw"	}, /* YES */
+
+{ 0,	LDW,		0xAE,		"ldw"	}, /* YES */
+{ 0,	RM,		0xA6,		"ld"	}, /* YES */
 
 /* load/store/transfer */
 { 0,	MOV,		0x05,		"mov"	}, /* DONE */
-{ 0,	LDW,		0x1E,		"ldw"	}, /* YES */
-{ 0,	LD,		0x00,		"ld"	}, /* YES */
 { 0,	LDF,		0x00,		"ldf"	}, /* YES */
 
 { 0,	TWOREG,		0x41,		"exg"	}, /* YES */
 { 0,	TWOREG,		0x51,		"exgw"	}, /* YES */
-{ 0,	NOARG,		0x9f,		"txa"	},
+{ 0,	IMPL,		0x9f,		"txa"	},
 
 /* Register memory. Warning. Some imediate opcodes excluded in parser actions. */
 { 0,	RM,		0xa0,		"sub"	}, /* YES */
@@ -183,48 +189,48 @@
 { 0,	TWOREG,		0x42,		"mul"	}, /* YES */ /* PREFIX FOR Y */ /* mul X,A */
 
 
-/* Brain damaged concatenated opcodes for RMR on registers */
+/* Brain damaged concatenated opcodes for RMW on registers */
 
 
-{ 0,	NOARG,		0x57,		"asrx"	},
-{ 0,	NOARG,		0x58,		"lslx"	},
-{ 0,	NOARG,		0x58,		"aslx"	},	/* alias */
-{ 0,	NOARG,		0x59,		"rolx"	},
-{ 0,	NOARG,		0x5a,		"decx"	},
-{ 0,	NOARG,		0x5c,		"incx"	},
-{ 0,	NOARG,		0x5d,		"tnzw"	}, /* YES */ /* test not zero */
-{ 0,	NOARG,		0x5f,		"clrx"	},
+{ 0,	IMPL,		0x57,		"asrx"	},
+{ 0,	IMPL,		0x58,		"lslx"	},
+{ 0,	IMPL,		0x58,		"aslx"	},	/* alias */
+{ 0,	IMPL,		0x59,		"rolx"	},
+{ 0,	IMPL,		0x5a,		"decx"	},
+{ 0,	IMPL,		0x5c,		"incx"	},
+{ 0,	IMPL,		0x5d,		"tnzw"	}, /* YES */ /* test not zero */
+{ 0,	IMPL,		0x5f,		"clrx"	},
 
 #ifdef MC6800
-{ 0,	NOARG,		0x19,		"daa"	},
-{ 0,	NOARG,		0x0A,		"clv"	},
-{ 0,	NOARG,		0x0B,		"sev"	},
-{ 0,	NOARG,		0x3E,		"wai"	},
-{ 0,	NOARG,		0x06,		"tap"	},
-{ 0,	NOARG,		0x07,		"tpa"	},
-{ 0,	NOARG,		0x1B,		"aba"	},
-{ 0,	NOARG,		0x11,		"cba"	},
-{ 0,	NOARG,		0x10,		"sba"	},
-{ 0,	NOARG,		0x16,		"tab"	},
-{ 0,	NOARG,		0x17,		"tba"	},
-{ 0,	NOARG,		0x09,		"dex"	},
-{ 0,	NOARG,		0x08,		"inx"	},
+{ 0,	IMPL,		0x19,		"daa"	},
+{ 0,	IMPL,		0x0A,		"clv"	},
+{ 0,	IMPL,		0x0B,		"sev"	},
+{ 0,	IMPL,		0x3E,		"wai"	},
+{ 0,	IMPL,		0x06,		"tap"	},
+{ 0,	IMPL,		0x07,		"tpa"	},
+{ 0,	IMPL,		0x1B,		"aba"	},
+{ 0,	IMPL,		0x11,		"cba"	},
+{ 0,	IMPL,		0x10,		"sba"	},
+{ 0,	IMPL,		0x16,		"tab"	},
+{ 0,	IMPL,		0x17,		"tba"	},
+{ 0,	IMPL,		0x09,		"dex"	},
+{ 0,	IMPL,		0x08,		"inx"	},
 #endif
 
 /* stack operations */
 #ifdef MC6800
 { 0,	RM,		0xEE,		"lds"	},
 { 0,	RM,		0xEF,		"sts"	},
-{ 0,	NOARG,		0x34,		"des"	},
-{ 0,	NOARG,		0x31,		"ins"	},
-{ 0,	NOARG,		0x35,		"txs"	},
-{ 0,	NOARG,		0x30,		"tsx"	},
+{ 0,	IMPL,		0x34,		"des"	},
+{ 0,	IMPL,		0x31,		"ins"	},
+{ 0,	IMPL,		0x35,		"txs"	},
+{ 0,	IMPL,		0x30,		"tsx"	},
 #endif
 
-{ 0,	RM,		0x88,		"push"	}, /* YES */
-{ 0,	RM,		0x84,		"pop"	}, /* YES */
+{ 0,	PUSH,		0x88,		"push"	}, /* YES */
+{ 0,	POP,		0x84,		"pop"	}, /* YES */
 
-{ 0,	NOARG,		0x8b,		"break"	}, /* DONE */
-{ 0,	NOARG,		0x8e,		"halt"	}, /* DONE */ /* SAME OPCODE!! */
-{ 0,	NOARG,		0x8f,		"wfi"	}, /* DONE */ /* SAME OPCODE!! */
-{ 0,	NOARG,		0x728f,		"wfe"	}, /* DONE */ /* SAME OPCODE */ /* PREFIX */
+{ 0,	IMPL,		0x8b,		"break"	}, /* DONE */
+{ 0,	IMPL,		0x8e,		"halt"	}, /* DONE */ /* SAME OPCODE!! */
+{ 0,	IMPL,		0x8f,		"wfi"	}, /* DONE */ /* SAME OPCODE!! */
+{ 0,	IMPL,		0x728f,		"wfe"	}, /* DONE */ /* SAME OPCODE */ /* PREFIX */
