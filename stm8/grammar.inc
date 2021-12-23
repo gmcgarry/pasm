@@ -296,8 +296,8 @@ instr
 	| CPW Y ',' immediate		{ stm8(); emit2((0x9000|$1)-0x10); emit2($4.val); }
 	| CPW Y ',' direct		{ stm8(); if (fitb($4.val)) { emit2(0x9000|$1); emit1($4.val); } else { emit2((0x9000|$1)+0x20); emit2($4.val); } }
 
-	// cpl, neg, call, clr, dec, inc, rlc, rrc, srl, sll, sra, sla, swap, tnz
-	// WTF? com lsr ror asr lsl rol tst
+	// call, clr, dec, inc, rlc, rrc, srl, sll, sra, sla, swap, tnz
+	// WTF com lsr ror asr lsl rol tst
 	// regular addressing modes
 	| RMW A				{ emit1($1 - 0x30 + 0x40); }
 	| RMW direct			{
@@ -386,7 +386,7 @@ instr
 	| RM A ',' XL 			{ if ($1 != 0xa6) serror("bad operands"); emit1(0x9F); }
 	| RM A ',' YL 			{ if ($1 != 0xa6) serror("bad operands"); emit2(0x909F); }
 
-	// sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx
+	// sub cmp sbc cpx and bit lda sta eor adc ora add jmp jsr ldx stx, cpl, neg
 	// regular addressing modes
 	| RM A ',' immediate		{
 						switch($1) {
@@ -431,27 +431,30 @@ instr
 						}
 					}
 
-	| PUSH A			{ emit1(0x88); }
-	| PUSH CC			{ emit1(0x8A); }
+	| PUSH A			{ stm8(); emit1(0x88); }
+	| PUSH CC			{ stm8(); emit1(0x8A); }
 	| PUSH immediate		{ emit1(0x4B); emit1($2.val); }
 	| PUSH direct			{ emit1(0x3B); emit2($2.val); }
-	| POP A				{ emit1(0x84); }
-	| POP CC			{ emit1(0x86); }
+	| POP A				{ stm8(); emit1(0x84); }
+	| POP CC			{ stm8(); emit1(0x86); }
 	| POP direct			{ emit1(0x32); emit2($2.val); }
 
 	// clrw, cplw, decw, incw, negw, pushw, popw, rlcw, rrcw, sllw, srlw, swapw, tnzw
 	| OPW reg16			{ if ($2 == Y) emit1(0x90); emit1($1); }
 	;
 
-reg16	: X		{ $$ = $1; }
+reg16
+	: X		{ $$ = $1; }
 	| Y		{ $$ = $1; }
 	;
 
-optw	: /* empty */
+optw
+	: /* empty */
 	| WIDE
 	;
 
-optoff	: /* empty */	{ $$.typ = S_ABS; $$.val = 0; }
+optoff
+	: /* empty */	{ $$.typ = S_ABS; $$.val = 0; }
 	| expr ','	{ $$ = $1; }
 	;
 

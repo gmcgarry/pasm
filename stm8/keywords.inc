@@ -42,6 +42,7 @@
 { 0,	PSEUDOOP_DEVICE,	DEVICE_MC6805,	".mc6805"	},
 { 0,	PSEUDOOP_DEVICE,	DEVICE_ST7,	".st7"	},
 { 0,	PSEUDOOP_DEVICE,	DEVICE_STM8,	".stm8"	},
+{ 0,	PSEUDOOP_DATA,		1,		".db"	},
 { 0,	PSEUDOOP_DATA,		2,		"dc.w"	},
 { 0,	PSEUDOOP_DATA,		4,		"dc.l"	},
 
@@ -166,7 +167,7 @@
 
 /* Register memory. Warning. Some imediate opcodes excluded in parser actions. */
 { 0,	RM,		0xa0,		"sub"	}, /* YES */
-{ 0,	RM,		0xa1,		"cmp"	},
+{ 0,	RM,		0xa1,		"cp"	},
 { 0,	RM,		0xa2,		"sbc"	}, /* YES */
 { 0,	RM,		0xa3,		"cpx"	}, /* YES */
 { 0,	RM,		0xa4,		"and"	}, /* YES */
