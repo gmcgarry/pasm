@@ -67,7 +67,8 @@ load(const item_t* ip)
 #endif
 		if (pass == PASS_3) {
 			if (relonami != RELO_UNDEF)
-				serror("relocation error (symbol='%s', relonami=%d, type=%08x)", ip->i_name, relonami, ip->i_type);
+				//serror("relocation error (symbol='%s', relonami=%d, type=%08x)", ip->i_name ? ip->i_name : "<unknown>", relonami, ip->i_type);
+				serror("relocation error");
 			relonami = ip->i_valu;
 		}
 		return 0;
