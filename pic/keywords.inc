@@ -21,40 +21,22 @@
 { 0,	PSEUDOOP_END,		0,	"END" },
 { 0,	PSEUDOOP_DATA,		1,	"DS" },
 { 0,	'=',			0,	"EQU" },
+{ 0,	PSEUDOOP_INCLUDE,	0,	"INCLUDE" },
 { 0,	PSEUDOOP_DEVICE,	0,	"PROCESSOR" },
 { 0,	PSEUDOOP_BANKSEL,	0,	"BANKSEL" },
 { 0,	PSEUDOOP_BANKMASK,	0,	"BANKMASK" },
 { 0,	PSEUDOOP_PAGESEL,	0,	"PAGESEL" },
 { 0,	PSEUDOOP_CONFIG,	0,	"CONFIG" },
 { 0,	PSEUDOOP_GLOBAL,	0,	"GLOBAL" },
+{ 0,    PSEUDOOP_LIST,	  	0,      "NOLIST" },
+{ 0,    PSEUDOOP_LIST,	  	1,	"LIST" },
+{ 0,    DOT,	  		0,	"$" },
+
+/* pic-as compability */
 { 0,	PSEUDOOP_PSECT,		0,	"PSECT" },
 { 0,	PSEUDOOP_MAXRAM,	0,	"__MAXRAM" },
 { 0,	PSEUDOOP_BADRAM,	0,	"__BADRAM" },
-{ 0,    PSEUDOOP_LIST,	  	0,      "NOLIST" },
-{ 0,    PSEUDOOP_LIST,	  	1,	"LIST" },
 { 0,    IDENT,	  		1,	"CODE" },
-{ 0,    DOT,	  		0,	"$" },
-
-/* register file */
-{ 0,	NUMBER8,		0x01,	"TMR0" },
-{ 0,	NUMBER8,		0x02,	"PCL" },
-{ 0,	NUMBER8,		0x03,	"STATUS" },
-{ 0,	NUMBER8,		0x04,	"FSR" },
-{ 0,	NUMBER8,		0x0a,	"PCLATH" },
-{ 0,	NUMBER8,		0x0b,	"INTCON" },
-
-{ 0,	NUMBER8,		0x05,	"PORTA" },
-{ 0,	NUMBER8,		0x06,	"PORTB" },
-{ 0,	NUMBER8,		0x07,	"PORTC" },
-
-{ 0,	NUMBER8,		0x85,	"TRISA" },
-{ 0,	NUMBER8,		0x86,	"TRISB" },
-{ 0,	NUMBER8,		0x87,	"TRISC" },
-
-{ 0,	NUMBER8,		0x08,	"EEDATA" },	/* 16F84 */
-{ 0,	NUMBER8,		0x09,	"EEADR" },	/* 16F84 */
-{ 0,	NUMBER8,		0x88,	"EECON1" },	/* 16F84 */
-{ 0,	NUMBER8,		0x89,	"EECON2" },	/* 16F84 */
 
 /* register direction */
 { 0,	D,			0x00,	"W" },
