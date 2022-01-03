@@ -82,7 +82,7 @@ newident(item_t *ip, int typ)
 	if (pass == PASS_1) {
 		/* DPRINTF(("declare %s: %o\n", ip->i_name, typ)); */
 		if (ip->i_type & ~S_EXTERN)
-			serror("multiple declared");
+			serror("%s multiple declared", ip->i_name);
 		else
 			--unresolved;
 		ip->i_type |= typ;
@@ -166,7 +166,7 @@ newsect(item_t *ip, int type, const char* flags)
 			sp = NULL;
 	}
 	if (sp == NULL)
-		serror("multiple declared");
+		serror("section multiple declared");
 	else
 		switchsect(sectno);
 }
@@ -213,7 +213,7 @@ newcomm(item_t *ip, ADDR_T val)
 			if (ip->i_valu < val)
 				ip->i_valu = val;
 		} else
-			serror("multiple declared");
+			serror("%s multiple declared", ip->i_name);
 	}
 }
 
