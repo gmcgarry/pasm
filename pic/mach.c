@@ -36,44 +36,19 @@ static int config_word = 0x3fff;
 #define SET_IF_FALSE(v,f)	do { if (ISTRUE(v)) config_word &= ~(f); } while (0)
 #define SET_IF_TRUE(v,f)	do { if (!ISTRUE(v)) config_word &= ~(f); } while (0)
 
-#define CFG_FOSC_LP		0x0000		/* low-power crystal */
-#define CFG_FOSC_XT		0x0001		/* crystal/resonator */
-#define CFG_FOSC_HS		0x0002		/* high-speed crystal/resonator */
-#define CFG_FOSC_RC		0x0003		/* resistor/capacitor */
-#define CFG_FOSC_EC		0x0003		/* external clock on CLKIN pin, I/O on CLKOUT pin */
-#define CFG_FOSC_INTRCIO	0x0010		/* internal RC oscillator; I/O functions on CLKIN/CLKOUT pins */
-#define CFG_FOSC_INTRCCLK	0x0011		/* internal RC oscillator; I/O function on CLKIN */
-#define CFG_FOSC_EXTRCIO	0x0012		/* external RC oscillator on CLKIN pin; I/O function on CLKOUT pin */
-#define CFG_FOSC_EXTRCCLK	0x0013		/* external RC oscillator on CLKIN; clock out on CLKOUT pin */
-
-static void
-setfosc(const char* v)
-{
-	/* XXXGJM some of these won't be valid for all devices and will cause problems if selected */
-	if (strcasecmp(v, "LP") == 0)
-		config_word |= CFG_FOSC_LP;
-	else if (strcasecmp(v, "XT") == 0)
-		config_word |= CFG_FOSC_XT;
-	else if (strcasecmp(v, "HS") == 0)
-		config_word |= CFG_FOSC_HS;
-	else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "RC") == 0)
-		config_word |= CFG_FOSC_RC;
-	else if (strcasecmp(v, "INTRC") == 0 || strcasecmp(v, "INTOSC") == 0 || strcasecmp(v, "INTOSCIO") == 0 || strcasecmp(v, "INTRCIO") == 0)
-		config_word |= CFG_FOSC_INTRCIO;
- 	else if (strcasecmp(v, "INTRCCLK") == 0 || strcasecmp(v, "INTOSCCLK") == 0)
-		config_word |= CFG_FOSC_INTRCCLK;
-	else if (strcasecmp(v, "EXTRC") == 0 || strcasecmp(v, "EXTOSC") == 0 || strcasecmp(v, "EXTRCIO") == 0 || strcasecmp(v, "EXTOSCIO") == 0)
-		config_word |= CFG_FOSC_EXTRCIO;
- 	else if (strcasecmp(v, "EXTRCCLK") == 0 || strcasecmp(v, "EXTOSCCLK") == 0)
-		config_word |= CFG_FOSC_EXTRCCLK;
-	else
-		fatal("unrecognised FOSC value \"%s\"", v);
-}
-
 /* PIC16F630/PIC16F676 */
 static void
 setconfig_630(const char *s, const char *v)
 {
+#define P630_CFG_FOSC_LP	0x0000		/* low-power crystal */
+#define P630_CFG_FOSC_XT	0x0001		/* crystal/resonator */
+#define P630_CFG_FOSC_HS	0x0002		/* high-speed crystal/resonator */
+#define P630_CFG_FOSC_EC	0x0003		/* external clock on CLKIN pin, I/O on CLKOUT pin */
+#define P630_CFG_FOSC_INTOSCIO	0x0004		/* internal RC oscillator; I/O functions on CLKIN/CLKOUT pins */
+#define P630_CFG_FOSC_INTOSCCLK	0x0005		/* internal RC oscillator; I/O function on CLKIN */
+#define P630_CFG_FOSC_RCIO	0x0006		/* external RC oscillator on CLKIN pin; I/O function on CLKOUT pin */
+#define P630_CFG_FOSC_RCCLK	0x0007		/* external RC oscillator on CLKIN; clock out on CLKOUT pin */
+
 #define P630_CFG_WDTE		(1<<3)
 #define P630_CFG_PWRTE		(1<<4)		/* active low */
 #define P630_CFG_MCLRE		(1<<5)
@@ -83,7 +58,24 @@ setconfig_630(const char *s, const char *v)
 
 	if (strcasecmp(s, "FOSC") == 0) {		/* Oscillator Selection bits */
 		config_word &= ~0x0007;
-		setfosc(v);
+		if (strcasecmp(v, "LP") == 0)
+			config_word |= P630_CFG_FOSC_LP;
+		else if (strcasecmp(v, "XT") == 0)
+			config_word |= P630_CFG_FOSC_XT;
+		else if (strcasecmp(v, "HS") == 0)
+			config_word |= P630_CFG_FOSC_HS;
+		else if (strcasecmp(v, "EC") == 0)
+			config_word |= P630_CFG_FOSC_EC;
+		else if (strcasecmp(v, "INTOSC") == 0 || strcasecmp(v, "INTOSCCLK") == 0)
+			config_word |= P630_CFG_FOSC_INTOSCCLK;
+		else if (strcasecmp(v, "INTOSCIO") == 0)
+			config_word |= P630_CFG_FOSC_INTOSCIO;
+		else if (strcasecmp(v, "RC") == 0 || strcasecmp(v, "RCCLK") == 0)
+			config_word |= P630_CFG_FOSC_RCCLK;
+		else if (strcasecmp(v, "RCIO") == 0)
+			config_word |= P630_CFG_FOSC_RCIO;
+	else
+		fatal("unrecognised FOSC value \"%s\"", v);
 	} else if (strcasecmp(s, "WDTE") == 0) {	/* Watchdog Timer Enable bit */
 		SET_IF_TRUE(v, P630_CFG_WDTE);
 	} else if (strcasecmp(s, "PWRTE") == 0) {	/* Power-up Timer Enable bit */
@@ -105,13 +97,26 @@ setconfig_630(const char *s, const char *v)
 static void
 setconfig_84(const char *s, const char *v)
 {
+#define P84_CFG_FOSC_LP		0x0000		/* low-power crystal */
+#define P84_CFG_FOSC_XT		0x0001		/* crystal/resonator */
+#define P84_CFG_FOSC_HS		0x0002		/* high-speed crystal/resonator */
+#define P84_CFG_FOSC_RC		0x0003		/* resistor/capacitor */
 #define P84_CFG_WDTE		(1<<2)		/* watchdog timer enable */
 #define P84_CFG_PWRTE		(1<<3)		/* powerup timer enable */
 #define P84_CFG_CP		0x3ff0		/* PIC16F84A */
 
 	if (strcasecmp(s, "FOSC") == 0) {		/* Oscillator Selection bits */
-		config_word &= ~0x0007;
-		setfosc(v);
+		config_word &= ~0x0003;
+		if (strcasecmp(v, "LP") == 0)
+			config_word |= P84_CFG_FOSC_LP;
+		else if (strcasecmp(v, "XT") == 0)
+			config_word |= P84_CFG_FOSC_XT;
+		else if (strcasecmp(v, "HS") == 0)
+			config_word |= P84_CFG_FOSC_HS;
+		else if (strcasecmp(v, "RC") == 0)
+			config_word |= P84_CFG_FOSC_RC;
+		else
+			fatal("unrecognised FOSC value \"%s\"", v);
 	} else if (strcasecmp(s, "WDTE") == 0) {	/* Watchdog Timer Enable bit */
 		SET_IF_TRUE(v, P84_CFG_WDTE);
 	} else if (strcasecmp(s, "PWRTE") == 0) {	/* Power-up Timer Enable bit */
@@ -128,6 +133,15 @@ setconfig_84(const char *s, const char *v)
 static void
 setconfig_62x(const char *s, const char *v)
 {
+#define P62x_CFG_FOSC_LP	0x0000		/* low-power crystal */
+#define P62x_CFG_FOSC_XT	0x0001		/* crystal/resonator */
+#define P62x_CFG_FOSC_HS	0x0002		/* high-speed crystal/resonator */
+#define P62x_CFG_FOSC_EC	0x0003		/* external clock on CLKIN pin, I/O on CLKOUT pin */
+#define P62x_CFG_FOSC_INTRCIO	0x0010		/* internal RC oscillator; I/O functions on CLKIN/CLKOUT pins */
+#define P62x_CFG_FOSC_INTRCCLK	0x0011		/* internal RC oscillator; I/O function on CLKIN */
+#define P62x_CFG_FOSC_ERIO	0x0012		/* external RC oscillator on CLKIN pin; I/O function on CLKOUT pin */
+#define P62x_CFG_FOSC_ERCLK	0x0013		/* external RC oscillator on CLKIN; clock out on CLKOUT pin */
+
 #define P62x_CFG_WDTE		(1<<2)		/* watchdog timer enable */
 #define P62x_CFG_PWRTE		(1<<3)		/* powerup timer enable */
 #define P62x_CFG_MCLRE		(1<<5)		/* memory clear (reset) pin enable */
@@ -138,7 +152,22 @@ setconfig_62x(const char *s, const char *v)
 
 	if (strcasecmp(s, "FOSC") == 0) {		/* Oscillator Selection bits */
 		config_word &= ~0x0013;
-		setfosc(v);
+		if (strcasecmp(v, "LP") == 0)
+			config_word |= P62x_CFG_FOSC_LP;
+		else if (strcasecmp(v, "XT") == 0)
+			config_word |= P62x_CFG_FOSC_XT;
+		else if (strcasecmp(v, "HS") == 0)
+			config_word |= P62x_CFG_FOSC_HS;
+		else if (strcasecmp(v, "EC") == 0)
+			config_word |= P62x_CFG_FOSC_EC;
+		else if (strcasecmp(v, "INTRC") == 0 || strcasecmp(v, "INTRCCLK") == 0)
+			config_word |= P62x_CFG_FOSC_INTRCCLK;
+		else if (strcasecmp(v, "ER") == 0 || strcasecmp(v, "ERCLK") == 0)
+			config_word |= P62x_CFG_FOSC_ERCLK;
+		else if (strcasecmp(v, "EXTRCIO") == 0)
+			config_word |= P62x_CFG_FOSC_ERIO;
+		else
+			fatal("unrecognised FOSC value \"%s\"", v);
 	} else if (strcasecmp(s, "WDTE") == 0) {	/* Watchdog Timer Enable bit */
 		SET_IF_TRUE(v, P62x_CFG_WDTE);
 	} else if (strcasecmp(s, "PWRTE") == 0) {	/* Power-up Timer Enable bit */
