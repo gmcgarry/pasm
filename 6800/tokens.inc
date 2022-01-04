@@ -43,7 +43,6 @@
 %token <y_word> RMW
 %token <y_word> RM RMX
 %token <y_word> CMOS
-%type <y_expr> expr8
 %type <y_valu> bitexp
 
 %token PSEUDOOP_BOOT PSEUDOOP_ENDB

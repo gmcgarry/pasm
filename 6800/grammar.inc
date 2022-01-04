@@ -36,12 +36,8 @@
 #define fitb(x)		((((x) + 0x80) & ~((int)0xFF)) == 0)
 #define fitw(x)		((((x) + 0x8000) & ~((int)0xFFFF)) == 0)
 
-expr8
-	: expr			{ fit(fitb($1.val)); }
-	;
-
 bitexp
-	: absexp		{ fit((unsigned) $1 <= 7); $$ = $1 & 07; }
+	: absexp				{ fit((unsigned) $1 <= 7); $$ = $1 & 07; }
 	;
 
 operation
@@ -51,23 +47,23 @@ operation
 
 optlabel
 	: /* empty */
-	| IDENT			{ newident($1, DOTSCT); newlabel($1); }
+	| IDENT					{ newident($1, DOTSCT); newlabel($1); }
 	;
 
 pseudoop
-	: PSEUDOOP_ZERO absexp	{ int i; for (i = 0; i < $2; i++) emit1(0); }
-	| PSEUDOOP_ASCII STRING	{ emitstr($1); }
+	: PSEUDOOP_ZERO absexp			{ int i; for (i = 0; i < $2; i++) emit1(0); }
+	| PSEUDOOP_ASCII STRING			{ emitstr($1); }
 	| PSEUDOOP_DATA datalist 
-	| PSEUDOOP_ENDB IDENT	{ }
-	| PSEUDOOP_BOOT		{ }
+	| PSEUDOOP_ENDB IDENT			{ }
+	| PSEUDOOP_BOOT				{ }
 	;
 
 instr
-	: CTL			{ emit1($1); }
-	| BRANCH expr		{ expr_t expr = {0,0}; branch($1,$2,expr); }
+	: CTL					{ emit1($1); }
+	| BRANCH expr				{ expr_t expr = {0,0}; branch($1,$2,expr); }
 #ifdef MC6805
-	| BBRANCH bitexp ',' expr8 ',' expr { branch($1+($2 << 1), $6, $4); }
-	| BIT bitexp ',' expr8	{ emit1($1+($2 << 1)); newrelo($4.typ, RELO1); emit1($4.val); }
+	| BBRANCH bitexp ',' expr ',' expr	{ fit(fitb($4.val)); branch($1+($2 << 1), $6, $4); }
+	| BIT bitexp ',' expr			{ fit(fitb($4.val)); emit1($1+($2 << 1)); newrelo($4.typ, RELO1); emit1($4.val); }
 #endif
 #ifdef MC68HC08
 	| CBRANCH expr ',' expr			{ emit1($1); emit1($2.val); emit1($4.val - DOTVAL); }
@@ -76,33 +72,34 @@ instr
 	| CBRANCH X '+' ',' expr		{ emit1($1+0x40); emit1($5.val - DOTVAL); }
 	| CBRANCH expr ',' SP ',' expr		{ emit2(0x9e61); emit1($2.val); emit1($6.val - DOTVAL); }
 
-	| DBNZ expr8 ',' expr			{ emit1($1); emit1($2.val); emit1($4.val - DOTVAL); }
+	| DBNZ expr ',' expr			{ fit(fitb($2.val)); emit1($1); emit1($2.val); emit1($4.val - DOTVAL); }
 	| DBNZ expr				{ emit1($1); emit1($2.val - DOTVAL); }
-	| DBNZ expr8 ',' X ',' expr		{ emit1($1+0x30); emit1($2.val); emit1($6.val - DOTVAL); }
+	| DBNZ expr ',' X ',' expr		{ fit(fitb($2.val)); emit1($1+0x30); emit1($2.val); emit1($6.val - DOTVAL); }
 	| DBNZ X ',' expr			{ emit1($1+0x40); emit1($4.val - DOTVAL); }
 	| DBNZ expr ',' SP ',' expr		{ emit2(0x9e6b); emit1($2.val); emit1($6.val - DOTVAL); }
 
-	| MOV expr8 ',' expr8			{ emit1(0x4e); emit1($2.val); emit1($4.val); }
+	| MOV expr ',' expr			{ fit(fitb($2.val)); fit(fitb($4.val)); emit1(0x4e); emit1($2.val); emit1($4.val); }
 	| MOV expr ',' X '+'			{ emit1(0x5e); emit1($2.val); }
 	| MOV '#' expr ',' expr			{ emit1(0x6e); emit1($3.val); emit1($5.val); }
 	| MOV X '+' ',' expr			{ emit1(0x6f); emit1($5.val); }
 #endif
-	| RMW expr8		{ emit1($1); newrelo($2.typ, RELO1); emit1($2.val); }
-	| RMW expr8 ',' X	{
-					int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
-					if (small($2.val == 0 && opt && PASS_RELO, 1)) {
-						emit1($1+0x40);
-					} else {
-						emit1($1+0x30);
-						newrelo($2.typ, RELO1);
-						emit1($2.val);
-					}
-				}
-	| RMW ',' X		{ emit1($1+0x40); }
+	| RMW expr				{ fit(fitb($2.val)); emit1($1); newrelo($2.typ, RELO1); emit1($2.val); }
+	| RMW expr ',' X			{
+							int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
+							if (small($2.val == 0 && opt && PASS_RELO, 1)) {
+								emit1($1+0x40);
+							} else {
+								emit1($1+0x30);
+								newrelo($2.typ, RELO1);
+								emit1($2.val);
+							}
+						}
+	| RMW ',' X				{ emit1($1+0x40); }
 #ifdef MC68HC08
-	| RMW expr8 ',' SP	{ emit1(0x9e); emit1($1+0x30); }
+	| RMW expr ',' SP			{ fit(fitb($2.val)); emit1(0x9e); emit1($1+0x30); }
 #endif
-	| RM '#' expr8		{
+
+	| RM '#' expr		{
 					switch($1) {
 						case 0xa7:
 						case 0xad:

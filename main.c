@@ -288,7 +288,7 @@ parse(char *s)
 				continue;
 			if (ip->i_type != S_UND)
 				continue;
-			if (uflag)
+			if (!uflag)
 				serror("undefined symbol %s", ip->i_name);
 			ip->i_type |= S_EXTERN;
 		}
@@ -451,7 +451,7 @@ commfinish(void)
 			if ((ip->i_type & (S_EXTERN|S_SCTMASK)) != (S_EXTERN|S_UND))
 				continue;
 			if (pass != PASS_3) {
-				/* * save symbol table index * for possible relocation */
+				/* save symbol table index for possible relocation */
 				ip->i_valu = nsymb;
 			}
 			newsymb(ip->i_name, S_EXTERN|S_UND, (ADDR_T)0);
