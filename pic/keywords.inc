@@ -17,6 +17,7 @@
 { 0,	PSEUDOOP_DEVICE,	0,	".device" },
 
 /* mpasm compatibility */
+#ifdef COMPAT_MPASM
 { 0,	PSEUDOOP_ORG,		0,	"ORG" },
 { 0,	PSEUDOOP_END,		0,	"END" },
 { 0,	PSEUDOOP_DATA,		1,	"DS" },
@@ -31,12 +32,15 @@
 { 0,    PSEUDOOP_LIST,	  	0,      "NOLIST" },
 { 0,    PSEUDOOP_LIST,	  	1,	"LIST" },
 { 0,    DOT,	  		0,	"$" },
+#endif
 
 /* pic-as compability */
+#ifdef COMPAT_PICAS
 { 0,	PSEUDOOP_PSECT,		0,	"PSECT" },
 { 0,	PSEUDOOP_MAXRAM,	0,	"__MAXRAM" },
 { 0,	PSEUDOOP_BADRAM,	0,	"__BADRAM" },
 { 0,    IDENT,	  		1,	"CODE" },
+#endif
 
 /* register direction */
 { 0,	D,			0x00,	"W" },

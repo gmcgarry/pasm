@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define COMPAT_MPASM
+
 #define	THREE_PASS	/* Distinguish short and long branches. */
 #define	LISTING		/* Enable listing facilities. */
 #if 0

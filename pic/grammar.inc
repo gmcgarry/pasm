@@ -18,22 +18,24 @@ operation
 	: label
 	| label instr
 	| instr
-	| PSEUDOOP_DEVICE IDENT			{ setdevice($2->i_name); }
+	| PSEUDOOP_DEVICE IDENT			{ setdevice($2->i_name); newident($2, S_ABS); }
 	| PSEUDOOP_CONFIG cfglist
 	| PSEUDOOP_MAXRAM NUMBER8
 	| PSEUDOOP_BADRAM NUMBER8
 	| PSEUDOOP_BADRAM NUMBER8 '-' NUMBER8
 	| PSEUDOOP_BANKSEL expr			{ banksel($2.val); }
 	| PSEUDOOP_PAGESEL expr			{ }
+#ifdef COMPAT_PICAS
 	| PSEUDOOP_PSECT IDENT optflags		{ newsect($2, 0, NULL); }
 	| PSEUDOOP_END IDENT			{ }
+#endif
 	;
 
 cfglist: cfglist ',' cfg
 	| cfg
 	;
 
-cfg	: IDENT '=' IDENT			{ setconfig($1->i_name, $3->i_name); }
+cfg	: IDENT '=' IDENT			{ setconfig($1->i_name, $3->i_name); $1->i_type = $3->i_type = S_ABS; }
 	;
 
 label	: IDENT					{ newident($1, DOTSCT); newlabel($1); }
