@@ -7,19 +7,8 @@
 
 #include "emitter.h"
 
-#if defined(mach_pic) || defined(mach_8051) || defined(mach_avr) || defined(mach_riscv) || defined(mach_stm8)
-#define OUTPUT_FORMAT "hex"
-#endif
-
-#if defined(mach_msp430)
-#define OUTPUT_FORMAT "hex"
-#endif
-
-#if defined(mach_6800)
-#define OUTPUT_FORMAT "srec2"
-#endif
-
 extern char *aoutpath;
+extern char *output_format;
 extern sect_t sect[];
 
 
@@ -29,10 +18,7 @@ outstart()
 #ifdef ELF
 	elfstart();
 #else
-#ifndef OUTPUT_FORMAT
-#define OUTPUT_FORMAT "bin"
-#endif
-	int rc = emitopen(aoutpath, OUTPUT_FORMAT, NULL);
+	int rc = emitopen(aoutpath, output_format, NULL);
 	if (rc)
 		fatal("cannot open output file");
 #endif

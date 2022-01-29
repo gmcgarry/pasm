@@ -78,6 +78,24 @@ extern sect_t sect[SECTMAX];
 extern int nsect;
 extern int nsymb;
 
+#if defined(mach_pic) || defined(mach_8051) || defined(mach_avr) || defined(mach_riscv) || defined(mach_stm8)
+#define OUTPUT_FORMAT "hex"
+#endif
+
+#if defined(mach_msp430)
+#define OUTPUT_FORMAT "hex"
+#endif
+
+#if defined(mach_6800)
+#define OUTPUT_FORMAT "srec2"
+#endif
+
+#ifndef OUTPUT_FORMAT
+#define OUTPUT_FORMAT "bin"
+#endif
+
+char* output_format = OUTPUT_FORMAT;
+
 void
 stop(void)
 {
@@ -132,13 +150,25 @@ main(int argc, char **argv)
 				mflag(p);
 				break;
 			}
-			if (++i < argc)
-				mflag(argv[i]);
+			argv[i] = 0;
+			if (++i >= argc)
+				fatal("-m needs argument");
+			mflag(argv[i]);
 			break;
 		case 'D':
 #ifdef YYDEBUG
 			yydebug = 1;
 #endif
+			break;
+		case 'F':
+			if (*p != '\0') {
+				output_format = p;
+				break;
+			}
+			argv[i] = 0;
+			if (++i >= argc)
+				fatal("-F needs argument");
+			output_format = argv[i];
 			break;
 		case 'o':
 			if (*p != '\0') {
