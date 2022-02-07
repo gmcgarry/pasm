@@ -22,4 +22,5 @@
 
 void setdevice(const char *id);
 void setconfig(const char *s, const char *v);
+void setconfig_word(int word);
 void banksel(int regno);

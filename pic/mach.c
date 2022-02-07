@@ -248,6 +248,12 @@ setconfig(const char *s, const char *v)
 }
 
 void
+setconfig_word(int word)
+{
+	config_word = word;
+}
+
+void
 mflag(const char *flag)
 {
 	if (strncasecmp(flag, "cpu=", 4) == 0)

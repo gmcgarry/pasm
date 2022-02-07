@@ -33,6 +33,7 @@ operation
 
 cfglist: cfglist ',' cfg
 	| cfg
+	| expr					{ setconfig_word($1.val); }
 	;
 
 cfg	: IDENT '=' IDENT			{ setconfig($1->i_name, $3->i_name); $1->i_type = $3->i_type = S_ABS; }
