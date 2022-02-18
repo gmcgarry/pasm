@@ -17,8 +17,9 @@
 #define DEVICE_UNDEF		0
 #define DEVICE_PIC16F84		1
 #define DEVICE_PIC16F84A	2
-#define DEVICE_PIC16F630	3
-#define DEVICE_PIC16F676	4
+#define DEVICE_PIC16F628	3
+#define DEVICE_PIC16F630	4
+#define DEVICE_PIC16F676	5
 
 void setdevice(const char *id);
 void setconfig(const char *s, const char *v);

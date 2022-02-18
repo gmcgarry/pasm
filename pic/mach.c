@@ -206,8 +206,9 @@ static const struct {
 } devices[] = {
 	{ DEVICE_PIC16F84, "p16f84", setconfig_84 },
 	{ DEVICE_PIC16F84A, "p16f84a", setconfig_84 },
-	{ DEVICE_PIC16F84A, "p16f627", setconfig_62x },
-	{ DEVICE_PIC16F84A, "p16f628", setconfig_62x },
+	{ DEVICE_PIC16F628, "p16f627", setconfig_62x },
+	{ DEVICE_PIC16F628, "p16f628", setconfig_62x },
+	{ DEVICE_PIC16F628, "p16f628a", setconfig_62x },
 	{ DEVICE_PIC16F630, "p16f630", setconfig_630 },
 	{ DEVICE_PIC16F676, "p16f676", setconfig_630 },
 };
