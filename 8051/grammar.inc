@@ -46,7 +46,7 @@ operation	: NOP			{ emit1($1); }
 		| ORL two_op1		{ orlop(0); }
 		| ORL two_op2		{ orlop(4); }
 		| ORL two_op3		{ orlop(6); }
-		| XCH two_op1		{ if (get_md(mode) == 3) warning("Immediate mode is illegal"); xchop(0); }
+		| XCH two_op1		{ if (get_md(mode) == 3) fatal("Immediate mode is illegal"); xchop(0); }
 		| INC single_op1	{ incop(0); }
 		| INC DPTR		{ emit1(0xa3); }
 		| DEC single_op1	{ decop(0); }
@@ -63,10 +63,10 @@ operation	: NOP			{ emit1($1); }
 		| RR A			{ emit1($1); }
 		| RRC A			{ emit1($1); }
 		| SWAP A		{ emit1($1); }
-		| XCHD two_op1		{ if (get_md(mode) != 2) warning("Invalid addressing mode"); xchop(-2); }
+		| XCHD two_op1		{ if (get_md(mode) != 2) fatal("Invalid addressing mode"); xchop(-2); }
 		| CLR single_op2	{ clrop(0); }
 		| CPL single_op2	{ cplop(0); }
-		| SETB single_op2	{ if (get_md(mode) == 0) warning("Invalid addressing mode"); setbop(-1); }
+		| SETB single_op2	{ if (get_md(mode) == 0) fatal("Invalid addressing mode"); setbop(-1); }
 		| PUSH data8		{ set_md(mode,0); set_ov(mode,0); set_sz(mode,1); set_b1(mode,$2); emitop($1); }
 		| POP data8		{ set_md(mode,0); set_ov(mode,0); set_sz(mode,1); set_b1(mode,$2); emitop($1); }
 		| EJMP addr24		{ emit1(0xa5); emitop($1); }
@@ -152,16 +152,16 @@ two_op6		: reg ',' A		{ set_md(mode,0); set_ov(mode,$1); set_sz(mode,0); }
 		| data8 ',' C		{ set_md(mode,11); set_ov(mode,0); set_sz(mode,1); set_b1(mode,$1); }
 		| data8 BITPOS ',' C
 {
-	if(pass == PASS_2) {
+	if (pass == PASS_2) {
 		if (!isbit8($1))
-			warning("Bit address exceeds 8-bits");
+			fatal("Bit address exceeds 8-bits");
 	}
 	if (isbmram($1))
 		set_b1(mode, ($1-0x20)*8 + $2);
 	else if(isbmsfr($1))
 		set_b1(mode, $1 + $2);
 	else
-		warning("Invalid bit addressable RAM location");
+		fatal("Invalid bit addressable RAM location");
 	set_md(mode,11);
 	set_ov(mode,0);
 	set_sz(mode,1);
@@ -190,7 +190,7 @@ rel		: expr
 		ADDR_T offset = $1.val - (DOTVAL + 3);
 		if (pass == PASS_2) {
 			if (offset > 127 || offset < -128)
-			   warning("Relative offset %d exceeds -128 / +127", offset);
+			   fatal("Relative offset %d exceeds -128 / +127", offset);
 		}
 		$$ = offset;
 }
@@ -201,7 +201,7 @@ rel2		: expr
 		long offset = $1.val - (DOTVAL + 2);
 		if (pass == PASS_2) {
 			if (offset > 127 || offset < -128)
-			   warning("Relative offset %d exceeds -128 / +127", offset);
+			   fatal("Relative offset %d exceeds -128 / +127", offset);
 		}
 		$$ = offset;
 }
@@ -211,31 +211,31 @@ bit		: bitv BITPOS
 {
 	if (pass == PASS_2) {
 		if (!isbit8($1))
-			warning("Bit address exceeds 8-bits");
+			fatal("Bit address exceeds 8-bits");
 	}
 	if (isbmram($1))
 		$$ = ($1 - 0x20)*8 + $2;
 	else if (isbmsfr($1))
 		$$ = $1 + $2;
 	else
-		warning("Invalid bit addressable RAM location");
+		fatal("Invalid bit addressable RAM location");
 }
 #ifdef COMPAT_SDCC
 		| bitv '[' NUMBER8 ']'		/* for compatibility with SDCC */
 {
 	if (pass == PASS_2) {
 		if (!isbit8($1))
-			warning("Bit address exceeds 8-bits");
+			fatal("Bit address exceeds 8-bits");
 	}
 	if (isbmram($1))
 		$$ = ($1 - 0x20)*8 + $3;
 	else if (isbmsfr($1))
 		$$ = $1 + $3;
 	else
-		warning("Invalid bit addressable RAM location");
+		fatal("Invalid bit addressable RAM location");
 }
 #endif
-		| bitv		{ if (pass == PASS_2) { if (!isbit8($1) ) warning("Bit address exceeds 8-bits"); } $$ = $1; }
+		| bitv		{ if (pass == PASS_2) { if (!isbit8($1) ) fatal("Bit address exceeds 8-bits"); } $$ = $1; }
 		;
 
 bitv		: SFR		{ $$ = $1; }
@@ -245,13 +245,13 @@ bitv		: SFR		{ $$ = $1; }
 reg		: AREG		{ $$ = $1; }
 		;
 
-regi		: AREG		{ $$ = $1; if ($1 > 1) warning("Illegal indirect register: @r2"); }
+regi		: AREG		{ $$ = $1; if ($1 > 1) fatal("Illegal indirect register: @r2"); }
 		;
 
-data8		: expr		{ if (pass == PASS_2) { if (!isbit8($1.val)) warning("Expression 0x%02x greater than 8-bits", $1.val); } $$ = $1.val; }
+data8		: expr		{ if (pass == PASS_2) { if (!isbit8($1.val)) fatal("Expression 0x%02x greater than 8-bits", $1.val); } $$ = $1.val; }
 		;
 
-data16		: expr		{ if (pass == PASS_2) { if (!isbit16($1.val)) warning("Expression 0x%04x greater than 16-bits", $1.val); } $$ = $1.val; }
+data16		: expr		{ if (pass == PASS_2) { if (!isbit16($1.val)) fatal("Expression 0x%04x greater than 16-bits", $1.val); } $$ = $1.val; }
 		;
 
 const8		: '#' expr			{ $$ = $2.val; }
@@ -271,9 +271,9 @@ addr11		: expr
 {
 		if (pass == PASS_2) {
 			if (!isbit16($1.val))
-				warning("Address 0x%04x greater than 16-bits", $1.val);
+				fatal("Address 0x%04x greater than 16-bits", $1.val);
 			if (($1.val & ~0x7FF) != ((DOTVAL+2) & ~0x7FF))
-				warning("Address 0x%04x outside current 2K page", $1.val);
+				fatal("Address 0x%04x outside current 2K page", $1.val);
 		}
 		set_md(mode,0);
 		set_ov(mode, ($1.val & 0x0700) >> 3);
@@ -286,7 +286,7 @@ addr16		: expr
 {
 		if (pass == PASS_2) {
 			if (!isbit16($1.val))
-				warning("Address 0x%04x greater than 16-bits", $1.val);
+				fatal("Address 0x%04x greater than 16-bits", $1.val);
 		}
 		set_md(mode,0);
 		set_ov(mode, 0);
@@ -300,7 +300,7 @@ addr24		: expr
 {
 		if (pass == PASS_2) {
 			if (!isbit24($1.val))
-				warning("Address 0x%04x greater than 24-bits", $1.val);
+				fatal("Address 0x%04x greater than 24-bits", $1.val);
 		}
 		set_md(mode,0);
 		set_ov(mode, 0);
@@ -315,8 +315,8 @@ relative	: expr
 {
 		long offset = $1.val - (DOTVAL+2);
 		if (pass == PASS_2) {
-			if (!fitx(offset+128, 8))
-			   warning("Relative offset %d exceeds -128 / +127", offset);
+			if (!isbit8(offset+128))
+			   fatal("Relative offset %d exceeds -128 / +127", offset);
 		}
 		set_md(mode, 0);
 		set_ov(mode, 0);
