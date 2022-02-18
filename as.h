@@ -422,7 +422,7 @@ typedef Elf32_Sym Elf_Sym;
 
 #if YYDEBUG
 extern int yydebug;
-#define DPRINTF(x)	if (yydebug) printf x
+#define DPRINTF(x)	if (yydebug) do { printf("line %d: ", lineno); printf x; } while(0)
 #else
 #define DPRINTF(x)	/* nothing */
 #endif
