@@ -190,12 +190,18 @@ setconfig_62x(const char *s, const char *v)
 void
 banksel(int regno)
 {
-	if (regno & ~0x7F) {
-		/* bsf STATUS, 5: 01 01bb bfff ffff */
-		emit2(0x1683);
-	} else {
-		/* bcf STATUS, 5: 01 00bb bfff ffff */
-		emit2(0x1283);
+	static int curbank = 0;
+	int bank = regno & 0x80;
+
+	if (bank != curbank) {	/* don't switch banks if not necessary */
+		if (bank) {
+			/* bsf STATUS, 5: 01 01bb bfff ffff */
+			emit2(0x1683);
+		} else {
+			/* bcf STATUS, 5: 01 00bb bfff ffff */
+			emit2(0x1283);
+		}
+		curbank = bank;
 	}
 }
 
