@@ -317,6 +317,7 @@ new_common(item_t *ip)
 static struct {
 	FILE *fp;
 	int lineno;
+	const char *module;
 } include_stack[INCDEPTH];
 static int include_stack_top;
 
@@ -325,7 +326,7 @@ push_include(const char* filename)
 {
 	FILE *fp;
 
-	DPRINTF(("push_include: %d %s\n", include_stack_top, filename));
+	DPRINTF(("push_include: stack=%d module=%s line=%d -> %s\n", include_stack_top, modulename, lineno, filename));
 
 	if (include_stack_top >= INCDEPTH)
 		fatal("too many nested include statements");
@@ -335,6 +336,7 @@ push_include(const char* filename)
 		fatal("cannot open %s", filename);
 	include_stack[include_stack_top].fp = input;
 	include_stack[include_stack_top].lineno = lineno;
+	include_stack[include_stack_top].module = modulename;
 	include_stack_top++;
 	lineno = 0;
 	input = fp;
@@ -343,16 +345,19 @@ push_include(const char* filename)
 int
 pop_include()
 {
-	DPRINTF(("pop_include: %d\n", include_stack_top));
-
 	if (!include_stack_top)
 		return 0;
+
+	DPRINTF(("pop_include: stack=%d\n", include_stack_top));
 
 	fclose(input);
 
 	include_stack_top--;
 	input = include_stack[include_stack_top].fp;
 	lineno = include_stack[include_stack_top].lineno;
+	modulename = include_stack[include_stack_top].module;
+
+	DPRINTF(("pop_include: returning to %s at line %d\n", modulename, lineno));
 
 	return 1;
 }
