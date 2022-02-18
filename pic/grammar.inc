@@ -21,8 +21,7 @@ operation
 	| PSEUDOOP_DEVICE IDENT			{ setdevice($2->i_name); newident($2, S_ABS); }
 	| PSEUDOOP_CONFIG cfglist
 	| PSEUDOOP_MAXRAM NUMBER8
-	| PSEUDOOP_BADRAM NUMBER8
-	| PSEUDOOP_BADRAM NUMBER8 '-' NUMBER8
+	| PSEUDOOP_BADRAM rglist
 	| PSEUDOOP_BANKSEL expr			{ banksel($2.val); }
 	| PSEUDOOP_PAGESEL expr			{ }
 #ifdef COMPAT_PICAS
@@ -37,6 +36,14 @@ cfglist: cfglist ',' cfg
 	;
 
 cfg	: IDENT '=' IDENT			{ setconfig($1->i_name, $3->i_name); $1->i_type = $3->i_type = S_ABS; }
+	;
+
+rglist:	rglist ',' rg
+	| rg
+	;
+
+rg	: NUMBER8 '-' NUMBER8
+	| NUMBER8
 	;
 
 label	: IDENT					{ newident($1, DOTSCT); newlabel($1); }
