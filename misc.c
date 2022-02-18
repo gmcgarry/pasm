@@ -51,7 +51,7 @@
 extern sect_t sect[SECTMAX];  /* XXXGJM remove  */
 
 
-ADDR_T
+VALUE_T
 load(const item_t* ip)
 {
         int sct = ip->i_type & S_SCTMASK;
@@ -78,7 +78,7 @@ load(const item_t* ip)
 }
 
 int
-store(item_t* ip, ADDR_T val)
+store(item_t* ip, VALUE_T val)
 {
 	DPRINTF(("store(%s, type=%x, val=%lx)\n", ip->i_name, ip->i_type, val));
 
@@ -173,7 +173,7 @@ combine(int typ1, int typ2, int op)
 
 #ifdef LISTING
 int
-printx(int ndig, ADDR_T val)
+printx(int ndig, VALUE_T val)
 {
 	static char buf[8];
 	char* p;

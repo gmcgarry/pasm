@@ -92,6 +92,12 @@
 #define	ADDR_T		unsigned short	/* type of dot */
 #endif
 
+#ifndef VALUE_T
+#define VALUE_T		int		/* type for local math */
+#define VALWIDTH	(2*sizeof(VALUE_T))
+#endif
+
+
 /*
  * NOTE: word_t is introduced to reduce the tokenfile size for machines
  * with large expressions but smaller opcodes (68000)
@@ -107,10 +113,6 @@
 
 #ifndef ALIGNSECT
 #define	ALIGNSECT	1
-#endif
-
-#ifndef VALWIDTH
-#define	VALWIDTH	4
 #endif
 
 #ifndef BYTESIZE
@@ -137,7 +139,7 @@
 
 struct expr {
 	short typ;
-	ADDR_T val;
+	VALUE_T val;
 };
 typedef	struct expr expr_t;
 
@@ -149,7 +151,7 @@ struct item {
 	 *	- the token type for keywords, returned by yylex()
 	 *	- the symbol type for IDENT and FBSYM tokens
 	 */
-	ADDR_T i_valu;		/* symbol value */
+	VALUE_T i_valu;		/* symbol value */
 	const char *i_name;	/* symbol name */
 };
 typedef	struct item item_t;
@@ -340,19 +342,19 @@ void	 switchsect(int);
 void	 align(int, int, int);
 void	 newrelo(int, int);
 long	 new_string(const char *);
-void	 newsymb(const char *, int, ADDR_T);
+void	 newsymb(const char *, int, VALUE_T);
 
 void	push_include(const char* filename);
 int	pop_include();
 
 
 /* misc.c */
-ADDR_T	 load(const item_t *);
-int	 store(item_t *, ADDR_T);
+VALUE_T	 load(const item_t *);
+int	 store(item_t *, VALUE_T);
 const char *remember(const char *);
 int	 combine(int, int, int);
 #ifdef LISTING
-int	 printx(int, ADDR_T);
+int	 printx(int, VALUE_T);
 void	 listline(int);
 #endif
 #ifdef THREE_PASS

@@ -65,7 +65,7 @@ new_string(const char *s)
 }
 
 void
-newsymb(const char *name, int type, ADDR_T valu)
+newsymb(const char *name, int type, VALUE_T valu)
 {
 	DPRINTF(("new symbol: name=%s, type=%04x, value=%04lx\n", name, type, valu));
 

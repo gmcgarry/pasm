@@ -63,7 +63,7 @@ static item_t	*last_it;
 
 %union {
 	word_t y_word;
-	ADDR_T y_valu;
+	VALUE_T y_valu;
 	expr_t y_expr;
 	item_t *y_item;
 };

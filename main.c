@@ -417,7 +417,7 @@ newmodule(char *s)
 	 * the user is familiar with. Moreover, it is not reproducable.
 	 */
 	if ((sflag & (SYM_EXT|SYM_LOC|SYM_LAB)) && PASS_SYMB)
-		newsymb(s, S_MOD, (ADDR_T)0);
+		newsymb(s, S_MOD, (VALUE_T)0);
 #endif
 #ifdef LISTING
 	listtemp = 0;

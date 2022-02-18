@@ -465,7 +465,7 @@ need_stringbuf()
 static int
 innumber(int c)
 {
-	ADDR_T v;
+	VALUE_T v;
 	char* p;
 	int radix = 10;
 	int nleft;
