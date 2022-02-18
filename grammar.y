@@ -148,7 +148,7 @@ static item_t	*last_it;
 #define	LISTLINE(n)	/* empty */
 #endif /* LISTING */
 
-#define	RELODONE	{ assert(relonami == RELO_UNDEF); } while (0)
+#define	RELODONE	/* { assert(relonami == RELO_UNDEF); } while (0) */
 
 program	: /* empty */
 	| program END				{ if (!pop_include()) YYACCEPT; }
@@ -189,9 +189,15 @@ operation: /* empty */
 								nosect();
 							if (pass == PASS_2 && $2 < DOTVAL)
 								serror("cannot move location counter backwards");
+#if 0
+							/* 'base' specifies the memory address for output address 0 in the section */
+							/* it's used to specify the memory location for ROMs */
+							/* we don't want to overide base in .org directive */
 							if ((sect[DOTSCT].s_flag & BASED) == 0) {
 								newbase($2);
-							} else {
+							} else
+#endif
+							{
 								if (pass == PASS_1)
 									sect[DOTSCT].s_flag |= SOUGHT;
 								DOTVAL = $2;
