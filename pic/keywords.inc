@@ -34,6 +34,7 @@
 { 0,    DOT,	  		0,	"$" },
 { 0,	PSEUDOOP_MAXRAM,	0,	"__MAXRAM" },
 { 0,	PSEUDOOP_BADRAM,	0,	"__BADRAM" },
+{ 0,	PSEUDOOP_CONFIG,	0,	"__CONFIG" },
 #endif
 
 /* pic-as compability */
