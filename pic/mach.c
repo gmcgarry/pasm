@@ -30,7 +30,6 @@ static item_t cseg = { 0, S_UND, 0, ".cseg" };
 
 static int config_addr = 0x400E;
 static int config_word = 0x3fff;
-static int curbank = 0;
 
 #define ISTRUE(v)	(strcasecmp(v, "ON") == 0 || strcasecmp(v, "TRUE") == 0 || strcasecmp(v, "ENABLED") == 0)
 #define SET_IF_FALSE(v,f)	do { if (ISTRUE(v)) config_word &= ~(f); } while (0)
@@ -194,16 +193,10 @@ banksel(int regno)
 {
 	int bank = regno & 0x80;
 
-	if (bank != curbank) {	/* don't switch banks if not necessary */
-		if (bank) {
-			/* bsf STATUS, 5: 01 01bb bfff ffff */
-			emit2(0x1683);
-		} else {
-			/* bcf STATUS, 5: 01 00bb bfff ffff */
-			emit2(0x1283);
-		}
-		curbank = bank;
-	}
+	if (bank)
+		emit2(0x1683);	/* bsf STATUS, 5: 01 01bb bfff ffff */
+	else
+		emit2(0x1283);	/* bcf STATUS, 5: 01 00bb bfff ffff */
 }
 
 static const struct {
@@ -276,7 +269,6 @@ machstart(int pass)
 		unresolved++;
 	}
 	newsect(&cseg, 0, NULL);
-	curbank = 0;
 }
 
 void

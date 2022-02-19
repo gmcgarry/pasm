@@ -57,7 +57,7 @@ instr	: NOOP					{ emit2($1); }
 	| JMPOP k11				{ emit2($1 | $2); }
 	;
 
-optdir	: /* empty  */				{ $$ = 0x80; }
+optdir	: /* empty  */				{ $$ = 0x80; warning("using default destination of 1 (file)"); }
 	| ',' d					{ $$ = $2; }
 	;
 
