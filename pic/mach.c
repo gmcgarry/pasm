@@ -28,9 +28,9 @@ extern int hash(const char *);
 
 static item_t cseg = { 0, S_UND, 0, ".cseg" };
 
-
 static int config_addr = 0x400E;
 static int config_word = 0x3fff;
+static int curbank = 0;
 
 #define ISTRUE(v)	(strcasecmp(v, "ON") == 0 || strcasecmp(v, "TRUE") == 0 || strcasecmp(v, "ENABLED") == 0)
 #define SET_IF_FALSE(v,f)	do { if (ISTRUE(v)) config_word &= ~(f); } while (0)
@@ -66,10 +66,10 @@ setconfig_630(const char *s, const char *v)
 			config_word |= P630_CFG_FOSC_HS;
 		else if (strcasecmp(v, "EC") == 0)
 			config_word |= P630_CFG_FOSC_EC;
-		else if (strcasecmp(v, "INTOSC") == 0 || strcasecmp(v, "INTOSCCLK") == 0)
-			config_word |= P630_CFG_FOSC_INTOSCCLK;
-		else if (strcasecmp(v, "INTOSCIO") == 0)
+		else if (strcasecmp(v, "INTOSC") == 0 || strcasecmp(v, "INTOSCIO") == 0)
 			config_word |= P630_CFG_FOSC_INTOSCIO;
+		else if (strcasecmp(v, "INTOSCIOCLK") == 0)
+			config_word |= P630_CFG_FOSC_INTOSCCLK;
 		else if (strcasecmp(v, "RC") == 0 || strcasecmp(v, "RCCLK") == 0)
 			config_word |= P630_CFG_FOSC_RCCLK;
 		else if (strcasecmp(v, "RCIO") == 0)
@@ -160,7 +160,9 @@ setconfig_62x(const char *s, const char *v)
 			config_word |= P62x_CFG_FOSC_HS;
 		else if (strcasecmp(v, "EC") == 0)
 			config_word |= P62x_CFG_FOSC_EC;
-		else if (strcasecmp(v, "INTRC") == 0 || strcasecmp(v, "INTRCCLK") == 0)
+		else if (strcasecmp(v, "INTRC") == 0 || strcasecmp(v, "INTRCIO") == 0)
+			config_word |= P62x_CFG_FOSC_INTRCIO;
+		else if (strcasecmp(v, "INTRCIOCLK") == 0)
 			config_word |= P62x_CFG_FOSC_INTRCCLK;
 		else if (strcasecmp(v, "ER") == 0 || strcasecmp(v, "ERCLK") == 0)
 			config_word |= P62x_CFG_FOSC_ERCLK;
@@ -181,7 +183,7 @@ setconfig_62x(const char *s, const char *v)
 	} else if (strcasecmp(s, "CPD") == 0) {		/* Data Memory Code Protection bit */
 		SET_IF_FALSE(v, P62x_CFG_CPD);
 	} else if (strcasecmp(s, "CP") == 0) {		/* Program Memory Code Protection bit */
-		SET_IF_TRUE(v, P62x_CFG_CP);
+		SET_IF_FALSE(v, P62x_CFG_CP);
 	} else {
 		fatal("unrecognised config option \"%s\"", s);
 	}
@@ -190,7 +192,6 @@ setconfig_62x(const char *s, const char *v)
 void
 banksel(int regno)
 {
-	static int curbank = 0;
 	int bank = regno & 0x80;
 
 	if (bank != curbank) {	/* don't switch banks if not necessary */
@@ -275,6 +276,7 @@ machstart(int pass)
 		unresolved++;
 	}
 	newsect(&cseg, 0, NULL);
+	curbank = 0;
 }
 
 void
