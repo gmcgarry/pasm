@@ -39,6 +39,7 @@
 #define VALN1	0x0330
 
 /* compatibility with ASM430 (CCS) */
+#ifdef COMPAT_CCS
 { 0,	PSEUDOOP_CDECLS,	0,		".cdecls"	},
 { 0,	PSEUDOOP_SECT,		0,		".sect"		},
 { 0,	PSEUDOOP_DATA,		WORDSIZE,	".short"	},
@@ -46,7 +47,14 @@
 { 0,	PSEUDOOP_RETAIN,	0,		".retain"	},
 { 0,	PSEUDOOP_RETAIN,	1,		".retainrefs"	},
 { 0,	PSEUDOOP_USECT,		1,		".usect"	},
+#endif
+
+#ifdef COMPAT_NAKEN
+{ 0,	'=',			0,		"equ"		},
+{ 0,	PSEUDOOP_DATA,		1,		".db"		},
+{ 0,	PSEUDOOP_DATA,		2,		".dw"		},
 { 0,	DOT,			0,		"$"		},
+#endif
 
 /* registers */
 { 0,	REG,			0,		"R0"		},	/* PC */
@@ -74,6 +82,7 @@
 { 0,	DATASIZE,		0x0040,		".B"		},
 { 0,	DATASIZE,		0x0000,		".W"		},
 
+#if 0
 /* special function registers */
 { 0,	SFR,			0x00,		"IE1"		},	/* interrupt enable */
 { 0,	SFR,			0x01,		"IE2"		},
@@ -88,6 +97,7 @@
 { 0,	SFR,			0x5A00,		"WDTPW"		},
 { 0,	SFR,			0x0080,		"WDTHOLD"	},
 { 0,	SFR,			0x0120,		"WDTCTL"	},
+#endif
 
 /* single operands - destination only */
 /* O O O O O O O O | B/W | As As | D D D D */

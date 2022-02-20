@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define COMPAT_NAKEN
+
 #define LISTING
 #define THREE_PASS
 
@@ -40,7 +42,6 @@
 #define DWORDSIZE	4
 #define ALIGNWORD	4
 #define ALIGNSECT	4
-#define VALWIDTH	8
 
 /* Some character constants for scanner*/
 #define ASC_COMMENT     ';'
@@ -48,4 +49,4 @@
 #define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.' || (c) == '$')
 #define ISALNUM(c)      (isalnum(c) || (c) == '_')
 
-#define ELFM		"@"
+#define DEFAULT_SECTION (1)
