@@ -111,11 +111,11 @@ void
 newlabel(item_t *ip)
 {
 #if defined(THREE_PASS) && !defined(NDEBUG)
-	ADDR_T oldval = ip->i_valu;
+	ADDR_T oldval = (ADDR_T)ip->i_valu;
 #endif
 
 #if defined(THREE_PASS) && !defined(NDEBUG)
-	DPRINTF(("newlabel: (%s) lineno=%ld, pass=%d, section=%d oldval=%ld, DOTVAL=%ld, gain=%ld\n", ip->i_name, lineno, pass, DOTSCT, oldval, DOTVAL, sect[DOTSCT].s_gain));
+	DPRINTF(("newlabel: (%s) lineno=%ld, pass=%d, section=%d, oldval=%d, DOTVAL=%d, gain=%d\n", ip->i_name, lineno, pass, DOTSCT, oldval, DOTVAL, sect[DOTSCT].s_gain));
 #else
 	DPRINTF(("newlabel: (%s) lineno=%ld, pass=%d, section=%d, DOTVAL=%ld\n", ip->i_name, lineno, pass, DOTSCT, DOTVAL));
 #endif
@@ -124,7 +124,7 @@ newlabel(item_t *ip)
 		nosect();
 	ip->i_type &= ~S_SCTMASK;
 	ip->i_type |= DOTSCT;
-	if (store(ip, (ADDR_T) DOTVAL) == 0)
+	if (store(ip, (VALUE_T) DOTVAL) == 0)
 		return;
 #ifdef THREE_PASS
 	DPRINTF(("oldval = %lu, ip->i_valu = %lu, gain = %lu\n", oldval, (ADDR_T) ip->i_valu, sect[DOTSCT].s_gain));
