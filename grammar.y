@@ -320,8 +320,8 @@ expr	: error					{ serror("expr syntax err"); $$.val = 0; $$.typ = S_UND; }
 	| expr '+' expr				{ $$.val = ($1.val + $3.val); $$.typ = combine($1.typ, $3.typ, '+'); }
 	| expr '-' expr				{ $$.val = ($1.val - $3.val); $$.typ = combine($1.typ, $3.typ, '-'); }
 	| expr '*' expr				{ $$.val = ($1.val * $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
-	| expr '/' expr				{ if ($3.val == 0) { if (pass == PASS_3) serror("divide by zero"); $$.val = 0; } else $$.val = ($1.val / $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
-	| expr '%' expr				{ if ($3.val == 0) { if (pass == PASS_3) serror("divide by zero"); $$.val = 0; } else $$.val = ($1.val % $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
+	| expr '/' expr				{ if ($3.val == 0) { if (pass == PASS_3) serror("divide by zero"); $$.val = 0; } else $$.val = ($1.val / $3.val); $$.typ = combine($1.typ, $3.typ, '/'); }
+	| expr '%' expr				{ if ($3.val == 0) { if (pass == PASS_3) serror("divide by zero"); $$.val = 0; } else $$.val = ($1.val % $3.val); $$.typ = combine($1.typ, $3.typ, '/'); }
 	| '+' expr %prec '*'			{ $$.val = $2.val; $$.typ = combine(S_ABS, $2.typ, 0); }
 	| '-' expr %prec '*'			{ $$.val = -$2.val; $$.typ = combine(S_ABS, $2.typ, 0); }
 	| '~' expr				{ $$.val = ~$2.val; $$.typ = combine(S_ABS, $2.typ, 0); }
