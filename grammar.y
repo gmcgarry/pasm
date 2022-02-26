@@ -303,7 +303,6 @@ dataflist
 expr	: error					{ serror("expr syntax err"); $$.val = 0; $$.typ = S_UND; }
 	| NUMBER8				{ $$.val = $1; $$.typ = S_ABS; }
 	| id_fb					{ $$.val = load($1); last_it = $1; $$.typ = $1->i_type & S_SCTMASK; }
-	| STRING				{ if (stringlen != 1) serror("too many chars"); $$.val = stringbuf[0]; $$.typ = S_ABS; }
 	| '(' expr ')'				{ $$ = $2; }
 	| expr OP_OO expr			{ $$.val = ($1.val || $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
 	| expr OP_AA expr			{ $$.val = ($1.val && $3.val); $$.typ = combine($1.typ, $3.typ, 0); }

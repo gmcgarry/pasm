@@ -590,6 +590,10 @@ instring(int termc)
 	}
 	stringlen = p - stringbuf;
 	*p = '\0';
+	if (termc == '\'' && stringlen == 1) {
+		yylval.y_valu = stringbuf[0];
+		return NUMBER8;
+	}
 	return STRING;
 }
 
