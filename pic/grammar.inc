@@ -79,8 +79,8 @@ f	: expr					{ $$ = $1.val; }
 	| PSEUDOOP_BANKMASK '(' expr ')'	{ $$ = $3.val&0x7f; }
 	;
 
-k8	: expr					{ $$ = $1.val; fit(fitx($$, 8)); }
-        | SHIFTFUNC expr			{ $$ = ($2.val >> $1) & 0xff; fit(fitx($$, 8)); }
+k8	: expr					{ int v = $1.val; if ($1.typ != S_ABS) v >>= 1; $$ = v; fit(fitx($$, 8)); }
+        | SHIFTFUNC expr			{ int v = $2.val; if ($2.typ != S_ABS) v >>= 1; $$ = (v >> $1) & 0xff; fit(fitx($$, 8)); }
 	;
 
 k11	: expr 					{ $$ = ($1.typ & S_ABS ? $1.val : $1.val >> 1) & 0x7ff; }
