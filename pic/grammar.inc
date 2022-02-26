@@ -24,6 +24,7 @@ operation
 	| PSEUDOOP_BADRAM rglist
 	| PSEUDOOP_BANKSEL expr			{ banksel($2.val); }
 	| PSEUDOOP_PAGESEL expr			{ }
+	| PSEUDOOP_DT dtlist
 #ifdef COMPAT_PICAS
 	| PSEUDOOP_PSECT IDENT optflags		{ newsect($2, 0, NULL); }
 	| PSEUDOOP_END IDENT			{ }
@@ -46,6 +47,12 @@ rg	: NUMBER8 '-' NUMBER8
 	| NUMBER8
 	;
 
+dtlist: expr					{ fit(fitx($1.val,8)); emit2(0x3400|$1.val); }
+	| dtlist ',' expr			{ fit(fitx($3.val,8)); emit2(0x3400|$3.val); }
+	| STRING				{ int i; for (i = 0; i < stringlen; i++) emit2(0x3400|stringbuf[i]); }
+	| dtlist ',' STRING			{ int i; for (i = 0; i < stringlen; i++) emit1(0x3400|stringbuf[i]); }
+	;
+
 label	: IDENT					{ newident($1, DOTSCT); newlabel($1); }
 	;
 
@@ -57,7 +64,7 @@ instr	: NOOP					{ emit2($1); }
 	| JMPOP k11				{ emit2($1 | $2); }
 	;
 
-optdir	: /* empty  */				{ $$ = 0x80; warning("using default destination of 1 (file)"); }
+optdir	: /* empty  */				{ $$ = 0x80; if (pass == PASS_1) warning("using default destination of 1 (file)"); }
 	| ',' d					{ $$ = $2; }
 	;
 
@@ -68,11 +75,12 @@ d	: expr					{ $$ = $1.val ? 0x80 : 0; }
 b	: expr					{ $$ = ($1.val & 0x07) << 7; }
 	;
 
-f	: expr							{ $$ = $1.val; }
-	| PSEUDOOP_BANKMASK '(' expr ')'			{ $$ = $3.val&0x7f; }
+f	: expr					{ $$ = $1.val; }
+	| PSEUDOOP_BANKMASK '(' expr ')'	{ $$ = $3.val&0x7f; }
 	;
 
-k8	: expr					{ $$ = $1.val & 0xff; }
+k8	: expr					{ $$ = $1.val; fit(fitx($$, 8)); }
+        | SHIFTFUNC expr			{ $$ = ($2.val >> $1) & 0xff; fit(fitx($$, 8)); }
 	;
 
 k11	: expr 					{ $$ = ($1.typ & S_ABS ? $1.val : $1.val >> 1) & 0x7ff; }

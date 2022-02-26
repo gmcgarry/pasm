@@ -16,6 +16,8 @@
 
 %token <y_word> W
 
+%token <y_word> SHIFTFUNC
+
 %token <y_word> BYTEOP
 %token <y_word> BITOP
 %token <y_word> LITOP
@@ -29,6 +31,8 @@
 %token <y_word> PSEUDOOP_PAGESEL
 %token <y_word> PSEUDOOP_DEVICE
 %token <y_word> PSEUDOOP_PSECT
+%token <y_word> PSEUDOOP_DT
 
 %type <y_word> b d f k8 k11
 %type <y_word> optdir
+%type <y_word> dtlist

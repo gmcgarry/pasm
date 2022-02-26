@@ -15,12 +15,19 @@
  */
 
 { 0,	PSEUDOOP_DEVICE,	0,	".device" },
+{ 0,	PSEUDOOP_DT,		0,	".dt" },
+
+{ 0,	SHIFTFUNC,		0,	"low" },
+{ 0,	SHIFTFUNC,		8,	"high" },
+{ 0,	SHIFTFUNC,		0,	"lo8" },
+{ 0,	SHIFTFUNC,		8,	"hi8" },
 
 /* mpasm compatibility */
 #ifdef COMPAT_MPASM
 { 0,	PSEUDOOP_ORG,		0,	"ORG" },
 { 0,	PSEUDOOP_END,		0,	"END" },
 { 0,	PSEUDOOP_DATA,		1,	"DS" },
+{ 0,	PSEUDOOP_DT,		0,	"DT" },
 { 0,	'=',			0,	"EQU" },
 { 0,	PSEUDOOP_INCLUDE,	0,	"INCLUDE" },
 { 0,	PSEUDOOP_DEVICE,	0,	"PROCESSOR" },
@@ -29,9 +36,9 @@
 { 0,	PSEUDOOP_PAGESEL,	0,	"PAGESEL" },
 { 0,	PSEUDOOP_CONFIG,	0,	"CONFIG" },
 { 0,	PSEUDOOP_GLOBAL,	0,	"GLOBAL" },
-{ 0,    PSEUDOOP_LIST,	  	0,      "NOLIST" },
-{ 0,    PSEUDOOP_LIST,	  	1,	"LIST" },
-{ 0,    DOT,	  		0,	"$" },
+{ 0,	PSEUDOOP_LIST,	  	0,	"NOLIST" },
+{ 0,	PSEUDOOP_LIST,	  	1,	"LIST" },
+{ 0,	DOT,	  		0,	"$" },
 { 0,	PSEUDOOP_MAXRAM,	0,	"__MAXRAM" },
 { 0,	PSEUDOOP_BADRAM,	0,	"__BADRAM" },
 { 0,	PSEUDOOP_CONFIG,	0,	"__CONFIG" },
@@ -40,7 +47,7 @@
 /* pic-as compability */
 #ifdef COMPAT_PICAS
 { 0,	PSEUDOOP_PSECT,		0,	"PSECT" },
-{ 0,    IDENT,	  		1,	"CODE" },
+{ 0,	IDENT,	  		1,	"CODE" },
 #endif
 
 /* register direction */
