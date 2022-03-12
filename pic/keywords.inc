@@ -84,7 +84,7 @@
 { 0,	LITOP,			0x3900, "ANDLW" },	/* 11 1001 kkkk kkkk */
 { 0,	LITOP,			0x3800, "IORLW" },	/* 11 1000 kkkk kkkk */
 { 0,	LITOP,			0x3000, "MOVLW" },	/* 11 00xx kkkk kkkk */
-{ 0,	LITOP,			0x3600, "RETLW" },	/* 11 01xx kkkk kkkk */
+{ 0,	LITOP,			0x3400, "RETLW" },	/* 11 01xx kkkk kkkk */
 { 0,	LITOP,			0x3c00, "SUBLW" },	/* 11 110x kkkk kkkk */
 { 0,	LITOP,			0x3a00, "XORLW" },	/* 11 1010 kkkk kkkk */
 
