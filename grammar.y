@@ -102,11 +102,11 @@ static item_t	*last_it;
 %token PSEUDOOP_BASE
 %token PSEUDOOP_ORG
 %token PSEUDOOP_EQU
-%token PSEUDOOP_DUP
-%token PSEUDOOP_ZERO
 %token PSEUDOOP_MESSAGE
 %token <y_word> PSEUDOOP_ALIGN
 %token PSEUDOOP_ASSERT
+%token PSEUDOOP_ZERO
+%token PSEUDOOP_FILL
 %token PSEUDOOP_SPACE
 %token PSEUDOOP_SEEK
 %token PSEUDOOP_CFI_IGNORE
@@ -266,7 +266,8 @@ operation: /* empty */
 	| PSEUDOOP_DATAF dataflist
 #endif
 	| PSEUDOOP_ZERO absexp			{ int i; for (i = 0; i < $2; i++) emit1(0); }
-	| PSEUDOOP_DUP absexp ',' absexp	{ int i; for (i = 0; i < $2; i++) emit1($4); }
+	| PSEUDOOP_FILL absexp ',' absexp	{ int i; for (i = 0; i < $2; i++) emit1($4); }
+	| PSEUDOOP_FILL absexp ',' absexp ',' absexp	{ int i; for (i = 0; i < $2; i++) emitx($6,$4); }
 	| PSEUDOOP_ASCII STRING			{ emitstr($1); }
 	| PSEUDOOP_CFI_IGNORE optabs		{ }
 	| PSEUDOOP_CFI_IGNORE absexp ',' absexp { }
