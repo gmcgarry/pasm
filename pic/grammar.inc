@@ -14,6 +14,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#if PIC_ISA == PIC14
+#define RETLW		0x3400
+#define FILEMASK	0x7F
+#define INSTMASK	0x7FF
+#elif PIC_ISA == PIC12
+#define RETLW		0x800
+#define FILEMASK	0x1F
+#define INSTMASK	0x1FF
+#else
+#error unrecognised ISA
+#endif
+
+
 operation
 	: label
 	| label instr
@@ -47,10 +60,10 @@ rg	: NUMBER8 '-' NUMBER8
 	| NUMBER8
 	;
 
-dtlist: expr					{ fit(fitx($1.val,8)); emit2(0x3400|$1.val); }
-	| dtlist ',' expr			{ fit(fitx($3.val,8)); emit2(0x3400|$3.val); }
-	| STRING				{ int i; for (i = 0; i < stringlen; i++) emit2(0x3400|stringbuf[i]); }
-	| dtlist ',' STRING			{ int i; for (i = 0; i < stringlen; i++) emit1(0x3400|stringbuf[i]); }
+dtlist: expr					{ fit(fitx($1.val,8)); emit2(RETLW|$1.val); }
+	| dtlist ',' expr			{ fit(fitx($3.val,8)); emit2(RETLW|$3.val); }
+	| STRING				{ int i; for (i = 0; i < stringlen; i++) emit2(RETLW|stringbuf[i]); }
+	| dtlist ',' STRING			{ int i; for (i = 0; i < stringlen; i++) emit1(RETLW|stringbuf[i]); }
 	;
 
 label	: IDENT					{ newident($1, DOTSCT); newlabel($1); }
@@ -76,14 +89,14 @@ b	: expr					{ $$ = ($1.val & 0x07) << 7; }
 	;
 
 f	: expr					{ $$ = $1.val; }
-	| PSEUDOOP_BANKMASK '(' expr ')'	{ $$ = $3.val&0x7f; }
+	| PSEUDOOP_BANKMASK '(' expr ')'	{ $$ = $3.val & FILEMASK; }
 	;
 
 k8	: expr					{ int v = $1.val; if ($1.typ != S_ABS) v >>= 1; $$ = v; fit(fitx($$, 8)||fitx($$+128, 8)); }
         | SHIFTFUNC expr			{ int v = $2.val; if ($2.typ != S_ABS) v >>= 1; $$ = (v >> $1) & 0xff; fit(fitx($$, 8)||fitx($$+128, 8)); }
 	;
 
-k11	: expr 					{ $$ = ($1.typ & S_ABS ? $1.val : $1.val >> 1) & 0x7ff; }
+k11	: expr 					{ $$ = ($1.typ & S_ABS ? $1.val : $1.val >> 1) & INSTMASK; }
 	;
 
 expr	: '$' absexp				{ $$.typ = S_ABS; $$.val = $2; }
