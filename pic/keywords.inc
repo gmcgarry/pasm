@@ -59,13 +59,13 @@
 
 /* byte-oriented */
 { 0,	BYTEOP, 		0x0700, "ADDWF" },	/* 00 0111 dfff ffff */
-{ 0,	BYTEOP, 		0x0600, "ANDWF" },	/* 00 0101 dfff ffff */
+{ 0,	BYTEOP, 		0x0500, "ANDWF" },	/* 00 0101 dfff ffff */
 { 0,	BYTEOP,			0x0900, "COMF" },	/* 00 1001 dfff ffff */
 { 0,	BYTEOP,			0x0300, "DECF" },	/* 00 0011 dfff ffff */
 { 0,	BYTEOP,			0x0b00, "DECFSZ" },	/* 00 1011 dfff ffff */
-{ 0,	BYTEOP,			0x0A00, "INCF" },	/* 00 1010 dfff ffff */
-{ 0,	BYTEOP,			0x0F00, "INCFSZ" },	/* 00 1111 dfff ffff */
-{ 0,	BYTEOP,			0x0f00, "IORWF" },	/* 00 0100 dfff ffff */
+{ 0,	BYTEOP,			0x0a00, "INCF" },	/* 00 1010 dfff ffff */
+{ 0,	BYTEOP,			0x0f00, "INCFSZ" },	/* 00 1111 dfff ffff */
+{ 0,	BYTEOP,			0x0400, "IORWF" },	/* 00 0100 dfff ffff */
 { 0,	BYTEOP,			0x0800, "MOVF" },	/* 00 1000 dfff ffff */
 { 0,	BYTEOP,			0x0d00, "RLF" },	/* 00 1101 dfff ffff */
 { 0,	BYTEOP,			0x0c00, "RRF" },	/* 00 1100 dfff ffff */
