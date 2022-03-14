@@ -93,7 +93,7 @@
 #endif
 
 #ifndef VALUE_T
-#define VALUE_T		int		/* type for local math */
+#define VALUE_T		long		/* type for local math */
 #define VALWIDTH	(2*sizeof(VALUE_T))
 #endif
 
@@ -424,7 +424,7 @@ typedef Elf32_Sym Elf_Sym;
 
 #if YYDEBUG
 extern int yydebug;
-#define DPRINTF(x)	if (yydebug) do { printf("line %d: ", lineno); printf x; } while(0)
+#define DPRINTF(x)	if (yydebug) do { printf("line %ld: ", lineno); printf x; } while(0)
 #else
 #define DPRINTF(x)	/* nothing */
 #endif
