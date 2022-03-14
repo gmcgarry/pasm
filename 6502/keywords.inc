@@ -37,10 +37,13 @@
  * Mostek 6500 keywords
  */
 
+{0,	PSEUDOOP_SCR,	0,		".scr"},
+
+/* compatibility */
 {0,	PSEUDOOP_ORG,	0,		"org"},
 
-/* C64-specific */
-{0,	PSEUDOOP_SCR,	0,		".scr"},
+/* C64-specific compatibility */
+#ifdef COMPAT_C64
 {0,	PSEUDOOP_EQU,	0,		".const"},
 {0,	PSEUDOOP_EQU,	0,		".la"},
 {0,	PSEUDOOP_DATA,	1,		".by"},
@@ -49,6 +52,7 @@
 {0,	PSEUDOOP_FILL,	0,		".br"},
 {0,	PSEUDOOP_ASCII,	1,		".tx"},
 {0,	PSEUDOOP_ASCII,	1,		".text"},
+#endif
 
 {0,	EXTENSION,	0,		".l"},
 {0,	EXTENSION,	8,		".h"},
