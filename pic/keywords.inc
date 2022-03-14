@@ -50,7 +50,6 @@
 { 0,	IDENT,	  		1,	"CODE" },
 #endif
 
-
 #if PIC_ISA == PIC14
 
 /* register direction */
@@ -86,9 +85,9 @@
 { 0,	LITOP,			0x3e00, "ADDLW" },	/* 11 111x kkkk kkkk */
 { 0,	LITOP,			0x3900, "ANDLW" },	/* 11 1001 kkkk kkkk */
 { 0,	LITOP,			0x3800, "IORLW" },	/* 11 1000 kkkk kkkk */
-{ 0,	LITOP,			0x3000, "MOVLW" },	/* 11 00xx kkkk kkkk */
-{ 0,	LITOP,			0x3400, "RETLW" },	/* 11 01xx kkkk kkkk */
-{ 0,	LITOP,			0x3c00, "SUBLW" },	/* 11 110x kkkk kkkk */
+{ 0,	LITOP,			0x3000, "MOVLW" },	/* 11 0000 kkkk kkkk */
+{ 0,	LITOP,			0x3400, "RETLW" },	/* 11 0100 kkkk kkkk */
+{ 0,	LITOP,			0x3c00, "SUBLW" },	/* 11 1100 kkkk kkkk */
 { 0,	LITOP,			0x3a00, "XORLW" },	/* 11 1010 kkkk kkkk */
 
 /* control operations */
@@ -101,6 +100,30 @@
 
 { 0,	JMPOP,			0x2000, "CALL" },	/* 10 0kkk kkkk kkkk */
 { 0,	JMPOP,			0x2800, "GOTO" },	/* 10 1kkk kkkk kkkk */
+
+/* enhanced devices */
+{ 0,	BYTEOP, 		0x3d00, "ADDWFC" },	/* 11 1101 dfff ffff */
+{ 0,	BYTEOP, 		0x3700, "ASRF" },	/* 11 0111 dfff ffff */
+{ 0,	BYTEOP, 		0x3500, "LSLF" },	/* 11 0101 dfff ffff */
+{ 0,	BYTEOP, 		0x3600, "LSRF" },	/* 11 0110 dfff ffff */
+{ 0,	BYTEOP, 		0x3b00, "SUBWFB" },	/* 11 1011 dfff ffff */
+#ifdef  notyet
+{ 0,	MOVLB,			0x0020, "MOVLB" },	/* 00 0000 001k kkkk */
+{ 0,	MOVLP,			0x3180, "MOVLP" },	/* 11 0001 1kkk kkkk */
+{ 0,	BRA,			0x2800, "BRA" },	/* 11 001k kkkk kkkk */
+#endif
+{ 0,	NOOP,			0x000b, "BRW" },	/* 00 0000 0000 1011 */
+{ 0,	NOOP,			0x000a, "CALLW" },	/* 00 0000 0000 1010 */
+{ 0,	NOOP,			0x0062, "OPTION" },	/* 00 0000 0110 0010 */
+{ 0,	NOOP,			0x0001, "RESET" },	/* 00 0000 0000 0001 */
+#ifdef notyet
+{ 0,	TRIS,			0x0060, "TRIS" },	/* 00 0000 0110 0fff */
+{ 0,	ADDFSR,			0x3100, "ADDFSR" },	/* 11 0001 0nkk kkkk */
+{ 0,	MOVIW,			0x0010, "MOVIW" },	/* 00 0000 0001 0nmm */
+{ 0,	MOVIW,			0x3f00, "MOVIW" },	/* 11 1111 0nkk kkkk */
+{ 0,	MOVIW,			0x0018, "MOVWI" },	/* 00 0000 0001 1nmm */
+{ 0,	MOVIW,			0x3f80, "MOVWI" },	/* 11 1111 1nkk kkkk */
+#endif
 
 #elif PIC_ISA == PIC12
 
