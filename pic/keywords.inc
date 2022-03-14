@@ -50,6 +50,9 @@
 { 0,	IDENT,	  		1,	"CODE" },
 #endif
 
+
+#if PIC_ISA == PIC14
+
 /* register direction */
 { 0,	D,			0x00,	"W" },
 { 0,	D,			0x80,	"F" },
@@ -84,7 +87,7 @@
 { 0,	LITOP,			0x3900, "ANDLW" },	/* 11 1001 kkkk kkkk */
 { 0,	LITOP,			0x3800, "IORLW" },	/* 11 1000 kkkk kkkk */
 { 0,	LITOP,			0x3000, "MOVLW" },	/* 11 00xx kkkk kkkk */
-{ 0,	LITOP,			0x3600, "RETLW" },	/* 11 01xx kkkk kkkk */
+{ 0,	LITOP,			0x3400, "RETLW" },	/* 11 01xx kkkk kkkk */
 { 0,	LITOP,			0x3c00, "SUBLW" },	/* 11 110x kkkk kkkk */
 { 0,	LITOP,			0x3a00, "XORLW" },	/* 11 1010 kkkk kkkk */
 
@@ -98,3 +101,56 @@
 
 { 0,	JMPOP,			0x2000, "CALL" },	/* 10 0kkk kkkk kkkk */
 { 0,	JMPOP,			0x2800, "GOTO" },	/* 10 1kkk kkkk kkkk */
+
+#elif PIC_ISA == PIC12
+
+/* register direction */
+{ 0,	D,			0x00,	"W" },
+{ 0,	D,			0x20,	"F" },
+
+/* byte-oriented */
+{ 0,	BYTEOP, 		0x1C0, "ADDWF" },	/* 0001 11df ffff */
+{ 0,	BYTEOP, 		0x140, "ANDWF" },	/* 0001 01df ffff */
+{ 0,	BYTEOP,			0x240, "COMF" },	/* 0010 01df ffff */
+{ 0,	BYTEOP,			0x0C0, "DECF" },	/* 0000 11df ffff */
+{ 0,	BYTEOP,			0x2C0, "DECFSZ" },	/* 0010 11df ffff */
+{ 0,	BYTEOP,			0x280, "INCF" },	/* 0010 10df ffff */
+{ 0,	BYTEOP,			0x3C0, "INCFSZ" },	/* 0011 11df ffff */
+{ 0,	BYTEOP,			0x100, "IORWF" },	/* 0001 00df ffff */
+{ 0,	BYTEOP,			0x200, "MOVF" },	/* 0010 00df ffff */
+{ 0,	BYTEOP,			0x340, "RLF" },		/* 0011 01df ffff */
+{ 0,	BYTEOP,			0x300, "RRF" },		/* 0011 00df ffff */
+{ 0,	BYTEOP,			0x080, "SUBWF" },	/* 0000 10df ffff */
+{ 0,	BYTEOP,			0x380, "SWAPF" },	/* 0011 10df ffff */
+{ 0,	BYTEOP,			0x180, "XORWF" },	/* 0001 10df ffff */
+
+{ 0,	ONEOP,			0x060, "CLRF" },	/* 0000 011f ffff */
+{ 0,	ONEOP,			0x020, "MOVWF" },	/* 0000 001f ffff */
+
+/* bit-oriented */
+{ 0,	BITOP,			0x400, "BCF" },		/* 0100 bbbf ffff */
+{ 0,	BITOP,			0x500, "BSF" },		/* 0101 bbbf ffff */
+{ 0,	BITOP,			0x600, "BTFSC" },	/* 0110 bbbf ffff */
+{ 0,	BITOP,			0x700, "BTFSS" },	/* 0111 bbbf ffff */
+
+/* literal operations */
+{ 0,	LITOP,			0xE00, "ANDLW" },	/* 1110 kkkk kkkk */
+{ 0,	LITOP,			0xD00, "IORLW" },	/* 1101 kkkk kkkk */
+{ 0,	LITOP,			0xC00, "MOVLW" },	/* 1100 kkkk kkkk */
+{ 0,	LITOP,			0x800, "RETLW" },	/* 1000 kkkk kkkk */
+{ 0,	LITOP,			0xF00, "XORLW" },	/* 1111 kkkk kkkk */
+
+/* control operations */
+{ 0,	NOOP,			0x004, "CLRWDT" },	/* 0000 0000 0100 */
+{ 0,	NOOP,			0x003, "SLEEP" },	/* 0000 0000 0011 */
+{ 0,	NOOP,			0x000, "NOP" },		/* 0000 0000 0000 */
+{ 0,	NOOP,			0x040, "CLRW" },	/* 0000 0100 0000 */
+
+{ 0,	JMPOP,			0x900, "CALL" },	/* 1001 kkkk kkkk */
+{ 0,	JMPOP,			0xA00, "GOTO" },	/* 101k kkkk kkkk */
+
+#else
+
+#error undefined ISA
+
+#endif

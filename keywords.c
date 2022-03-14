@@ -55,6 +55,7 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_DATA,		LONGSIZE,	".long" },
 	{ 0,	PSEUDOOP_DATA8,		QUADSIZE,	".quad" },
 	{ 0,	PSEUDOOP_ZERO,		0,		".zero" },
+	{ 0,	PSEUDOOP_FILL,		0,		".fill" },
 	{ 0,	PSEUDOOP_ASCII,		0,		".ascii" },
 	{ 0,	PSEUDOOP_ASCII,		1,		".asciz" },
 	{ 0,	PSEUDOOP_ASCII,		1,		".string" },

@@ -46,7 +46,7 @@
 {0,	PSEUDOOP_DATA,	1,		".by"},
 {0,	PSEUDOOP_DATA,	2,		".wo"},
 {0,	PSEUDOOP_BASE,	2,		".ba"},
-{0,	PSEUDOOP_DUP,	0,		".br"},
+{0,	PSEUDOOP_FILL,	0,		".br"},
 {0,	PSEUDOOP_ASCII,	1,		".tx"},
 {0,	PSEUDOOP_ASCII,	1,		".text"},
 
