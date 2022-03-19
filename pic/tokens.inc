@@ -30,7 +30,6 @@
 %token <y_word> PSEUDOOP_BANKSEL PSEUDOOP_BANKMASK
 %token <y_word> PSEUDOOP_PAGESEL
 %token <y_word> PSEUDOOP_DEVICE
-%token <y_word> PSEUDOOP_PSECT
 %token <y_word> PSEUDOOP_DT
 
 %type <y_word> b d f k8 off

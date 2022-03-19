@@ -32,26 +32,17 @@ operation
 	| label instr
 	| instr
 	| PSEUDOOP_DEVICE IDENT			{ setdevice($2->i_name); newident($2, S_ABS); }
-	| PSEUDOOP_CONFIG cfglist
+	| PSEUDOOP_CONFIG absexp		{ setconfig($2); }
+#ifdef COMPAT_MPASM
 	| PSEUDOOP_MAXRAM NUMBER8
 	| PSEUDOOP_BADRAM rglist
+#endif
 	| PSEUDOOP_BANKSEL expr			{ banksel($2.val); }
 	| PSEUDOOP_PAGESEL expr			{ }
 	| PSEUDOOP_DT dtlist
-#ifdef COMPAT_PICAS
-	| PSEUDOOP_PSECT IDENT optflags		{ newsect($2, 0, NULL); }
-	| PSEUDOOP_END IDENT			{ }
-#endif
 	;
 
-cfglist: cfglist ',' cfg
-	| cfg
-	| expr					{ setconfig_word($1.val); }
-	;
-
-cfg	: IDENT '=' IDENT			{ setconfig($1->i_name, $3->i_name); $1->i_type = $3->i_type = S_ABS; }
-	;
-
+#ifdef COMPAT_MPASM
 rglist:	rglist ',' rg
 	| rg
 	;
@@ -59,6 +50,7 @@ rglist:	rglist ',' rg
 rg	: NUMBER8 '-' NUMBER8
 	| NUMBER8
 	;
+#endif
 
 dtlist: expr					{ fit(fitx($1.val,8)); emit2(RETLW|$1.val); }
 	| dtlist ',' expr			{ fit(fitx($3.val,8)); emit2(RETLW|$3.val); }

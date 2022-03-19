@@ -16,11 +16,17 @@
 
 { 0,	PSEUDOOP_DEVICE,	0,	".device" },
 { 0,	PSEUDOOP_DT,		0,	".dt" },
+{ 0,	PSEUDOOP_CONFIG,	0,	".config" },
 
 { 0,	SHIFTFUNC,		0,	"low" },
 { 0,	SHIFTFUNC,		8,	"high" },
 { 0,	SHIFTFUNC,		0,	"lo8" },
 { 0,	SHIFTFUNC,		8,	"hi8" },
+
+{ 0,	PSEUDOOP_CONFIG,	0,	"CONFIG" },
+{ 0,	PSEUDOOP_BANKSEL,	0,	"BANKSEL" },
+{ 0,	PSEUDOOP_BANKMASK,	0,	"BANKMASK" },
+{ 0,	PSEUDOOP_PAGESEL,	0,	"PAGESEL" },
 
 /* mpasm compatibility */
 #ifdef COMPAT_MPASM
@@ -31,10 +37,6 @@
 { 0,	'=',			0,	"EQU" },
 { 0,	PSEUDOOP_INCLUDE,	0,	"INCLUDE" },
 { 0,	PSEUDOOP_DEVICE,	0,	"PROCESSOR" },
-{ 0,	PSEUDOOP_BANKSEL,	0,	"BANKSEL" },
-{ 0,	PSEUDOOP_BANKMASK,	0,	"BANKMASK" },
-{ 0,	PSEUDOOP_PAGESEL,	0,	"PAGESEL" },
-{ 0,	PSEUDOOP_CONFIG,	0,	"CONFIG" },
 { 0,	PSEUDOOP_GLOBAL,	0,	"GLOBAL" },
 { 0,	PSEUDOOP_LIST,	  	0,	"NOLIST" },
 { 0,	PSEUDOOP_LIST,	  	1,	"LIST" },
@@ -42,12 +44,6 @@
 { 0,	PSEUDOOP_MAXRAM,	0,	"__MAXRAM" },
 { 0,	PSEUDOOP_BADRAM,	0,	"__BADRAM" },
 { 0,	PSEUDOOP_CONFIG,	0,	"__CONFIG" },
-#endif
-
-/* pic-as compability */
-#ifdef COMPAT_PICAS
-{ 0,	PSEUDOOP_PSECT,		0,	"PSECT" },
-{ 0,	IDENT,	  		1,	"CODE" },
 #endif
 
 #if PIC_ISA == PIC14
