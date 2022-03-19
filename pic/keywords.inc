@@ -164,6 +164,7 @@
 { 0,	NOOP,			0x003, "SLEEP" },	/* 0000 0000 0011 */
 { 0,	NOOP,			0x000, "NOP" },		/* 0000 0000 0000 */
 { 0,	NOOP,			0x040, "CLRW" },	/* 0000 0100 0000 */
+{ 0,	TRIS,			0x000, "TRIS" },	/* 0000 0000 0fff */
 
 { 0,	LITOP,			0x900, "CALL" },	/* 1001 kkkk kkkk */
 { 0,	JMPOP,			0xA00, "GOTO" },	/* 101k kkkk kkkk */

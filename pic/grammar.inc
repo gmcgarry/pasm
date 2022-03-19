@@ -16,16 +16,20 @@
 
 #if PIC_ISA == PIC14
 #define RETLW		0x3400
-#define FILEMASK	0x7F
-#define OFFMASK		0x7FF	/* 11-bit offsets */
+#define FILEBITS	7
+#define OFFBITS		11
+#error what?
 #elif PIC_ISA == PIC12
 #define RETLW		0x800
-#define FILEMASK	0x1F	/* 9-bit offset */
-#define OFFMASK		0x1FF
+#define FILEBITS	5
+#define OFFBITS		9
 #else
 #error unrecognised ISA
 #endif
 
+#define FILEMASK	((1<<FILEBITS)-1)
+#define OFFMASK		(1<<OFFBITS)-1	/* 11-bit offsets */
+#define BITSHIFT	FILEBITS
 
 operation
 	: label
@@ -67,6 +71,7 @@ instr	: NOOP					{ emit2($1); }
 	| BITOP f ',' b				{ emit2($1 | $4 | $2); }
 	| LITOP k8				{ emit2($1 | $2); }
 	| JMPOP off				{ emit2($1 | $2); }
+	| TRIS k3				{ emit2($1 | $2); }
 	;
 
 optdir	: /* empty  */				{ $$ = 0x80; if (pass == PASS_1) warning("using default destination of 1 (file)"); }
@@ -77,10 +82,10 @@ d	: expr					{ $$ = $1.val ? 0x80 : 0; }
 	| D					{ $$ = $1; }
 	;
 
-b	: expr					{ $$ = ($1.val & 0x07) << 7; }
+b	: expr					{ $$ = ($1.val & 0x07) << BITSHIFT; }
 	;
 
-f	: expr					{ $$ = $1.val; }
+f	: expr					{ $$ = $1.val; fit(fitx($$, FILEBITS)); }
 	| PSEUDOOP_BANKMASK '(' expr ')'	{ $$ = $3.val & FILEMASK; }
 	;
 
@@ -88,7 +93,10 @@ k8	: expr					{ int v = $1.val; if ($1.typ != S_ABS) v >>= 1; $$ = v; fit(fitx($
         | SHIFTFUNC expr			{ int v = $2.val; if ($2.typ != S_ABS) v >>= 1; $$ = (v >> $1) & 0xff; fit(fitx($$, 8)||fitx($$+128, 8)); }
 	;
 
-off	: expr 					{ $$ = ($1.typ & S_ABS ? $1.val : $1.val >> 1) & OFFMASK; }
+k3	: absexp				{ $$ = $1; fit(fitx($1,3)); }
+	;
+
+off	: expr 					{ $$ = ($1.typ & S_ABS ? $1.val : $1.val >> 1); fit(fitx($$, OFFBITS)); }
 	;
 
 expr	: '$' absexp				{ $$.typ = S_ABS; $$.val = $2; }

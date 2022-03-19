@@ -16,6 +16,13 @@
 
 #define COMPAT_MPASM
 
+#define PIC14   1
+#define PIC12   2
+
+#ifndef PIC_ISA
+#define PIC_ISA PIC12
+#endif
+
 #define	THREE_PASS	/* Distinguish short and long branches. */
 #define	LISTING		/* Enable listing facilities. */
 #if 0

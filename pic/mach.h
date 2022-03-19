@@ -14,11 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define PIC14   0
-#define PIC12   1
-#define PIC_ISA PIC14
-
-
 void setdevice(const char *id);
 void setconfig(int word);
 void banksel(int regno);
