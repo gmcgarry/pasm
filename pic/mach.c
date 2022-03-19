@@ -21,8 +21,6 @@
 #include "as.h"
 #include "error.h"
 
-#include "mach.h"
-
 extern sect_t sect[];
 extern int hash(const char *);
 
@@ -33,13 +31,13 @@ static int config_word = 0x3fff;
 
 static const struct { const char* name; int config_address; } devices[] = {
 	{ "p12f508", 0xFFF },
-	{ "p16f84", 0x400E },
-	{ "p16f84a", 0x400E },
-	{ "p16f627", 0x400E },
-	{ "p16f628", 0x400E },
-	{ "p16f628a", 0x400E },
-	{ "p16f630", 0x400E },
-	{ "p16f676", 0x400E },
+	{ "p16f84", 0x2007 },
+	{ "p16f84a", 0x2007 },
+	{ "p16f627", 0x2007 },
+	{ "p16f628", 0x2007 },
+	{ "p16f628a", 0x2007 },
+	{ "p16f630", 0x2007 },
+	{ "p16f676", 0x2007 },
 };
 
 #ifndef __TABLE_SIZE
@@ -99,6 +97,6 @@ void
 machfinish(int pass)
 {
 	/* write config */
-	DOTVAL = config_addr;
+	DOTVAL = 2 * config_addr;
 	emit2(config_word);
 }
