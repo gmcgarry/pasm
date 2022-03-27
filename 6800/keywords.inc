@@ -133,7 +133,7 @@
 { 0,	XOP,		0xEE,		"ldx"	},
 { 0,	XOP,		0xA7,		"staa"	},
 { 0,	XOP,		0xE7,		"stab"	},
-{ 0,	XOP,		0xAF,		"stx"	},
+{ 0,	XOP,		0xEF,		"stx"	},
 { 0,	NOARG,		0x19,		"daa"	},
 { 0,	NOARG,		0x01,		"nop"	},
 { 0,	NOARG,		0x3B,		"rti"	},
@@ -158,7 +158,7 @@
 
 #if defined(MC6802)
 { 0,	XOP,		0xAE,		"lds"	},
-{ 0,	XOP,		0xEF,		"sts"	},
+{ 0,	XOP,		0xAF,		"sts"	},
 { 0,	NOARG,		0x34,		"des"	},
 { 0,	NOARG,		0x31,		"ins"	},
 { 0,	NOARG,		0x35,		"txs"	},
