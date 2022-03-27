@@ -1,13 +1,18 @@
-Motorola 6800/6805
+Motorola 6800/6802/6805/6808/6809
 
 Backend originated from ACK sources.
 
 - 6800 original
-- 6802 has 128B RAM, added stack instructions
+- 6802 added:
+	- 128B internal RAM
+	- 16-bit index register H:X
+	- 16-bit relative stack instructions
+	- on-chip clock circuit
+- 6808 is 6802 without internal RAM disabled
 - 6805 removed B accumulator
+	- contains ROM and I/O on single chip
 	- successor to the 6804
-6802/6805 contains RAM, ROM and I/O on single chip;
-6809 16-bit aritmetic, stack registers, PIC instructions
+- 6809 16-bit aritmetic, stack registers, PIC instructions
 
 MC6800:
 
@@ -22,13 +27,18 @@ MC6800:
 	- CCR: 8-bit condition code register (x x H I N Z V C)
 		- H=half carry, I=interrupt mask, N=negative, Z=zero, V=overflow, C=carry
 
-MC6805:
+MC6808
+	- 16-bit index register H:X
+	- 16-bit SP register
+	- 16-bit PC
+
+MC6805/MC908:
 
 - 8-bit data bus
 - 8-bit address bus (256B RAM)
 - 8K program memory
 - 6805 (NMOS), 146805 (CMOS), 68HC05 (HCMOS)
-- CMOS and HCMOS have addition instructions for bit manipulation
+- CMOS and HCMOS have additional instructions for bit manipulation
 - stack located at top of zero page and grows down; max size 64 bytes
 - 5 registers: (no B accumulator)
 	- A: 8-bit accumulator
@@ -39,12 +49,5 @@ MC6805:
 		- H=half carry, I=interrupt mask, N=negative, Z=zero, C=carry
 - adds bit operations
 - interrupts save all registers on the stack: PCL, PCH, X, A, CCR
-
-MC6808
-
-- 6805 with:
-	- 16-bit index register H:X
-	- 16-bit SP register
-	- 16-bit PC
 
 https://physics.mcmaster.ca/tech/HC908/HC908Intro.htm

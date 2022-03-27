@@ -62,32 +62,26 @@ machfinish(int pass)
 }
 
 void
-branch(int opc, expr_t exp, expr_t cell)
+branch(int opc, expr_t exp)
 {
 	int sm, dist;
 	int saving;
 
 	dist = exp.val - (DOTVAL + 2);
-	if((opc & 0xf0) == 0) dist -= 1;  /* bitbranch */
-	if (pass == PASS_2 && dist > 0 && !(exp.typ & S_DOT))
-		dist -= sect[DOTSCT].s_gain;
+        if (pass == PASS_2 && dist > 0 && !(exp.typ & S_DOT))
+                dist -= sect[DOTSCT].s_gain;
 	sm = fitj(dist);
-	if ((exp.typ & S_SCTMASK) != DOTSCT)
+        if ((exp.typ & S_SCTMASK) != DOTSCT)
 		sm = 0;
-	if (opc == 0x20 || opc == 0xAD)
+	if (opc == 0x8D || opc == 0x20)
 		saving = 1;
 	else
 		saving = 3;
 	if (small(sm,saving)) {
 		emit1(opc);
-		if((opc & 0xF0) == 0)	/* bit branch */
-			emit1(cell.val);
-#ifdef RELOCATION
-		newrelo(exp.typ, RELPC|RELO1);
-#endif
 		emit1(dist);
 	} else {
-		if (opc == 0xAD)		/* bsr */
+		if (opc == 0x8D)		/* bsr */
 			emit1(0xBD);		/* jsr */
 		else {
 			if (opc != 0x20) {	/* bra */
@@ -95,14 +89,12 @@ branch(int opc, expr_t exp, expr_t cell)
 					/* reverse condition : */
 
 				emit1(opc ^ 1);
-				if((opc & 0xF0) == 0)  /* bitbranch */
-					emit1(cell.val);
 				emit1(3);
 			}
-			emit1(0xCC);		/* jmp */
+			emit1(0x7E);		/* jmp */
 		}
 #ifdef RELOCATION
-		newrelo(exp.typ, RELPC|RELO2|RELBR);
+		newrelo(exp.typ, RELO2 | RELBR);
 #endif
 		emit2(exp.val);
 	}

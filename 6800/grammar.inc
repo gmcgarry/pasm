@@ -36,10 +36,6 @@
 #define fitb(x)		((((x) + 0x80) & ~((int)0xFF)) == 0)
 #define fitw(x)		((((x) + 0x8000) & ~((int)0xFFFF)) == 0)
 
-bitexp
-	: absexp				{ fit((unsigned) $1 <= 7); $$ = $1 & 07; }
-	;
-
 operation
 	: optlabel instr
 	| optlabel pseudoop
@@ -59,13 +55,60 @@ pseudoop
 	;
 
 instr
-	: CTL					{ emit1($1); }
-	| BRANCH expr				{ expr_t expr = {0,0}; branch($1,$2,expr); }
-#ifdef MC6805
-	| BBRANCH bitexp ',' expr ',' expr	{ fit(fitb($4.val)); branch($1+($2 << 1), $6, $4); }
-	| BIT bitexp ',' expr			{ fit(fitb($4.val)); emit1($1+($2 << 1)); newrelo($4.typ, RELO1); emit1($4.val); }
+	: NOARG					{ emit1($1); }
+	| BRANCH expr				{ branch($1,$2); }
+	| XOP '#' expr				{
+							emit1($1 - 0x20);
+							switch ($1 & 0x0F) {
+								case 0x03:
+								case 0x0C:
+								case 0x0E:
+#ifdef RELOCATION
+									newrelo($3.typ, RELBR | RELO2);
 #endif
-#ifdef MC68HC08
+									emit2($3.val);
+									break;
+								default:
+#ifdef RELOCATION
+								newrelo($3.typ, RELO1);
+#endif
+								emit1($3.val);
+							}
+						}
+	| XOP '<' expr				{
+							emit1($1 - 0x10);
+#ifdef RELOCATION
+							newrelo($3.typ, RELO1);
+#endif
+							emit1($3.val);
+						}
+	| memref expr				{
+							emit1($1 + 0x10);
+#ifdef RELOCATION
+							newrelo($2.typ, RELO2);
+#endif
+							emit2($2.val);
+						}
+	| memref optexpr ',' X			{
+							emit1($1);
+#ifdef RELOCATION
+							newrelo($2.typ, RELO1);
+#endif
+							emit1($2.val);
+						}
+	;
+
+memref	: AOP
+	| XOP
+	;
+
+optexpr	: /* empty */				{ $$.typ = S_ABS; $$.val = 0; }
+	| expr					{ $$ = $1; }
+	;
+
+#if 0
+
+#ifdef MC6808
 	| CBRANCH expr ',' expr			{ emit1($1); emit1($2.val); emit1($4.val - DOTVAL); }
 	| CBRANCH '#' expr ',' expr		{ emit1($1); emit1($3.val); emit1($5.val - DOTVAL); }
 	| CBRANCH expr ',' X '+' ',' expr	{ emit1($1+0x30); emit1($2.val); emit1($7.val - DOTVAL); }
@@ -83,89 +126,9 @@ instr
 	| MOV '#' expr ',' expr			{ emit1(0x6e); emit1($3.val); emit1($5.val); }
 	| MOV X '+' ',' expr			{ emit1(0x6f); emit1($5.val); }
 #endif
-	| RMW expr				{ fit(fitb($2.val)); emit1($1); newrelo($2.typ, RELO1); emit1($2.val); }
-	| RMW expr ',' X			{
-							int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
-							if (small($2.val == 0 && opt && PASS_RELO, 1)) {
-								emit1($1+0x40);
-							} else {
-								emit1($1+0x30);
-								newrelo($2.typ, RELO1);
-								emit1($2.val);
-							}
-						}
-	| RMW ',' X				{ emit1($1+0x40); }
-#ifdef MC68HC08
+#ifdef MC6808
 	| RMW expr ',' SP			{ fit(fitb($2.val)); emit1(0x9e); emit1($1+0x30); }
 #endif
-
-	| RM '#' expr		{
-					switch($1) {
-						case 0xa7:
-						case 0xad:
-#ifdef MACH_6805
-						case 0xac:
-						case 0xaf:
-#endif
-							serror("mode error");
-						default:
-							emit2($1);
-					}
-#ifndef MACH_6805
-					if ($1 == 0xac || $1 == 0xae || $1 == 0xaf) {
-						fit(fitw($3.val));
-						newrelo($3.typ, RELO2);
-						emit2($3.val);
-					} else
-#endif
-					{
-						fit(fitb($3.val));
-						newrelo($3.typ, RELO1);
-						emit1($3.val);
-					}
-				}
-	| RM expr		{
-					int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
-					if (small(PASS_RELO && opt && fitb($2.val), 1)) {
-						emit1($1+0x10);
-						newrelo($2.typ, RELO1);
-						emit1($2.val);
-					} else {
-						emit1($1+0x20);
-						newrelo($2.typ, RELO2|RELBR);
-						emit2($2.val);
-					}
-				}
-	| RM expr ',' X		{
-					int opt = (($2.typ & S_SCTMASK) == DOTSCT) || (($2.typ & S_SCTMASK) == S_ABS);
-					if (small(PASS_RELO && opt && fitb($2.val),1)) {
-						if (small(PASS_RELO && opt && $2.val == 0,1)) {
-							emit1($1+0x50);
-						} else {
-							emit1($1+0x40);
-							newrelo($2.typ, RELO1);
-							emit1($2.val);
-						}
-					} else {
-						small(0,1);  /* dummy */
-						emit1($1+0x30);
-						newrelo($2.typ, RELO2|RELBR);
-						emit2($2.val);
-					}
-				}
-	| RM ',' X		{ emit1($1+0x50); }
-#ifdef MC6805
-	| CMOS			{
-					switch($1) {
-						case 0:
-							opt_cmos = 1;
-							break;
-						case 0x8e:
-						case 0x8f:
-							if (!opt_cmos)
-								serror("bad opcode");
-							emit1($1);
-					}
-				}
-#endif
 	;
+
+#endif

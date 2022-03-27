@@ -47,253 +47,124 @@
 { 0,	PSEUDOOP_ZERO,	1,		"ds"	},	/* define storage */
 { 0,	PSEUDOOP_ASCII,	0,		"fcs"	},	/* form constant character */
 
-
 /* The X register */
 { 0,	X,		0,		"x"	},
-#if defined(MC68HC08)
+#if defined(MC6802)
 { 0,	SP,		0,		"sp"	},
 #endif
 
-#if defined(MC6805) || defined(MC68HC08)
-/* Bit test and branch */
-{ 0,	BBRANCH,	0x00,		"brset"	},
-{ 0,	BBRANCH,	0x01,		"brclr"	},
-
-/* Bit manipulation */
-{ 0,	BIT,		0x10,		"bset"	},
-{ 0,	BIT,		0x11,		"bclr"	},
-#endif
-
-/* Branches */
 { 0,	BRANCH,		0x20,		"bra"	},
-#if defined(MC6805) || defined(MC68HC08)
-{ 0,	BRANCH,		0x21,		"brn"	},
-#endif
 { 0,	BRANCH,		0x22,		"bhi"	},
 { 0,	BRANCH,		0x23,		"bls"	},
-{ 0,	BRANCH,		0x24,		"bhs"	},
+{ 0,	BRANCH,		0x24,		"bhs"	},	/* bcc */
 { 0,	BRANCH,		0x24,		"bcc"	},
-{ 0,	BRANCH,		0x25,		"blo"	},
+{ 0,	BRANCH,		0x25,		"blo"	},	/* bcs */
 { 0,	BRANCH,		0x25,		"bcs"	},
 { 0,	BRANCH,		0x26,		"bne"	},
 { 0,	BRANCH,		0x27,		"beq"	},
-#if defined(MC6805) || defined(MC68HC08)
-{ 0,	BRANCH,		0x28,		"bhcc"	},
-{ 0,	BRANCH,		0x29,		"bhcs"	},
-#else
 { 0,	BRANCH,		0x28,		"bvc"	},
-{ 0,	BRANCH,		0x29,		"bhs"	},
-#endif
-{ 0,	BRANCH,		0x2a,		"bpl"	},
-{ 0,	BRANCH,		0x2b,		"bmi"	},
-#if defined(MC6805) || defined(MC68HC08)
-{ 0,	BRANCH,		0x2c,		"bmc"	},
-{ 0,	BRANCH,		0x2d,		"bms"	},
-{ 0,	BRANCH,		0x2e,		"bil"	},
-{ 0,	BRANCH,		0x2f,		"bih"	},
-#else
-{ 0,	BRANCH,		0x2c,		"bge"	},
-{ 0,	BRANCH,		0x2d,		"blt"	},
-{ 0,	BRANCH,		0x2e,		"bgt"	},
-{ 0,	BRANCH,		0x2f,		"ble"	},
-#endif
-#if defined(MC68HC08)
-{ 0,	CBRANCH,	0x31,		"cbeq"	},
-{ 0,	CBRANCH,	0x41,		"cbeqa"	},
-{ 0,	CBRANCH,	0x51,		"cbeqx"	},
-{ 0,	DBNZ,		0x3b,		"dbnz"	},
-{ 0,	DBNZ,		0x4b,		"dbnza"	},
-{ 0,	DBNZ,		0x5b,		"dbnzx"	},
-#endif
-
-/* unconditional branches */
-#if defined(MC6805) || defined(MC68HC08)
-{ 0,	RM,		0xac,		"jmp"	},
-{ 0,	BRANCH,		0xad,		"bsr"	},
-#else
-{ 0,	RM,		0x6E,		"jmp"	},
-{ 0,	BRANCH,		0x8D,		"bsr"	},	/* pc-relative jmp to subroutine */
-#endif
-{ 0,	RM,		0xad,		"jsr"	},	/* absolute jump to subroutine */
-
-/* Read modify write on anything but registers */
-{ 0,	RMW,		0x30,		"neg"	},
-{ 0,	RMW,		0x33,		"com"	},
-{ 0,	RMW,		0x34,		"lsr"	},
-{ 0,	RMW,		0x36,		"ror"	},
-{ 0,	RMW,		0x36,		"asr"	},
-{ 0,	RMW,		0x38,		"lsl"	},
-{ 0,	RMW,		0x39,		"rol"	},
-{ 0,	RMW,		0x3a,		"dec"	},
-{ 0,	RMW,		0x3c,		"inc"	},
-{ 0,	RMW,		0x3d,		"tst"	},
-{ 0,	RMW,		0x3f,		"clr"	},
-
-/* Implied stuff */
-#if defined(MC6805) || defined(MC68HC08)
-{ 0,	CTL,		0x80,		"rti"	},
-{ 0,	CTL,		0x81,		"rts"	},
-{ 0,	CTL,		0x83,		"swi"	},
-{ 0,	CTL,		0x97,		"tax"	},
-{ 0,	CTL,		0x98,		"clc"	},
-{ 0,	CTL,		0x99,		"sec"	},
-{ 0,	CTL,		0x9a,		"cli"	},
-{ 0,	CTL,		0x9b,		"sei"	},
-{ 0,	CTL,		0x9c,		"rsp"	},
-{ 0,	CTL,		0x9d,		"nop"	},
-{ 0,	CTL,		0x9f,		"txa"	},
-#else
-{ 0,	CTL,		0x3B,		"rti"	},
-{ 0,	CTL,		0x39,		"rts"	},
-{ 0,	CTL,		0x3F,		"swi"	},
-{ 0,	CTL,		0x0C,		"clc"	},
-{ 0,	CTL,		0x0D,		"sec"	},
-{ 0,	CTL,		0x0E,		"cli"	},
-{ 0,	CTL,		0x0F,		"sei"	},
-{ 0,	CTL,		0x01,		"nop"	},
-#endif
-
-#if defined(MC68HC08)
-{ 0,	CTL,		0x62,		"nsa"	},
-#endif
-
-/* Register memory. Warning. Some imediate opcodes excluded in parser actions. */
-#if defined(MC6805) || defined(MC68HC08)
-{ 0,	RM,		0xa0,		"sub"	},
-{ 0,	RM,		0xa1,		"cmp"	},
-{ 0,	RM,		0xa2,		"sbc"	},
-{ 0,	RM,		0xa3,		"cpx"	},
-{ 0,	RM,		0xa4,		"and"	},
-{ 0,	RM,		0xa5,		"bit"	},
-{ 0,	RM,		0xa6,		"lda"	},
-{ 0,	RM,		0xa7,		"sta"	},
-{ 0,	RM,		0xa8,		"eor"	},
-{ 0,	RM,		0xa9,		"adc"	},
-{ 0,	RM,		0xaa,		"ora"	},
-{ 0,	RM,		0xab,		"add"	},
-#else
-{ 0,	RM,		0xA0,		"suba"	},
-{ 0,	RM,		0xA1,		"cmpa"	},
-{ 0,	RM,		0xA2,		"sbca"	},
-{ 0,	RM,		0xA4,		"anda"	},
-{ 0,	RM,		0xA5,		"bita"	},
-{ 0,	RM,		0xA6,		"ldaa"	},
-{ 0,	RM,		0xA7,		"staa"	},
-{ 0,	RM,		0xA8,		"eora"	},
-{ 0,	RM,		0xA9,		"adca"	},
-{ 0,	RM,		0xAA,		"oraa"	},
-{ 0,	RM,		0xAB,		"adda"	},
-#endif
-#if !defined(MC6805) && !defined(MC68HC08)
-{ 0,	RM,		0xAC,		"cpx"	},
-{ 0,	RM,		0xE0,		"subb"	},
-{ 0,	RM,		0xE1,		"cmpb"	},
-{ 0,	RM,		0xE2,		"sbcb"	},
-{ 0,	RM,		0xE4,		"andb"	},
-{ 0,	RM,		0xE5,		"bitb"	},
-{ 0,	RM,		0xE6,		"ldab"	},
-{ 0,	RM,		0xE8,		"eorb"	},
-{ 0,	RM,		0xE9,		"adcb"	},
-{ 0,	RM,		0xEA,		"orab"	},
-{ 0,	RM,		0xEB,		"addb"	},
-#endif
-{ 0,	RM,		0xae,		"ldx"	},
-{ 0,	RM,		0xaf,		"stx"	},
-#if defined(MC68HC08)
-{ 0,	RM,		0x45,		"ldhx"	},
-{ 0,	RM,		0x35,		"sthx"	},
-#endif
-
-/* Brain damaged concatenated opcodes for RMW on registers */
-{ 0,	CTL,		0x40,		"nega"	},
-{ 0,	CTL,		0x43,		"coma"	},
-{ 0,	CTL,		0x44,		"lsra"	},
-{ 0,	CTL,		0x46,		"rora"	},
-{ 0,	CTL,		0x47,		"asra"	},
-{ 0,	CTL,		0x48,		"lsla"	},
-{ 0,	CTL,		0x48,		"asla"	},	/* alias */
-{ 0,	CTL,		0x49,		"rola"	},
-{ 0,	CTL,		0x4a,		"deca"	},
-{ 0,	CTL,		0x4c,		"inca"	},
-{ 0,	CTL,		0x4d,		"tsta"	},
-{ 0,	CTL,		0x4f,		"clra"	},
-
-#ifdef MC6805
-{ 0,	CTL,		0x50,		"negx"	},
-{ 0,	CTL,		0x53,		"comx"	},
-{ 0,	CTL,		0x54,		"lsrx"	},
-{ 0,	CTL,		0x56,		"rorx"	},
-{ 0,	CTL,		0x57,		"asrx"	},
-{ 0,	CTL,		0x58,		"lslx"	},
-{ 0,	CTL,		0x58,		"aslx"	},	/* alias */
-{ 0,	CTL,		0x59,		"rolx"	},
-{ 0,	CTL,		0x5a,		"decx"	},
-{ 0,	CTL,		0x5c,		"incx"	},
-{ 0,	CTL,		0x5d,		"tstx"	},
-{ 0,	CTL,		0x5f,		"clrx"	},
-#else
-{ 0,	CTL,		0x50,		"negb"	},
-{ 0,	CTL,		0x53,		"comb"	},
-{ 0,	CTL,		0x54,		"lsrb"	},
-{ 0,	CTL,		0x56,		"rorb"	},
-{ 0,	CTL,		0x57,		"asrb"	},
-{ 0,	CTL,		0x58,		"lslb"	},
-{ 0,	CTL,		0x58,		"aslb"	},	/* alias */
-{ 0,	CTL,		0x59,		"rolb"	},
-{ 0,	CTL,		0x5A,		"decb"	},
-{ 0,	CTL,		0x5C,		"incb"	},
-{ 0,	CTL,		0x5D,		"tstb"	},
-{ 0,	CTL,		0x5F,		"clrb"	},
-
-{ 0,	CTL,		0x19,		"daa"	},
-{ 0,	CTL,		0x0A,		"clv"	},
-{ 0,	CTL,		0x0B,		"sev"	},
-{ 0,	CTL,		0x3E,		"wai"	},
-{ 0,	CTL,		0x06,		"tap"	},
-{ 0,	CTL,		0x07,		"tpa"	},
-{ 0,	CTL,		0x1B,		"aba"	},
-{ 0,	CTL,		0x11,		"cba"	},
-{ 0,	CTL,		0x10,		"sba"	},
-{ 0,	CTL,		0x16,		"tab"	},
-{ 0,	CTL,		0x17,		"tba"	},
-{ 0,	CTL,		0x09,		"dex"	},
-{ 0,	CTL,		0x08,		"inx"	},
-#endif
-
-/* stack operations */
-#if !defined(MC6805) && !defined(MC68HC08)
-{ 0,	RM,		0xEE,		"lds"	},
-{ 0,	RM,		0xEF,		"sts"	},
-{ 0,	CTL,		0x34,		"des"	},
-{ 0,	CTL,		0x31,		"ins"	},
-{ 0,	CTL,		0x35,		"txs"	},
-{ 0,	CTL,		0x30,		"tsx"	},
-#endif
-
-#if defined(MC68HC08)
-{ 0,	MOV,		0x4e,		"mov"	},
-#endif
-
-#if defined(MC6802) || defined(MC68HC08)
-{ 0,	CTL,		0x86,		"pula"	},
-{ 0,	CTL,		0x87,		"psha"	},
-{ 0,	CTL,		0x88,		"pulx"	},
-{ 0,	CTL,		0x89,		"pshx"	},
-#endif
+{ 0,	BRANCH,		0x29,		"bvs"	},
+{ 0,	BRANCH,		0x2A,		"bpl"	},
+{ 0,	BRANCH,		0x2B,		"bmi"	},
+{ 0,	BRANCH,		0x2C,		"bge"	},
+{ 0,	BRANCH,		0x2D,		"blt"	},
+{ 0,	BRANCH,		0x2E,		"bgt"	},
+{ 0,	BRANCH,		0x2F,		"ble"	},
+{ 0,	BRANCH,		0x8D,		"bsr"	},
+{ 0,	XOP,		0xA0,		"suba"	},
+{ 0,	XOP,		0xA1,		"cmpa"	},
+{ 0,	XOP,		0xA2,		"sbca"	},
+{ 0,	XOP,		0xA4,		"anda"	},
+{ 0,	XOP,		0xA5,		"bita"	},
+{ 0,	XOP,		0xA6,		"ldaa"	},
+{ 0,	XOP,		0xA8,		"eora"	},
+{ 0,	XOP,		0xA9,		"adca"	},
+{ 0,	XOP,		0xAA,		"oraa"	},
+{ 0,	XOP,		0xAB,		"adda"	},
+{ 0,	XOP,		0xE0,		"subb"	},
+{ 0,	XOP,		0xE1,		"cmpb"	},
+{ 0,	XOP,		0xE2,		"sbcb"	},
+{ 0,	XOP,		0xE4,		"andb"	},
+{ 0,	XOP,		0xE5,		"bitb"	},
+{ 0,	XOP,		0xE6,		"ldab"	},
+{ 0,	XOP,		0xE8,		"eorb"	},
+{ 0,	XOP,		0xE9,		"adcb"	},
+{ 0,	XOP,		0xEA,		"orab"	},
+{ 0,	XOP,		0xEB,		"addb"	},
+{ 0,	AOP,		0x60,		"neg"	},
+{ 0,	NOARG,		0x40,		"nega"	},
+{ 0,	NOARG,		0x50,		"negb"	},
+{ 0,	AOP,		0x63,		"com"	},
+{ 0,	NOARG,		0x43,		"coma"	},
+{ 0,	NOARG,		0x53,		"comb"	},
+{ 0,	AOP,		0x64,		"lsr"	},
+{ 0,	NOARG,		0x44,		"lsra"	},
+{ 0,	NOARG,		0x54,		"lsrb"	},
+{ 0,	AOP,		0x66,		"ror"	},
+{ 0,	NOARG,		0x46,		"rora"	},
+{ 0,	NOARG,		0x56,		"rorb"	},
+{ 0,	AOP,		0x67,		"asr"	},
+{ 0,	NOARG,		0x47,		"asra"	},
+{ 0,	NOARG,		0x57,		"asrb"	},
+{ 0,	AOP,		0x68,		"asl"	},
+{ 0,	NOARG,		0x48,		"asla"	},
+{ 0,	NOARG,		0x58,		"aslb"	},
+{ 0,	AOP,		0x68,		"lsl"	},
+{ 0,	NOARG,		0x48,		"lsla"	},
+{ 0,	NOARG,		0x58,		"lslb"	},
+{ 0,	AOP,		0x69,		"rol"	},
+{ 0,	NOARG,		0x49,		"rola"	},
+{ 0,	NOARG,		0x59,		"rolb"	},
+{ 0,	AOP,		0x6A,		"dec"	},
+{ 0,	NOARG,		0x4A,		"deca"	},
+{ 0,	NOARG,		0x5A,		"decb"	},
+{ 0,	AOP,		0x6C,		"inc"	},
+{ 0,	NOARG,		0x4C,		"inca"	},
+{ 0,	NOARG,		0x5C,		"incb"	},
+{ 0,	AOP,		0x6D,		"tst"	},
+{ 0,	NOARG,		0x4D,		"tsta"	},
+{ 0,	NOARG,		0x5D,		"tstb"	},
+{ 0,	AOP,		0x6F,		"clr"	},
+{ 0,	NOARG,		0x4F,		"clra"	},
+{ 0,	NOARG,		0x5F,		"clrb"	},
+{ 0,	XOP,		0x6E,		"jmp"	},
+{ 0,	XOP,		0xAD,		"jsr"	},
+{ 0,	XOP,		0xAC,		"cpx"	},
+{ 0,	XOP,		0xEE,		"ldx"	},
+{ 0,	XOP,		0xA7,		"staa"	},
+{ 0,	XOP,		0xE7,		"stab"	},
+{ 0,	XOP,		0xAF,		"stx"	},
+{ 0,	NOARG,		0x19,		"daa"	},
+{ 0,	NOARG,		0x01,		"nop"	},
+{ 0,	NOARG,		0x3B,		"rti"	},
+{ 0,	NOARG,		0x39,		"rts"	},
+{ 0,	NOARG,		0x3F,		"swi"	},
+{ 0,	NOARG,		0x0C,		"clc"	},
+{ 0,	NOARG,		0x0D,		"sec"	},
+{ 0,	NOARG,		0x0E,		"cli"	},
+{ 0,	NOARG,		0x0F,		"sei"	},
+{ 0,	NOARG,		0x0A,		"clv"	},
+{ 0,	NOARG,		0x0B,		"sev"	},
+{ 0,	NOARG,		0x3E,		"wai"	},
+{ 0,	NOARG,		0x06,		"tap"	},
+{ 0,	NOARG,		0x07,		"tpa"	},
+{ 0,	NOARG,		0x1B,		"aba"	},
+{ 0,	NOARG,		0x11,		"cba"	},
+{ 0,	NOARG,		0x10,		"sba"	},
+{ 0,	NOARG,		0x16,		"tab"	},
+{ 0,	NOARG,		0x17,		"tba"	},
+{ 0,	NOARG,		0x09,		"dex"	},
+{ 0,	NOARG,		0x08,		"inx"	},
 
 #if defined(MC6802)
-{ 0,	CTL,		0x37,		"pulb"	},
-{ 0,	CTL,		0x35,		"pshb"	},
-#endif
-
-#if defined(MC68HC08)
-{ 0,	CTL,		0x8a,		"pulh"	},
-{ 0,	CTL,		0x8b,		"pshh"	},
-#endif
-
-#if defined(MC6805) || defined(MC68HC08)
-/* CMOS support */
-{ 0,	CMOS,		0,		".cmos"	},
-{ 0,	CMOS,		0x8e,		"stop"	},
-{ 0,	CMOS,		0x8f,		"wait"	},
+{ 0,	XOP,		0xAE,		"lds"	},
+{ 0,	XOP,		0xEF,		"sts"	},
+{ 0,	NOARG,		0x34,		"des"	},
+{ 0,	NOARG,		0x31,		"ins"	},
+{ 0,	NOARG,		0x35,		"txs"	},
+{ 0,	NOARG,		0x30,		"tsx"	},
+{ 0,	NOARG,		0x32,		"pula"	},
+{ 0,	NOARG,		0x36,		"psha"	},
+{ 0,	NOARG,		0x33,		"pulb"	},
+{ 0,	NOARG,		0x37,		"pshb"	},
 #endif

@@ -34,15 +34,12 @@
  */
 
 %token <y_word> X SP
-%token <y_word> CTL
+%token <y_word> NOARG
 %token <y_word> BRANCH
-%token <y_word> BBRANCH
-%token <y_word> CBRANCH DBNZ
-%token <y_word> MOV
-%token <y_word> BIT
-%token <y_word> RMW
-%token <y_word> RM RMX
-%token <y_word> CMOS
-%type <y_valu> bitexp
+%token <y_word> AOP
+%token <y_word> XOP
+
+%type <y_word> memref
+%type <y_expr> optexpr
 
 %token PSEUDOOP_BOOT PSEUDOOP_ENDB
