@@ -41,6 +41,7 @@
 { 0,	'=',		0,		"bit"	},
 { 0,	PSEUDOOP_DATA,	1,		"db"	},
 { 0,	PSEUDOOP_DATA,	2,		"dw"	},
+{ 0,	PSEUDOOP_SPACE,	0,		"ds"	},
 { 0,	DOT,		0,		"$"	},
 #endif
 
