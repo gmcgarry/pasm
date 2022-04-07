@@ -23,13 +23,13 @@
 { 0,	SHIFTFUNC,		0,	"lo8" },
 { 0,	SHIFTFUNC,		8,	"hi8" },
 
-{ 0,	PSEUDOOP_CONFIG,	0,	"CONFIG" },
 { 0,	PSEUDOOP_BANKSEL,	0,	"BANKSEL" },
 { 0,	PSEUDOOP_BANKMASK,	0,	"BANKMASK" },
 { 0,	PSEUDOOP_PAGESEL,	0,	"PAGESEL" },
 
 /* mpasm compatibility */
 #ifdef COMPAT_MPASM
+{ 0,	PSEUDOOP_CONFIG,	0,	"CONFIG" },
 { 0,	PSEUDOOP_ORG,		0,	"ORG" },
 { 0,	PSEUDOOP_END,		0,	"END" },
 { 0,	PSEUDOOP_DATA,		1,	"DS" },

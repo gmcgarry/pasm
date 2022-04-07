@@ -20,7 +20,8 @@
 #define PIC12   2
 
 #ifndef PIC_ISA
-#define PIC_ISA PIC12
+//#define PIC_ISA PIC12
+#define PIC_ISA PIC14
 #endif
 
 #define	THREE_PASS	/* Distinguish short and long branches. */

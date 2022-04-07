@@ -18,7 +18,6 @@
 #define RETLW		0x3400
 #define FILEBITS	7
 #define OFFBITS		11
-#error what?
 #elif PIC_ISA == PIC12
 #define RETLW		0x800
 #define FILEBITS	5
@@ -85,18 +84,18 @@ d	: expr					{ $$ = $1.val ? 0x80 : 0; }
 b	: expr					{ $$ = ($1.val & 0x07) << BITSHIFT; }
 	;
 
-f	: expr					{ $$ = $1.val; fit(fitx($$, FILEBITS)); }
+f	: expr					{ $$ = $1.val & FILEMASK; /* fit(fitx($$,FILEBITS)); */ }
 	| PSEUDOOP_BANKMASK '(' expr ')'	{ $$ = $3.val & FILEMASK; }
 	;
 
-k8	: expr					{ int v = $1.val; if ($1.typ != S_ABS) v >>= 1; $$ = v; fit(fitx($$, 8)||fitx($$+128, 8)); }
-        | SHIFTFUNC expr			{ int v = $2.val; if ($2.typ != S_ABS) v >>= 1; $$ = (v >> $1) & 0xff; fit(fitx($$, 8)||fitx($$+128, 8)); }
+k8	: expr					{ int v = $1.val; if ($1.typ != S_ABS) v >>= 1; $$ = v; fit(fitx($$,8)||fitx($$+128,8)); }
+        | SHIFTFUNC expr			{ int v = $2.val; if ($2.typ != S_ABS) v >>= 1; $$ = (v >> $1) & 0xff; fit(fitx($$,8)||fitx($$+128,8)); }
 	;
 
 k3	: absexp				{ $$ = $1; fit(fitx($1,3)); }
 	;
 
-off	: expr 					{ $$ = ($1.typ & S_ABS ? $1.val : $1.val >> 1); fit(fitx($$, OFFBITS)); }
+off	: expr 					{ $$ = ($1.typ & S_ABS ? $1.val : $1.val >> 1); fit(fitx($$,OFFBITS)); }
 	;
 
 expr	: '$' absexp				{ $$.typ = S_ABS; $$.val = $2; }
