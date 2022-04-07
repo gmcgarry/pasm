@@ -72,7 +72,7 @@ operation
 	| PSEUDOOP_DEVICE IDENT			{ setdevice($2->i_name); }
 	| PSEUDOOP_DEFINE IDENT '=' REG8	{ $2->i_type = S_ABS; $2->i_valu = $4; }
 	| PSEUDOOP_SEGMENT			{
-							static const char *Names[] = { ".text", ".data" };
+							static const char *Names[] = { ".text", ".data", ".rodata" };
 							if ($1 >= (int)(sizeof(Names) / sizeof(Names[0]))) fatal("internal error, bad segment");
 							struct item *ip = item_search(Names[$1]);
 							if (!ip) {
@@ -96,7 +96,7 @@ imm6:	expr					{ $$ = $1.val; fit(fitx($$, 6)); }
 	;
 
 imm8:	expr					{ $$ = $1.val; fit(fitx($$, 8)); }
-	| SHIFTFUNC '(' expr ')'		{ $$ = ($3.val >> $1) & 0xff; }
+	| SHIFTFUNC '(' expr ')'		{ $$ = $3.val >> $1; fit(fitx($$, 8)); }
 	;
 
 imm16:	expr					{ $$ = $1.val; fit(fitx($$, 16)); }

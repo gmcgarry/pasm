@@ -21,6 +21,7 @@
 
 #define CSEG		0
 #define DSEG		1
+#define ESEG		2
 
 #define ZREG		0		/* r30/r31 */
 #define YREG		2		/* r28/r29 */

@@ -23,6 +23,8 @@
 #define ALIGNSECT	1
 
 #define IGNORECASE
+#define HEXPREFIX       '$'
+#define BINPREFIX       '%'
 
 /* ========== Machine independent type declarations ========== */
 

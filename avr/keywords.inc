@@ -20,6 +20,7 @@
 
 { 0,	PSEUDOOP_SEGMENT,	CSEG,		".cseg" },
 { 0,	PSEUDOOP_SEGMENT,	DSEG,		".dseg" },
+{ 0,	PSEUDOOP_SEGMENT,	ESEG,		".eseg" },
 
 { 0,	SHIFTFUNC,		0,		"low" },
 { 0,	SHIFTFUNC,		8,		"high" },
