@@ -186,10 +186,46 @@
 {0,	LBRNCH,		0x2F,		"lble"},
 {0,	SBRNCH,		0x16,		"lbra"},
 {0,	SBRNCH,		0x17,		"lbsr"},
+
+/* simulated 6800 instructions */
 {0,	NOARG,		0x1CFE,		"clc"},
-{0,	NOARG,		0x1A01,		"sec"},
 {0,	NOARG,		0x1CEF,		"cli"},
-{0,	NOARG,		0x1A10,		"sei"},
 {0,	NOARG,		0x1CFD,		"clv"},
+{0,	NOARG,		0x327F,		"des"},		/* LEAS -1,S */
+{0,	NOARG,		0x301F,		"dex"},		/* LEAX -1,X */
+{0,	NOARG,		0x3261,		"ins"},		/* LEAS 1,X */
+{0,	NOARG,		0x3001,		"inx"},		/* LEAX 1,X */
+{0,	NOARG,		0x1A01,		"sec"},
+{0,	NOARG,		0x1A10,		"sei"},
 {0,	NOARG,		0x1A02,		"sev"},
+{0,	NOARG,		0x1F8A,		"tap"},
+{0,	NOARG,		0x1FA8,		"tpa"},
+{0,	NOARG,		0x1F41,		"tsx"},
+{0,	NOARG,		0x1F14,		"txs"},
 {0,	NOARG,		0x3CFF,		"wai"},
+	/* ABA */
+	/* CBA */
+	/* TAB */
+	/* TBA */
+	/* SBA */
+
+/* simulated 6801 instructions */
+	/* LSRD */
+	/* PSHX - 3410 */
+	/* PULX - 3510 */
+	/* LDAD */
+	/* STAD */
+
+/* simulated 6802 instructions */
+{0,	NOARG,		0x3402,		"psha"},
+{0,	NOARG,		0x3502,		"pula"},
+{0,	NOARG,		0x3404,		"pshb"},
+{0,	NOARG,		0x3504,		"pulb"},
+
+/* convenience instructions */
+	/* BEC */
+	/* LBEC */
+	/* CLF - 1cbf */
+	/* CLZ */
+	/* SEF - 1a40 */
+	/* SEZ */
