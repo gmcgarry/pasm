@@ -33,7 +33,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-%token <y_word> X SP
+%token <y_word> X
 %token <y_word> NOARG
 %token <y_word> BRANCH
 %token <y_word> AOP
