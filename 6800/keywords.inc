@@ -49,9 +49,6 @@
 
 /* The X register */
 { 0,	X,		0,		"x"	},
-#if defined(MC6802)
-{ 0,	SP,		0,		"sp"	},
-#endif
 
 { 0,	BRANCH,		0x20,		"bra"	},
 { 0,	BRANCH,		0x22,		"bhi"	},
@@ -130,10 +127,12 @@
 { 0,	XOP,		0x6E,		"jmp"	},
 { 0,	XOP,		0xAD,		"jsr"	},
 { 0,	XOP,		0xAC,		"cpx"	},
+{ 0,	XOP,		0xAE,		"lds"	},
 { 0,	XOP,		0xEE,		"ldx"	},
 { 0,	XOP,		0xA7,		"staa"	},
 { 0,	XOP,		0xE7,		"stab"	},
 { 0,	XOP,		0xEF,		"stx"	},
+{ 0,	XOP,		0xAF,		"sts"	},
 { 0,	NOARG,		0x19,		"daa"	},
 { 0,	NOARG,		0x01,		"nop"	},
 { 0,	NOARG,		0x3B,		"rti"	},
@@ -156,9 +155,6 @@
 { 0,	NOARG,		0x09,		"dex"	},
 { 0,	NOARG,		0x08,		"inx"	},
 
-#if defined(MC6802)
-{ 0,	XOP,		0xAE,		"lds"	},
-{ 0,	XOP,		0xAF,		"sts"	},
 { 0,	NOARG,		0x34,		"des"	},
 { 0,	NOARG,		0x31,		"ins"	},
 { 0,	NOARG,		0x35,		"txs"	},
@@ -167,4 +163,3 @@
 { 0,	NOARG,		0x36,		"psha"	},
 { 0,	NOARG,		0x33,		"pulb"	},
 { 0,	NOARG,		0x37,		"pshb"	},
-#endif

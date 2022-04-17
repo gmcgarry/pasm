@@ -96,7 +96,7 @@ imm6:	expr					{ $$ = $1.val; fit(fitx($$, 6)); }
 	;
 
 imm8:	expr					{ $$ = $1.val; fit(fitx($$, 8)); }
-	| SHIFTFUNC '(' expr ')'		{ $$ = $3.val >> $1; fit(fitx($$, 8)); }
+	| SHIFTFUNC '(' expr ')'		{ $$ = ($3.val >> $1) & 0xFF; }
 	;
 
 imm16:	expr					{ $$ = $1.val; fit(fitx($$, 16)); }

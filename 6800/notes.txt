@@ -5,13 +5,12 @@ Backend originated from ACK sources.
 - 6800 original
 - 6802 added:
 	- 128B internal RAM
-	- 16-bit index register H:X
-	- 16-bit relative stack instructions
 	- on-chip clock circuit
-- 6808 is 6802 without internal RAM disabled
+- 6808 is 6802 with internal RAM disabled
 - 6805 removed B accumulator
 	- contains ROM and I/O on single chip
 	- successor to the 6804
+	- adds bit operations
 - 6809 16-bit aritmetic, stack registers, PIC instructions
 
 MC6800:
@@ -27,12 +26,7 @@ MC6800:
 	- CCR: 8-bit condition code register (x x H I N Z V C)
 		- H=half carry, I=interrupt mask, N=negative, Z=zero, V=overflow, C=carry
 
-MC6808
-	- 16-bit index register H:X
-	- 16-bit SP register
-	- 16-bit PC
-
-MC6805/MC908:
+MC68HC08/MC908: (enhance 6805)
 
 - 8-bit data bus
 - 8-bit address bus (256B RAM)
@@ -43,7 +37,9 @@ MC6805/MC908:
 - 5 registers: (no B accumulator)
 	- A: 8-bit accumulator
 	- X: 8-bit index register
+	- 16-bit index register H:X
 	- SP: 6-bit stack pointer (bit 6 wired to 1)
+	- 16-bit relative stack instructions
 	- PC: 13-bit program counter
 	- CCR: 8-bit condition-code register (x x x H I N Z C)
 		- H=half carry, I=interrupt mask, N=negative, Z=zero, C=carry
