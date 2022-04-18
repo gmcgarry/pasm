@@ -108,7 +108,7 @@ optexpr	: /* empty */				{ $$.typ = S_ABS; $$.val = 0; }
 
 #if 0
 
-#ifdef MC6808
+#ifdef MC68HC08
 	| CBRANCH expr ',' expr			{ emit1($1); emit1($2.val); emit1($4.val - DOTVAL); }
 	| CBRANCH '#' expr ',' expr		{ emit1($1); emit1($3.val); emit1($5.val - DOTVAL); }
 	| CBRANCH expr ',' X '+' ',' expr	{ emit1($1+0x30); emit1($2.val); emit1($7.val - DOTVAL); }
@@ -126,7 +126,7 @@ optexpr	: /* empty */				{ $$.typ = S_ABS; $$.val = 0; }
 	| MOV '#' expr ',' expr			{ emit1(0x6e); emit1($3.val); emit1($5.val); }
 	| MOV X '+' ',' expr			{ emit1(0x6f); emit1($5.val); }
 #endif
-#ifdef MC6808
+#ifdef MC68HC08
 	| RMW expr ',' SP			{ fit(fitb($2.val)); emit1(0x9e); emit1($1+0x30); }
 #endif
 	;
