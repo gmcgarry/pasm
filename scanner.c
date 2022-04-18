@@ -393,7 +393,7 @@ induo(int c)
 	for (p = duo; *p; p++)
 		if (*p++ == c)
 			return (*p++);
-	peekc = c & 0377;
+	peekc = c & 0xFF;
 	return (c >> 8);
 }
 
@@ -590,10 +590,18 @@ instring(int termc)
 	}
 	stringlen = p - stringbuf;
 	*p = '\0';
-	if (termc == '\'' && stringlen == 1) {
-		yylval.y_valu = stringbuf[0];
+#ifndef NO_CC
+	if (termc == '\'') {
+		VALUE_T v = 0;
+		p = stringbuf;
+		while (*p) {
+			v <<= 8;
+			v |= *p++;
+		}
+		yylval.y_valu = v;
 		return NUMBER8;
 	}
+#endif
 	return STRING;
 }
 
