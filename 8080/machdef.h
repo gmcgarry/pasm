@@ -37,7 +37,7 @@
  * Intel 8080 options
  */
 #define	LISTING
-#define RELOCATION
+//#define RELOCATION
 #define THREE_PASS
 
 #define IGNORECASE
@@ -58,7 +58,7 @@
 /* Some character constants for scanner */
 #define ASC_COMMENT	';'
 #define CTRL(x)		((x) & 037)
-#define ISALPHA(c)	(isalpha(c) || (c) == '_' || (c) == '.' || (c) == '@')
+#define ISALPHA(c)	(isalpha(c) || (c) == '_' || (c) == '.' || (c) == '$')
 #define ISALNUM(c)	(isalnum(c) || (c) == '_')
 
 #define DEFAULT_SECTION (1)
