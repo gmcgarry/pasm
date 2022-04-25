@@ -33,8 +33,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define fitb(x)		((((x) + 0x80) & ~((int)0xFF)) == 0)
-#define fitw(x)		((((x) + 0x8000) & ~((int)0xFFFF)) == 0)
+#define fitb(x)		(((x) & ~((int)0xFF)) == 0)
 
 operation
 	: optlabel instr
@@ -60,15 +59,15 @@ instr
 	| XOP '#' expr				{
 							emit1($1 - 0x20);
 							switch ($1 & 0x0F) {
-								case 0x03:
-								case 0x0C:
-								case 0x0E:
+							case 0x03:
+							case 0x0C:
+							case 0x0E:
 #ifdef RELOCATION
-									newrelo($3.typ, RELBR | RELO2);
+								newrelo($3.typ, RELBR | RELO2);
 #endif
-									emit2($3.val);
-									break;
-								default:
+								emit2($3.val);
+								break;
+							default:
 #ifdef RELOCATION
 								newrelo($3.typ, RELO1);
 #endif
@@ -83,11 +82,20 @@ instr
 							emit1($3.val);
 						}
 	| memref expr				{
-							emit1($1 + 0x10);
+							int opt = ($1 & 0xF0) != 0x60;
+							if (opt && small(fitb($2.val),1)) {
+								emit1($1 - 0x10);
 #ifdef RELOCATION
-							newrelo($2.typ, RELO2);
+								newrelo($2.typ, RELO1);
 #endif
-							emit2($2.val);
+								emit1($2.val);
+							} else {
+								emit1($1 + 0x10);
+#ifdef RELOCATION
+								newrelo($2.typ, RELO2);
+#endif
+								emit2($2.val);
+							}
 						}
 	| memref optexpr ',' X			{
 							emit1($1);
@@ -105,30 +113,3 @@ memref	: AOP
 optexpr	: /* empty */				{ $$.typ = S_ABS; $$.val = 0; }
 	| expr					{ $$ = $1; }
 	;
-
-#if 0
-
-#ifdef MC68HC08
-	| CBRANCH expr ',' expr			{ emit1($1); emit1($2.val); emit1($4.val - DOTVAL); }
-	| CBRANCH '#' expr ',' expr		{ emit1($1); emit1($3.val); emit1($5.val - DOTVAL); }
-	| CBRANCH expr ',' X '+' ',' expr	{ emit1($1+0x30); emit1($2.val); emit1($7.val - DOTVAL); }
-	| CBRANCH X '+' ',' expr		{ emit1($1+0x40); emit1($5.val - DOTVAL); }
-	| CBRANCH expr ',' SP ',' expr		{ emit2(0x9e61); emit1($2.val); emit1($6.val - DOTVAL); }
-
-	| DBNZ expr ',' expr			{ fit(fitb($2.val)); emit1($1); emit1($2.val); emit1($4.val - DOTVAL); }
-	| DBNZ expr				{ emit1($1); emit1($2.val - DOTVAL); }
-	| DBNZ expr ',' X ',' expr		{ fit(fitb($2.val)); emit1($1+0x30); emit1($2.val); emit1($6.val - DOTVAL); }
-	| DBNZ X ',' expr			{ emit1($1+0x40); emit1($4.val - DOTVAL); }
-	| DBNZ expr ',' SP ',' expr		{ emit2(0x9e6b); emit1($2.val); emit1($6.val - DOTVAL); }
-
-	| MOV expr ',' expr			{ fit(fitb($2.val)); fit(fitb($4.val)); emit1(0x4e); emit1($2.val); emit1($4.val); }
-	| MOV expr ',' X '+'			{ emit1(0x5e); emit1($2.val); }
-	| MOV '#' expr ',' expr			{ emit1(0x6e); emit1($3.val); emit1($5.val); }
-	| MOV X '+' ',' expr			{ emit1(0x6f); emit1($5.val); }
-#endif
-#ifdef MC68HC08
-	| RMW expr ',' SP			{ fit(fitb($2.val)); emit1(0x9e); emit1($1+0x30); }
-#endif
-	;
-
-#endif
