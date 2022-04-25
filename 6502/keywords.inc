@@ -54,6 +54,13 @@
 {0,	PSEUDOOP_ASCII,	1,		".text"},
 #endif
 
+#define COMPAT_APPLE
+#ifdef COMPAT_APPLE
+{0,	'=',		0,		".eq"},
+{0,	PSEUDOOP_ORG,	0,		".or"},
+{0,	PSEUDOOP_DATA,	WORDSIZE,	".da"},
+#endif
+
 {0,	EXTENSION,	0,		".l"},
 {0,	EXTENSION,	8,		".h"},
 {0,	A,		0,		"a"},

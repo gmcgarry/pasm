@@ -53,7 +53,12 @@ expr: expr EXTENSION		{
 	;
 
 operation: optlabel instr
+	| optlabel pseudoop
+	;
+
+pseudoop:
 	| PSEUDOOP_SCR STRING	{ machscr(); }
+	| PSEUDOOP_DATA datalist
 	;
 
 /* for compatibility with asl assembler */
