@@ -425,7 +425,7 @@ inident(int c)
 	} else if (hashindex < H_SIZE) {
 		assert(H_KEY == 0);
 		yylval.y_word = (word_t)ip->i_valu;
-		return (ip->i_type);
+		return ip->i_type;
 	}
 	yylval.y_item = ip;
 	return IDENT;
@@ -591,7 +591,7 @@ instring(int termc)
 	stringlen = p - stringbuf;
 	*p = '\0';
 #ifndef NO_CC
-	if (termc == '\'') {
+	if (termc == '\'' && (stringlen == 1 || stringlen == 2 || stringlen == 4)) {
 		VALUE_T v = 0;
 		p = stringbuf;
 		while (*p) {
