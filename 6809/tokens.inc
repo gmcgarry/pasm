@@ -44,5 +44,6 @@
 %token <y_word> IMMED
 %token <y_word> TWOREG
 %token <y_word> XOP
+%token <y_word> PUSHB_NOARG  NOARG_TSTA
 
 %type <y_word> reglist xyus xmode
