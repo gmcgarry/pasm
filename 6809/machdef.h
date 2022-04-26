@@ -48,6 +48,8 @@
 #define HEXPREFIX	'$'
 #define BINPREFIX	'%'
 
+#define NO_CC
+
 /* ========== Machine independent type declarations ========== */
 
 #define	PASS_1		0

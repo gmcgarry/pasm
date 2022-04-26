@@ -133,8 +133,8 @@ instr
 					}
 				}
 	| XOP expr ',' REG	{ emit1or2($1); offset($4,$2,0); }
-	| XOP '(' expr ',' REG ')' { emit1or2($1); offset($5,$3,0x10); }
-	| XOP '(' expr ')'	{
+	| XOP lbrac expr ',' REG rbrac { emit1or2($1); offset($5,$3,0x10); }
+	| XOP lbrac expr rbrac 	{
 					emit1or2($1);
 					emit1(0x9F);
 #ifdef RELOCATION
@@ -144,7 +144,7 @@ instr
 					emit2($3.val);
 				}
 	| XOP xmode		{ emit1or2($1); emit1($2); }
-	| XOP '(' xmode ')'	{
+	| XOP lbrac xmode rbrac	{
 					if (($3 & 0x8D) == 0x80)
 						serror("invalid index mode");
 					emit1or2($1);
@@ -198,3 +198,12 @@ xmode
 					}
 				}
 	;
+
+lbrac
+	: '['
+	| '('
+	;
+
+rbrac
+	: ']'
+	| ')'

@@ -590,8 +590,12 @@ instring(int termc)
 	}
 	stringlen = p - stringbuf;
 	*p = '\0';
-#ifndef NO_CC
-	if (termc == '\'' && (stringlen == 1 || stringlen == 2 || stringlen == 4)) {
+#ifdef NO_CC
+#define VALIDCC	(stringlen == 1)
+#else
+#define VALIDCC	(stringlen == 1 || stringlen == 2 || stringlen == 4)
+#endif
+	if (termc == '\'' && VALIDCC) {
 		VALUE_T v = 0;
 		p = stringbuf;
 		while (*p) {
@@ -601,7 +605,7 @@ instring(int termc)
 		yylval.y_valu = v;
 		return NUMBER8;
 	}
-#endif
+#undef VALIDCC
 	return STRING;
 }
 
