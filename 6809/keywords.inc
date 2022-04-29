@@ -63,6 +63,9 @@
 { 0,	REG,		U,		"u"	},
 { 0,	REG,		S,		"s"	},
 { 0,	REG,		PC,		"pc"	},
+#ifdef COMPAT
+{ 0,	REG, 		PC,		"pcr"	},
+#endif
 
 { 0,	ALL,		0xFF,		"all"	},
 { 0,	SETDP,		0,		"setdp"	},
