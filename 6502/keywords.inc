@@ -41,6 +41,7 @@
 
 /* compatibility */
 {0,	PSEUDOOP_ORG,	0,		"org"},
+{0,	'=',		0,		"equ"},
 
 /* C64-specific compatibility */
 #ifdef COMPAT_C64
@@ -54,7 +55,6 @@
 {0,	PSEUDOOP_ASCII,	1,		".text"},
 #endif
 
-#define COMPAT_APPLE
 #ifdef COMPAT_APPLE
 {0,	'=',		0,		".eq"},
 {0,	PSEUDOOP_ORG,	0,		".or"},

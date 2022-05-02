@@ -37,6 +37,9 @@
  * Mostek 6500 options.
  */
 
+#define COMPAT_APPLE
+#define COMPAT_C64
+
 #define	THREE_PASS	/* Distinguish short and long branches. */
 #define	LISTING		/* Enable listing facilities. */
 #if 0
