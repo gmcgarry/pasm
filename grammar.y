@@ -249,7 +249,7 @@ operation: /* empty */
 	| PSEUDOOP_EXTERN externlist
 	| PSEUDOOP_ALIGN optabs				{ if ($1) align($2, 0, 0); else align(1<<$2, 0, 0); }
 	| PSEUDOOP_ALIGN absexp ',' optabs optsize	{ if ($1) align($2, $4, $5); else align(1<<$2, $4, $5); }
-	| PSEUDOOP_SPACE absexp				{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; (&sect[DOTSCT])->s_zero += $2; }
+	| PSEUDOOP_SPACE absexp				{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; sect[DOTSCT].s_zero += $2; }
 	| PSEUDOOP_SEEK absexp			{
 							if (DOTSCT == S_UND)
 								nosect();
@@ -309,7 +309,7 @@ expr	: error					{ serror("expr syntax err"); $$.val = 0; $$.typ = S_UND; }
 	| expr OP_AA expr			{ $$.val = ($1.val && $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
 	| expr '|' expr				{ $$.val = ($1.val | $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
 	| expr '^' expr				{ $$.val = ($1.val ^ $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
-	| expr '&' expr				{ $$.val = ($1.val & $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
+	| expr '&' expr				{ $$.val = ($1.val & $3.val); $$.typ = combine($1.typ, $3.typ, '&'); }
 	| expr OP_EQ expr			{ $$.val = ($1.val == $3.val); $$.typ = combine($1.typ, $3.typ, '>'); }
 	| expr OP_NE expr			{ $$.val = ($1.val != $3.val); $$.typ = combine($1.typ, $3.typ, '>'); }
 	| expr '<' expr				{ $$.val = ($1.val < $3.val); $$.typ = combine($1.typ, $3.typ, '>'); }

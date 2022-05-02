@@ -132,37 +132,41 @@ combine(int typ1, int typ2, int op)
 {
 	DPRINTF(("combine(typ1=0x%x, typ2=0x%x, op='%c' (0x%x)\n", typ1, typ2, op, op));
 
+#define IS_ABS(s)	((s & ~S_VAR) == S_ABS)
+#define IS_VAR(s)	((s & S_VAR) == S_VAR)
+
 	switch (op) {
 #ifndef NO_ASR
 		case 'k':
-			if (typ1 == S_ABS && typ2 == S_ABS)
+			if (IS_ABS(typ1) && IS_ABS(typ2))
 				return S_ABS;
-			if (typ1 == S_VAR)
+			if (IS_VAR(typ1))
 				return (S_ABS | S_VAR);
 			break;
 #endif
-		case '+':
-			if (typ1 == S_ABS)
-				return typ2;
-			if (typ2 == S_ABS)
-				return typ1;
-			break;
 		case '-':
-			if (typ2 == S_ABS)
+			if (IS_ABS(typ2))
 				return typ1;
 			if ((typ1 & S_SCTMASK) == (typ2 & S_SCTMASK) && typ1 != S_UND)
 				return (S_ABS | S_VAR);
 			break;
+		case '+':
+			if (IS_ABS(typ1))
+				return typ2;
+			if (IS_ABS(typ2))
+				return typ1;
+			break;
 		case '/':	/* used for rounding of bank addresses */
+		case '&':	/* used for rounding of bank addresses */
 		case '*':
 		case '>':
-			if (typ1 == S_ABS && typ2 == S_ABS)
+			if (IS_ABS(typ1) && IS_ABS(typ2))
 				return S_ABS;
-			if (((typ1 & S_SCTMASK) == (typ2 & S_SCTMASK) && typ1 != S_UND) || (typ1 == S_ABS) || (typ2 == S_ABS))
+			if (((typ1 & S_SCTMASK) == (typ2 & S_SCTMASK) && typ1 != S_UND) || IS_ABS(typ1) || IS_ABS(typ2))
 				return (S_ABS | S_VAR);
 			break;
 		default:
-			if (typ1 == S_ABS && typ2 == S_ABS)
+			if (IS_ABS(typ1) && IS_ABS(typ2))
 				return S_ABS;
 			break;
 	}
