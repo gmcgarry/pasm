@@ -97,7 +97,6 @@
 #define VALWIDTH	(2*sizeof(VALUE_T))
 #endif
 
-
 /*
  * NOTE: word_t is introduced to reduce the tokenfile size for machines
  * with large expressions but smaller opcodes (68000)
@@ -423,8 +422,7 @@ typedef Elf32_Sym Elf_Sym;
 #include "mach.h"
 
 #if YYDEBUG
-extern int yydebug;
-#define DPRINTF(x)	if (yydebug) do { printf("line %ld: ", lineno); printf x; } while(0)
+#define DPRINTF(x)	do { printf("line %ld: ", lineno); printf x; } while(0)
 #else
 #define DPRINTF(x)	/* nothing */
 #endif
