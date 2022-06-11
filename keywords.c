@@ -60,8 +60,10 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_ASCII,		1,		".asciz" },
 	{ 0,	PSEUDOOP_ASCII,		1,		".string" },
 	{ 0,	PSEUDOOP_ALIGN,		0,		".align" },
+#ifdef COMPAT_GAS
 	{ 0,	PSEUDOOP_ALIGN,		0,		".p2align" },
 	{ 0,	PSEUDOOP_ALIGN,		1,		".balign" },
+#endif
 	{ 0,	PSEUDOOP_ASSERT,	0,		".assert" },
 	{ 0,	PSEUDOOP_SPACE,		0,		".space" },
 	{ 0,	PSEUDOOP_SEEK,		0,		".seek" },
@@ -70,36 +72,45 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_ORG,		0,		".org" },
 	{ 0,	PSEUDOOP_SECTION,	0,		".section" },
 	{ 0,	PSEUDOOP_END,		0,		".end" },
+	{ 0,	PSEUDOOP_GLOBAL,	0,		".local" },
+	{ 0,	PSEUDOOP_GLOBAL,	1,		".export" },
+	{ 0,	PSEUDOOP_GLOBAL,	1,		".extern" },
+#ifdef COMPAT_GAS
 	{ 0,	PSEUDOOP_GLOBAL,	1,		".globl" },
 	{ 0,	PSEUDOOP_GLOBAL,	1,		".global" },
-	{ 0,	PSEUDOOP_GLOBAL,	0,		".local" },
 	{ 0,	PSEUDOOP_WEAK,		0,		".weak" },
+	{ 0,	PSEUDOOP_SIZE,		0,		".size" },
+	{ 0,	PSEUDOOP_TYPE,		0,		".type" },
+#endif
 	{ 0,	PSEUDOOP_EQU,		0,		".equ" },
 	{ 0,	PSEUDOOP_EQU,		0,		".set" },
 	{ 0,	PSEUDOOP_LINE,		0,		".line" },
 	{ 0,	PSEUDOOP_FILE,		0,		".file" },
 	{ 0,	PSEUDOOP_INCLUDE,	0,		".include" },
-	{ 0,	PSEUDOOP_TYPE,		0,		".type" },
-	{ 0,	PSEUDOOP_SIZE,		0,		".size" },
 	{ 0,	PSEUDOOP_IDENT,		0,		".ident" },
 #ifdef LISTING
 	{ 0,	PSEUDOOP_LIST,		0,		".nolist" },
 	{ 0,	PSEUDOOP_LIST,		1,		".list" },
 #endif
 	{ 0,	PSEUDOOP_MESSAGE,	1,		".message" },
+
+#ifdef COMPAT_ELF
 	{ 0,	PLT,			0,		ELFM "PLT" },
 	{ 0,	ELF_SYMTYPE,		S_FUNC,		ELFM "function" },
 	{ 0,	ELF_SYMTYPE,		S_OBJECT,	ELFM "object" },
 	{ 0,	ELF_SHTYPE,		SHT_PROGBITS,	ELFM "progbits" },
 	{ 0,	ELF_SHTYPE,		SHT_NOBITS,	ELFM "nobits" },
 	{ 0,	ELF_SHTYPE,		SHT_NOTE,	ELFM "note" },
+#endif
 
+#ifdef COMPAT_GAS
 	{ 0,	PSEUDOOP_CFI_IGNORE,	0,		".cfi_def_cfa" },
        	{ 0,	PSEUDOOP_CFI_IGNORE,	0,		".cfi_def_cfa_offset" },
        	{ 0,	PSEUDOOP_CFI_IGNORE,	0,		".cfi_def_cfa_register" },
  	{ 0,	PSEUDOOP_CFI_IGNORE,	0,		".cfi_endproc" },
  	{ 0,	PSEUDOOP_CFI_IGNORE,	0,		".cfi_offset" },
  	{ 0,	PSEUDOOP_CFI_IGNORE,	0,		".cfi_startproc" },
+#endif
 
 #include "keywords.inc"
 
