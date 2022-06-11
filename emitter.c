@@ -82,7 +82,8 @@ static struct {
 	void (*e_addr)(unsigned long a);
 	void (*e_byte)(unsigned char b);
 } formtab[] = {
-	{ "hex",   "hex",  "Intel-Hex (.hex)",  open_hex,  close_hex,  addr_hex,  byte_hex },
+	{ "hex",   "hex",  "Intel-Hex, 16-byte lines (.hex)",  open_hex,  close_hex,  addr_hex,  byte_hex },
+	{ "hex32", "hex",  "Intel-Hex, 32-byte lines (.hex)",  open_hex,  close_hex,  addr_hex,  byte_hex },
 	{ "bin",   "bin",  "Binary (.bin)",  open_bin,  close_bin,  addr_bin,  byte_bin },
 	{ "tdr",   "tdr",  "TDR Format (.tdr)", open_tdr,  close_tdr,  addr_tdr,  byte_tdr },
 	{ "byte",  "byte", "BYTE list (.byte)",  open_byte, close_byte, addr_byte, byte_byte },
@@ -212,6 +213,7 @@ static unsigned char bytes[16];
  * "hex" format.  Intel HEX format expected by many EPROM programmers
  */
 
+static int hexwidth = 16;
 
 static void hexdump(void)     /* dumps one line into file */
 {
@@ -231,6 +233,8 @@ static void hexdump(void)     /* dumps one line into file */
 
 static int open_hex(const char *file, const char *ftype, const char *arg)
 {
+	sscanf(ftype, "hex%d", &hexwidth);
+
 	if (file == NULL) fout = stdout;
 	else fout = fopen(file, "w");
 
@@ -262,7 +266,7 @@ static void byte_hex(unsigned char b)
 {
 	bytes[pos] = b;
 	pos += 1;
-	if (pos == 16) hexdump();
+	if (pos == hexwidth) hexdump();
 }
 
 
