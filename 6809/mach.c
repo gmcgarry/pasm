@@ -65,21 +65,28 @@ machfinish(int pass)
 {
 }
 
-void branch(register int opc, expr_t exp)
+void
+branch(int opc, expr_t exp)
 {
-	register int	sm, dist;
-	int		saving;
+	int sm, dist;
+	int saving;
 
-	dist = exp.val - (DOTVAL + 2);
-	if (pass == PASS_2 && dist > 0 && !(exp.typ & S_DOT))
-                dist -= sect[DOTSCT].s_gain;
-	sm = fitb(dist);
-	if ((exp.typ & S_SCTMASK) != DOTSCT)
-		sm = 0;
 	if (opc == 0x8D || opc == 0x20)
 		saving = 1;
 	else
 		saving = 2;
+
+	dist = exp.val - (DOTVAL + 2);
+
+	if (PASS_RELO && dist > 0 && !(exp.typ & S_DOT))
+                dist -= sect[DOTSCT].s_gain;
+#if 1
+	sm = dist > 0 ? fitb(dist - saving) : fitb(dist);
+#else
+	sm = fitb(dist);
+#endif
+	if ((exp.typ & S_SCTMASK) != DOTSCT)
+		sm = 0;
 	if ((sm = small(sm,saving)) == 0) {
 		dist--;
 		if (opc == 0x8D)	/* bsr */
@@ -98,11 +105,13 @@ void branch(register int opc, expr_t exp)
 			newrelo(exp.typ, RELPC|RELO2|RELBR);
 #endif
 		emit2(dist);
-	} else
+	} else {
 		emit1(lowb(dist));
+	}
 }
 
-int regno(register int r)
+int
+regno(int r)
 {
 	switch (r) {
 	case X:	return 0;
@@ -113,20 +122,22 @@ int regno(register int r)
 	return -1;
 }
 
-void emit1or2(int n)
+void
+emit1or2(int n)
 {
 	if (n & ~0xFF)
 		emit1(n >> 8);
 	emit1(n);
 }
 
-void offset(int reg, expr_t exp, register int ind)
+void
+offset(int reg, expr_t exp, int ind)
 {
 	if (reg == PC) {
 		int	sm, dist;
 
 		dist = exp.val - (DOTVAL + 2);
-		if (pass == PASS_2 && dist > 0 && !(exp.typ & S_DOT))
+		if (PASS_RELO && dist > 0 && !(exp.typ & S_DOT))
                 	dist -= sect[DOTSCT].s_gain;
 		sm = fitb(dist);
 		if ((exp.typ & S_SCTMASK) != DOTSCT)
@@ -143,9 +154,7 @@ void offset(int reg, expr_t exp, register int ind)
 		serror("register error");
 	else if ((exp.typ & S_SCTMASK) == S_ABS && exp.val == 0)
 		emit1(0x84 + reg + ind);	/* XOP 0, REG == XOP , REG */
-	else if (ind == 0 && (exp.typ & S_SCTMASK) == S_ABS &&
-		 -16 <= exp.val && exp.val <= 15
-		)
+	else if (ind == 0 && (exp.typ & S_SCTMASK) == S_ABS && -16 <= exp.val && exp.val <= 15)
 		emit1(reg + ind + (exp.val & 037));
 	else if ((exp.typ&S_SCTMASK)==S_ABS && -128<=exp.val && exp.val<=127) {
 		emit1(0x88 + reg + ind);

@@ -33,8 +33,11 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+{ 0,	SETDP,		0,		".setdp"	},
+{ 0,	NOARG,		0x10,		".page2"	},
+{ 0,	NOARG,		0x11,		".page3"	},
+
 /* compatibility */
-#define COMPAT
 #ifdef COMPAT
 { 0,	'=',		0,		"equ"	},
 { 0,	PSEUDOOP_ORG,	0,		"org"	},
@@ -68,13 +71,10 @@
 #endif
 
 { 0,	ALL,		0xFF,		"all"	},
-{ 0,	SETDP,		0,		"setdp"	},
 { 0,	NOARG,		0x3A,		"abx"	},
 { 0,	NOARG,		0x19,		"daa"	},
 { 0,	NOARG,		0x3D,		"mul"	},
 { 0,	NOARG,		0x12,		"nop"	},
-{ 0,	NOARG,		0x10,		".page2"	},
-{ 0,	NOARG,		0x11,		".page3"	},
 { 0,	NOARG,		0x3B,		"rti"	},
 { 0,	NOARG,		0x4F,		"clra"	},
 { 0,	NOARG,		0x5F,		"clrb"	},

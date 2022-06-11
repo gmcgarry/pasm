@@ -151,7 +151,9 @@ instr
 					emit1($3 + 0x10);
 				}
 	| XOP expr		{
-					if (($2.typ & S_SCTMASK) == S_ABS && ((unsigned)$2.val >> 8) == dpvalue) {
+					int is_abs = ($2.typ & S_SCTMASK & ~S_VAR) == S_ABS;
+					int is_local = ($2.typ & S_SCTMASK) == DOTSCT;
+					if ((is_abs || is_local) && ((unsigned)$2.val >> 8) == dpvalue) {
 						if (0 <= $1 && $1 < 0x80)
 							emit1(($1-0x20) & 0x3F);
 						else
