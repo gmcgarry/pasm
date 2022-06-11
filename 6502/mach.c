@@ -86,7 +86,7 @@ branch(int opc, expr_t exp)
 	}
 }
 
-#ifdef WDC65C02
+#ifdef W65C02
 void
 bbranch(int opc, expr_t zp, expr_t label)
 {

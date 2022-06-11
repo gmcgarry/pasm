@@ -35,9 +35,8 @@
 
 #define COMPAT_APPLE
 #define COMPAT_C64
-#define MOS65C02	/* additional opcodes  */
-#define WDC65C02	/* WAI, STP, BSR/BBS additional opcodes */
-#define WDC65C802	/* XCE additional opcode */
+#define W65C02		/* additional opcodes  */
+#define W65C802		/* XCE additional opcode */
 
 #define	THREE_PASS	/* Distinguish short and long branches. */
 #define	LISTING		/* Enable listing facilities. */

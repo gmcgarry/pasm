@@ -65,13 +65,13 @@ optlabel:	/* empty */
 instr	:	/* empty */
 	| NOPOP			{ emit1($1); }
 	| BITOP expr		{ code($2,$1,$1+8); }
-#ifdef MOS65C02
+#ifdef W65C02
 	| BITOP '#' expr	{ emit1(0x89); emit1($3.val); }
 	| BITOP expr ',' X	{ code($2,$1+0x10,$1+0x18); } 
 #endif
 	| JMPOP expr		{ emit1($1); newrelo($2.typ, RELO2); emit2($2.val); }
 	| JMPOP '(' targ ')'	{ emit1($1+0x20); newrelo($3.typ, RELO2); emit2($3.val); }
-#ifdef MOS65C02
+#ifdef W65C02
 	| JMPOP '(' expr ',' X ')'	{ emit1($1+0x30); newrelo($3.typ, RELO2); emit2($3.val); }
 #endif
 	| JSROP expr		{ emit1($1); newrelo($2.typ, RELO2); emit2($2.val); }
@@ -93,7 +93,7 @@ instr	:	/* empty */
 	| STXOP	expr ',' Y	{ emit1($1+0x16); newrelo($2.typ, RELO1); emit1(lowb($2.val)); }
 	| STYOP	expr		{ code($2,$1+0x04,$1+0x0C); }
 	| STYOP	expr ',' X	{ emit1($1+0x14); newrelo($2.typ, RELO1); emit1(lowb($2.val)); }
-#ifdef MOS65C02
+#ifdef W65C02
 	| STZOP	expr		{ code($2,$1+0x04,$1+0x3C); }
 	| STZOP	expr ',' X	{ code($2,$1+0x14,$1+0x3E); }
 #endif
@@ -113,7 +113,7 @@ instr	:	/* empty */
 	| addop	expr ',' Y	{ emit1($1+0x19); newrelo($2.typ, RELO2); emit2($2.val); }
 	| addop	'(' expr ',' X ')'	{ emit1($1+0x01); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
 	| addop	'(' expr ')' ',' Y	{ emit1($1+0x11); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
-#ifdef MOS65C02
+#ifdef W65C02
 	| addop	'(' targ ')'	{ emit1($1+0x12); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
 #endif
 	| ROLOP	/* Default is A. */	{ emit1($1+0x0A); }
@@ -121,7 +121,7 @@ instr	:	/* empty */
 	| ROLOP	expr		{ code($2,$1+0x06,$1+0x0E); }
 	| ROLOP	expr ',' X	{ code($2,$1+0x16,$1+0x1E); }
 	| BRAOP	expr		{ branch($1,$2); }
-#ifdef WDC65C02
+#ifdef W65C02
 	| BBRAOP expr ',' expr ',' expr	{ fit(fitx($2.val,3)); bbranch($1|$2.val,$4,$6); }
 	| BBRAOP expr ',' expr	{ bbranch($1,$2,$4); }
 	| RMB expr		{ emit1($1); emit1(lowb($2.val)); }
