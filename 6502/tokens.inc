@@ -33,10 +33,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * Mostek 6500 tokens.
- */
-
 %token PSEUDOOP_SCR
 
 %token <y_word> A
@@ -56,8 +52,12 @@
 %token <y_word> LDYOP
 %token <y_word> STXOP
 %token <y_word> STYOP
+%token <y_word> STZOP	/* MOS65C02 */
+%token <y_word> RMB	/* MOS65C02 */
+%token <y_word> BBRAOP	/* WDC65C02 */
 %token <y_word> PSEU
 
 %type <y_word> addop
+%type <y_expr> targ
 
 %nonassoc EXTENSION

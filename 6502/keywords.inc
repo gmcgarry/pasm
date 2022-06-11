@@ -33,10 +33,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * Mostek 6500 keywords
- */
-
 {0,	PSEUDOOP_SCR,	0,		".scr"},
 
 /* compatibility */
@@ -52,6 +48,7 @@
 {0,	PSEUDOOP_BASE,	2,		".ba"},
 {0,	PSEUDOOP_FILL,	0,		".br"},
 {0,	PSEUDOOP_ASCII,	1,		".tx"},
+{0,	PSEUDOOP_SPACE,	1,		".rs"},
 {0,	PSEUDOOP_ASCII,	1,		".text"},
 #endif
 
@@ -78,34 +75,96 @@
 {0,	ROLOP,		0x40,		"lsr"},
 {0,	ROLOP,		0x20,		"rol"},
 {0,	ROLOP,		0x60,		"ror"},
+#ifdef WDC65C02
+{0,	BBRAOP,		0x0F,		"bbr"},
+{0,	BBRAOP,		0x8F,		"bbs"},
+{0,	BBRAOP,		0x0F,		"bbr0"},
+{0,	BBRAOP,		0x1F,		"bbr1"},
+{0,	BBRAOP,		0x2F,		"bbr2"},
+{0,	BBRAOP,		0x3F,		"bbr3"},
+{0,	BBRAOP,		0x4F,		"bbr4"},
+{0,	BBRAOP,		0x5F,		"bbr5"},
+{0,	BBRAOP,		0x6F,		"bbr6"},
+{0,	BBRAOP,		0x7F,		"bbr7"},
+{0,	BBRAOP,		0x8F,		"bbs0"},
+{0,	BBRAOP,		0x9F,		"bbs1"},
+{0,	BBRAOP,		0xAF,		"bbs2"},
+{0,	BBRAOP,		0xBF,		"bbs3"},
+{0,	BBRAOP,		0xCF,		"bbs4"},
+{0,	BBRAOP,		0xDF,		"bbs5"},
+{0,	BBRAOP,		0xEF,		"bbs6"},
+{0,	BBRAOP,		0xFF,		"bbs7"},
+{0,	RMB,		0x07,		"rmb"},
+{0,	RMB,		0x84,		"smb"},
+{0,	RMB,		0x07,		"rmb0"},
+{0,	RMB,		0x17,		"rmb1"},
+{0,	RMB,		0x27,		"rmb2"},
+{0,	RMB,		0x37,		"rmb3"},
+{0,	RMB,		0x47,		"rmb4"},
+{0,	RMB,		0x57,		"rmb5"},
+{0,	RMB,		0x67,		"rmb6"},
+{0,	RMB,		0x77,		"rmb7"},
+{0,	RMB,		0x87,		"smb0"},
+{0,	RMB,		0x97,		"smb1"},
+{0,	RMB,		0xA7,		"smb2"},
+{0,	RMB,		0xB7,		"smb3"},
+{0,	RMB,		0xC7,		"smb4"},
+{0,	RMB,		0xD7,		"smb5"},
+{0,	RMB,		0xE7,		"smb6"},
+{0,	RMB,		0xF7,		"smb7"},
+#endif
 {0,	BRAOP,		0x90,		"bcc"},
 {0,	BRAOP,		0xB0,		"bcs"},
 {0,	BRAOP,		0xF0,		"beq"},
 {0,	BRAOP,		0x30,		"bmi"},
 {0,	BRAOP,		0xD0,		"bne"},
 {0,	BRAOP,		0x10,		"bpl"},
+#ifdef MOS65C02
+{0,	BRAOP,		0x80,		"bra"},
+#endif
 {0,	BRAOP,		0x50,		"bvc"},
 {0,	BRAOP,		0x70,		"bvs"},
 {0,	BITOP,		0x24,		"bit"},
+#ifdef MOS65C02
+{0,	BITOP,		0x14,		"trb"},
+{0,	BITOP,		0x04,		"tsb"},
+#endif
 {0,	NOPOP,		0x00,		"brk"},
 {0,	NOPOP,		0x18,		"clc"},
 {0,	NOPOP,		0xD8,		"cld"},
 {0,	NOPOP,		0x58,		"cli"},
 {0,	NOPOP,		0xB8,		"clv"},
+#ifdef MOS65C02
+{0,	NOPOP,		0x3A,		"dea"},
+#endif
 {0,	NOPOP,		0xCA,		"dex"},
 {0,	NOPOP,		0x88,		"dey"},
+#ifdef MOS65C02
+{0,	NOPOP,		0x1A,		"ina"},
+#endif
 {0,	NOPOP,		0xE8,		"inx"},
 {0,	NOPOP,		0xC8,		"iny"},
 {0,	NOPOP,		0xEA,		"nop"},
 {0,	NOPOP,		0x48,		"pha"},
 {0,	NOPOP,		0x08,		"php"},
+#ifdef MOS65C02
+{0,	NOPOP,		0xDA,		"phx"},
+{0,	NOPOP,		0x5A,		"phy"},
+#endif
 {0,	NOPOP,		0x68,		"pla"},
 {0,	NOPOP,		0x28,		"plp"},
+#ifdef MOS65C02
+{0,	NOPOP,		0xFA,		"plx"},
+{0,	NOPOP,		0x7A,		"ply"},
+#endif
 {0,	NOPOP,		0x40,		"rti"},
 {0,	NOPOP,		0x60,		"rts"},
 {0,	NOPOP,		0x38,		"sec"},
 {0,	NOPOP,		0xF8,		"sed"},
 {0,	NOPOP,		0x78,		"sei"},
+#ifdef WDC65C02
+{0,	NOPOP,		0xDB,		"stp"},
+#endif
 {0,	NOPOP,		0xAA,		"tax"},
 {0,	NOPOP,		0xA8,		"tay"},
 {0,	NOPOP,		0x98,		"tya"},
@@ -122,5 +181,15 @@
 {0,	LDYOP,		0xA0,		"ldy"},
 {0,	STXOP,		0x80,		"stx"},
 {0,	STYOP,		0x80,		"sty"},
-{0,	PSEU,		0x1860,		"add"},
-{0,	PSEU,		0x38E0,		"sub"},
+#ifdef MOS65C02
+{0,	STZOP,		0x60,		"stz"},
+#endif
+#ifdef WDC65C02
+{0,	NOPOP,		0xCB,		"wai"},
+#endif
+#ifdef WDC65C802
+{0,	NOPOP,		0xFB,		"xce"},
+#endif
+
+{0,	PSEU,		0x1860,		"add"},		/* CLC, ADC */
+{0,	PSEU,		0x38E0,		"sub"},		/* SEC, SBC */

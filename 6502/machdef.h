@@ -33,12 +33,11 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * Mostek 6500 options.
- */
-
 #define COMPAT_APPLE
 #define COMPAT_C64
+#define MOS65C02	/* additional opcodes  */
+#define WDC65C02	/* WAI, STP, BSR/BBS additional opcodes */
+#define WDC65C802	/* XCE additional opcode */
 
 #define	THREE_PASS	/* Distinguish short and long branches. */
 #define	LISTING		/* Enable listing facilities. */
@@ -62,7 +61,7 @@
 /* Some character constants for scanner */
 #define ASC_COMMENT     ';'
 #define CTRL(x)		((x) & 037)
-#define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.' || (c) == '@')
+#define ISALPHA(c)      (isalpha(c) || (c) == '_' || (c) == '.' || (c) == '@') 
 #define ISALNUM(c)      (isalnum(c) || (c) == '_')
 
 #define DEFAULT_SECTION	(1)

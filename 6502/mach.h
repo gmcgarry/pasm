@@ -33,10 +33,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * Mostek 6500 dependent C declarations.
- */
-
 #define lowb(z)         	((int)(z) & 0xFF)
 #define loww(z)         	((int)(z) & 0xFFFF)
 
@@ -45,5 +41,6 @@
 #define fits_zeropage(x)	(lowb(x) == (int)(x))
 
 void branch(int opc, expr_t exp);
+void bbranch(int opc, expr_t zp, expr_t label);
 void code(expr_t exp, int opc1, int opc2);
 void machscr(void);

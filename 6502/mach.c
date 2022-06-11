@@ -39,6 +39,7 @@
 
 #include "as.h"
 #include "mach.h"
+#include "error.h"
 
 extern sect_t sect[];
 extern int hash(const char *);
@@ -85,10 +86,33 @@ branch(int opc, expr_t exp)
 	}
 }
 
+#ifdef WDC65C02
+void
+bbranch(int opc, expr_t zp, expr_t label)
+{
+	int dist;
+
+	if (PASS_RELO && lowb(zp.val) != zp.val)
+		serror("bad zp memref");
+
+	dist = label.val - (DOTVAL + 2);
+	if (PASS_RELO && dist > 0 && !(label.typ & S_DOT)) {
+		dist -= sect[DOTSCT].s_gain;
+		if (!fitb(dist))
+			serror("offset too large");
+	}
+	emit1(opc);
+	emit1(zp.val);
+	emit1(dist);
+}
+#endif
+
 void
 code(expr_t exp, int opc1, int opc2)
 {
-	if (small((exp.typ & S_SCTMASK) == S_ABS && fits_zeropage(exp.val), 1)) {
+	int is_abs = (exp.typ & S_SCTMASK & ~S_VAR) == S_ABS;
+	int is_local = (exp.typ & S_SCTMASK) == DOTSCT;
+	if (small((is_abs || is_local) && fits_zeropage(exp.val),1)) {
 		emit1(opc1);
 		emit1(exp.val);
 	} else {
