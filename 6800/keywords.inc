@@ -36,10 +36,10 @@
 /* compatibility */
 { 0,	'=',		0,		"equ"	},
 { 0,	PSEUDOOP_ORG,	0,		"org"	},
+{ 0,	PSEUDOOP_END,	0,		"end"	},
 { 0,	PSEUDOOP_BOOT,	0,		"boot"	},
 { 0,	PSEUDOOP_ENDB,	0,		"endb"	},
 
-{ 0,	PSEUDOOP_END,	0,		"end"	},
 { 0,	PSEUDOOP_DATA,	1,		"fcb"	},	/* form constant byte */
 { 0,	PSEUDOOP_DATA,	2,		"fdb"	},	/* form double byte */
 { 0,	PSEUDOOP_DATA,	1,		"fcc"	},	/* form constant character */
@@ -50,6 +50,15 @@
 { 0,	PSEUDOOP_DATA,	1,		"db"	},
 { 0,	PSEUDOOP_DATA,	2,		"dw"	},
 { 0,	PSEUDOOP_ASCII,	0,		"asc"	},
+
+#ifdef COMPAT_AS68
+{ 0,	PSEUDOOP_SEG,		0,	".bss"  },
+{ 0,	PSEUDOOP_SEG,		0,	".data"  },
+{ 0,	PSEUDOOP_SEG,		1,	".code"  },
+{ 0,	PSEUDOOP_ZERO,		1,	".blkb"  },
+{ 0,	BRANCH,			0x27,	"jeq"	},
+{ 0,	BRANCH,			0x26,	"jne"	},
+#endif
 
 /* The X register */
 { 0,	X,		0,		"x"	},

@@ -38,4 +38,3 @@ extern int opt_cmos;
 #define fitj(z)	((unsigned)z + 0x80 <= 0xFF)
 
 void branch(int opc, expr_t exp);
-

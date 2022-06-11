@@ -39,7 +39,9 @@
 extern sect_t sect[];
 extern int hash(const char *);
 
-static item_t cseg = { 0, S_UND, 0, ".text" };
+item_t bseg = { 0, S_UND, 0, ".bss" };
+item_t dseg = { 0, S_UND, 0, ".data" };
+item_t cseg = { 0, S_UND, 0, ".code" };
 
 void
 mflag(const char* flag)
@@ -52,8 +54,14 @@ machstart(int pass)
 	if (pass == PASS_1) {
 		item_insert(&cseg, H_GLOBAL+hash(cseg.i_name));
 		unresolved++;
+		item_insert(&dseg, H_GLOBAL+hash(cseg.i_name));
+		unresolved++;
+		item_insert(&bseg, H_GLOBAL+hash(cseg.i_name));
+		unresolved++;
 	}
 	newsect(&cseg, 0, NULL);
+	newsect(&dseg, 0, NULL);
+	newsect(&bseg, 0, NULL);
 }
 
 void

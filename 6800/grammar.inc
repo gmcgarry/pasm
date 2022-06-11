@@ -51,12 +51,26 @@ pseudoop
 	| PSEUDOOP_DATA datalist 
 	| PSEUDOOP_ENDB IDENT			{ }
 	| PSEUDOOP_BOOT				{ }
+#ifdef COMPAT_AS68
+	| PSEUDOOP_SEG				{
+							extern item_t cseg;
+							extern item_t dseg;
+							extern item_t bseg;
+
+							switch ($1) {
+							case 0: newsect(&dseg, 0, NULL); break;
+							case 1: newsect(&cseg, 0, NULL); break;
+							case 2: newsect(&bseg, 0, NULL); break;
+							default: serror("unknown segment"); break;
+							}
+						}
+#endif
 	;
 
 instr
 	: NOARG					{ emit1($1); }
 	| BRANCH expr				{ branch($1,$2); }
-	| XOP '#' expr				{
+	| XOP '#' immediate			{
 							emit1($1 - 0x20);
 							switch ($1 & 0x0F) {
 							case 0x03:
@@ -106,10 +120,20 @@ instr
 						}
 	;
 
-memref	: AOP
+immediate
+	: expr					{ $$ = $1; }
+#ifdef COMPAT_AS68
+	| '>' expr				{ $$.val = ($2.val >> 8); }
+	| '<' expr				{ $$.val = ($2.val & 0xFF); }
+#endif
+	;
+
+memref
+	: AOP
 	| XOP
 	;
 
-optexpr	: /* empty */				{ $$.typ = S_ABS; $$.val = 0; }
+optexpr
+	: /* empty */				{ $$.typ = S_ABS; $$.val = 0; }
 	| expr					{ $$ = $1; }
 	;
