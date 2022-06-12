@@ -69,8 +69,8 @@ instr	:	/* empty */
 	| BITOP '#' expr	{ emit1(0x89); emit1($3.val); }
 	| BITOP expr ',' X	{ code($2,$1+0x10,$1+0x18); } 
 #endif
-	| JMPOP expr		{ emit1($1); newrelo($2.typ, RELO2); emit2($2.val); }
-	| JMPOP '(' targ ')'	{ emit1($1+0x20); newrelo($3.typ, RELO2); emit2($3.val); }
+	| JMPOP sexpr		{ emit1($1); newrelo($2.typ, RELO2); emit2($2.val); }
+	| JMPOP '(' expr ')'	{ emit1($1+0x20); newrelo($3.typ, RELO2); emit2($3.val); }
 #ifdef W65C02
 	| JMPOP '(' expr ',' X ')'	{ emit1($1+0x30); newrelo($3.typ, RELO2); emit2($3.val); }
 #endif
@@ -108,13 +108,13 @@ instr	:	/* empty */
 			  	newrelo($3.typ, RELO1);
 			  	emit1($3.val);
 				}
-	| addop	expr		{ code($2,$1+0x05,$1+0x0D); }
+	| addop	sexpr		{ code($2,$1+0x05,$1+0x0D); }
 	| addop	expr ',' X	{ code($2,$1+0x15,$1+0x1D); }
 	| addop	expr ',' Y	{ emit1($1+0x19); newrelo($2.typ, RELO2); emit2($2.val); }
 	| addop	'(' expr ',' X ')'	{ emit1($1+0x01); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
 	| addop	'(' expr ')' ',' Y	{ emit1($1+0x11); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
 #ifdef W65C02
-	| addop	'(' targ ')'	{ emit1($1+0x12); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
+	| addop	'(' expr ')'	{ emit1($1+0x12); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
 #endif
 	| ROLOP	/* Default is A. */	{ emit1($1+0x0A); }
 	| ROLOP	A		{ emit1($1+0x0A); }
@@ -140,8 +140,3 @@ instr	:	/* empty */
 addop: ADDOP
 	| PSEU			{ emit1($1>>8); $$ = $1 & 0xFF; }
 	;
-
-targ:
-	NUMBER8			{ $$.val = $1; $$.typ = S_ABS; }
-	| id_fb			{ $$.val = load($1); last_it = $1; $$.typ = $1->i_type & S_SCTMASK; }
- 	;

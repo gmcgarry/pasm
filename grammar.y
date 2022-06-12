@@ -131,7 +131,7 @@ static item_t	*last_it;
 %nonassoc '~'
 
 %type <y_valu> absexp optabs optsize optelfshtype
-%type <y_expr> expr
+%type <y_expr> expr sexpr bexpr
 %type <y_item> id_fb
 
 /* ========== Machine dependent Yacc definitions ========== */
@@ -302,9 +302,13 @@ dataflist
 #endif
 
 expr	: error					{ serror("expr syntax err"); $$.val = 0; $$.typ = S_UND; }
+	| sexpr					{ $$ = $1; }
+	| '(' expr ')'				{ $$ = $2; }
+	;
+
+sexpr:
 	| NUMBER8				{ $$.val = $1; $$.typ = S_ABS; }
 	| id_fb					{ $$.val = load($1); last_it = $1; $$.typ = $1->i_type & S_SCTMASK; }
-	| '(' expr ')'				{ $$ = $2; }
 	| expr OP_OO expr			{ $$.val = ($1.val || $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
 	| expr OP_AA expr			{ $$.val = ($1.val && $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
 	| expr '|' expr				{ $$.val = ($1.val | $3.val); $$.typ = combine($1.typ, $3.typ, 0); }

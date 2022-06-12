@@ -129,7 +129,7 @@
 {0,	BITOP,		0x14,		"trb"},
 {0,	BITOP,		0x04,		"tsb"},
 #endif
-{0,	NOPOP,		0x00,		"brk"},
+{0,	NOPOP,		0x00,		"brk"},	/* two-byte instruction ? */
 {0,	NOPOP,		0x18,		"clc"},
 {0,	NOPOP,		0xD8,		"cld"},
 {0,	NOPOP,		0x58,		"cli"},

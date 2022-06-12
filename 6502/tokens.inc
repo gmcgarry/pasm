@@ -58,6 +58,5 @@
 %token <y_word> PSEU
 
 %type <y_word> addop
-%type <y_expr> targ
 
 %nonassoc EXTENSION
