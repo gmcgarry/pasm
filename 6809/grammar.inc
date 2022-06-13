@@ -150,7 +150,7 @@ instr
 					emit1or2($1);
 					emit1($3 + 0x10);
 				}
-	| XOP expr		{
+	| XOP sexpr		{
 					int is_abs = ($2.typ & S_SCTMASK & ~S_VAR) == S_ABS;
 					int is_local = ($2.typ & S_SCTMASK) == DOTSCT;
 					if ((is_abs || is_local) && ((unsigned)$2.val >> 8) == dpvalue) {
