@@ -306,8 +306,7 @@ expr	: error					{ serror("expr syntax err"); $$.val = 0; $$.typ = S_UND; }
 	| '(' expr ')'				{ $$ = $2; }
 	;
 
-sexpr:
-	| NUMBER8				{ $$.val = $1; $$.typ = S_ABS; }
+sexpr	: NUMBER8				{ $$.val = $1; $$.typ = S_ABS; }
 	| id_fb					{ $$.val = load($1); last_it = $1; $$.typ = $1->i_type & S_SCTMASK; }
 	| expr OP_OO expr			{ $$.val = ($1.val || $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
 	| expr OP_AA expr			{ $$.val = ($1.val && $3.val); $$.typ = combine($1.typ, $3.typ, 0); }
