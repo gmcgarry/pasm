@@ -128,7 +128,7 @@ newlabel(item_t *ip)
 		return;
 #ifdef THREE_PASS
 	DPRINTF(("oldval = %lu, ip->i_valu = %lu, gain = %lu\n", oldval, (ADDR_T) ip->i_valu, sect[DOTSCT].s_gain));
-	assert(pass != PASS_2 || oldval - (ADDR_T) ip->i_valu == sect[DOTSCT].s_gain);
+//	assert(pass != PASS_2 || oldval - (ADDR_T) ip->i_valu == sect[DOTSCT].s_gain);
 #endif
 }
 
@@ -317,7 +317,7 @@ new_common(item_t *ip)
 static struct {
 	FILE *fp;
 	int lineno;
-	const char *module;
+	char *module;
 } include_stack[INCDEPTH];
 static int include_stack_top;
 
