@@ -131,7 +131,7 @@ static item_t	*last_it;
 %nonassoc '~'
 
 %type <y_valu> absexp optabs optsize optelfshtype
-%type <y_expr> expr sexpr bexpr
+%type <y_expr> expr sexpr
 %type <y_item> id_fb
 
 /* ========== Machine dependent Yacc definitions ========== */
