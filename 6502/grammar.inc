@@ -55,6 +55,7 @@ pseudoop:
 	| PSEUDOOP_DATA datalist
 	| PSEUDOOP_ASCII STRING	{ emitstr($1); }
 	| PSEUDOOP_SPACE absexp	{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; sect[DOTSCT].s_zero += $2; }
+	| PSEUDOOP_ZERO absexp	{ int i; for (i = 0; i < $2; i++) emit1(0); }
 	;
 
 /* for compatibility with asl assembler */
@@ -111,10 +112,10 @@ instr	:	/* empty */
 	| addop	sexpr		{ code($2,$1+0x05,$1+0x0D); }
 	| addop	expr ',' X	{ code($2,$1+0x15,$1+0x1D); }
 	| addop	expr ',' Y	{ emit1($1+0x19); newrelo($2.typ, RELO2); emit2($2.val); }
-	| addop	'(' expr ',' X ')'	{ emit1($1+0x01); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
-	| addop	'(' expr ')' ',' Y	{ emit1($1+0x11); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
+	| addop	'(' expr ',' X ')'	{ fit(fitx($3.val,8)); emit1($1+0x01); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
+	| addop	'(' expr ')' ',' Y	{ fit(fitx($3.val,8)); emit1($1+0x11); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
 #ifdef W65C02
-	| addop	'(' expr ')'	{ emit1($1+0x12); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
+	| addop	'(' expr ')'	{ fit(fitx($3.val,8)); emit1($1+0x12); newrelo($3.typ, RELO1); emit1(lowb($3.val)); }
 #endif
 	| ROLOP	/* Default is A. */	{ emit1($1+0x0A); }
 	| ROLOP	A		{ emit1($1+0x0A); }

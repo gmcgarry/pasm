@@ -71,8 +71,8 @@
 {0,	ADDOP,		0x00,		"ora"},
 {0,	ADDOP,		0xE0,		"sbc"},
 {0,	ADDOP,		0x80,		"sta"},
-{0,	ROLOP,		0x00,		"asl"},
-{0,	ROLOP,		0x40,		"lsr"},
+{0,	ROLOP,		0x00,		"asl"}, /* arithmetic/loglcal shift left */
+{0,	ROLOP,		0x40,		"lsr"},	/* logical shift right */
 {0,	ROLOP,		0x20,		"rol"},
 {0,	ROLOP,		0x60,		"ror"},
 #ifdef W65C02
