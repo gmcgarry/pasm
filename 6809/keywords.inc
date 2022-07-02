@@ -247,7 +247,8 @@
 /* simulated 6801 instructions */
 	/* LSRD */
 	/* PSHX - 3410 */
-	/* PULX - 3510 */
+{ 0,	NOARG,		0x3410,		"pshx"	},	/* PSHS X */
+{ 0,	NOARG,		0x3510,		"pulx"	},	/* PULS X */
 	/* LDAD */
 	/* STAD */
 
