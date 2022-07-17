@@ -42,10 +42,6 @@
 #include "y.tab.h"
 
 item_t	keytab[] = {
-#if 0
-	{ 0,	PSEUDOOP_EXTERN,	0,		".define" },
-	{ 0,	PSEUDOOP_EXTERN,	0,		".extern" },
-#endif
 
 	{ 0,	DOT,			0,		"." },
 
@@ -70,11 +66,13 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_COMMON,	0,		".comm" },
 	{ 0,	PSEUDOOP_BASE,		0,		".base"},
 	{ 0,	PSEUDOOP_ORG,		0,		".org" },
+	{ 0,	PSEUDOOP_SECTION,	0,		".sect" },
 	{ 0,	PSEUDOOP_SECTION,	0,		".section" },
 	{ 0,	PSEUDOOP_END,		0,		".end" },
 	{ 0,	PSEUDOOP_GLOBAL,	0,		".local" },
 	{ 0,	PSEUDOOP_GLOBAL,	1,		".export" },
 	{ 0,	PSEUDOOP_GLOBAL,	1,		".extern" },
+	{ 0,	PSEUDOOP_GLOBAL,	1,		".define" },
 #ifdef COMPAT_GAS
 	{ 0,	PSEUDOOP_GLOBAL,	1,		".globl" },
 	{ 0,	PSEUDOOP_GLOBAL,	1,		".global" },
@@ -83,7 +81,7 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_TYPE,		0,		".type" },
 #endif
 	{ 0,	PSEUDOOP_EQU,		0,		".equ" },
-	{ 0,	PSEUDOOP_EQU,		0,		".set" },
+	{ 0,	PSEUDOOP_EQU,		1,		".set" },
 	{ 0,	PSEUDOOP_LINE,		0,		".line" },
 	{ 0,	PSEUDOOP_FILE,		0,		".file" },
 	{ 0,	PSEUDOOP_INCLUDE,	0,		".include" },
