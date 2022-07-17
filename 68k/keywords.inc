@@ -45,14 +45,17 @@
 { 0,	PSEUDOOP_ORG,	0,		"org"   },
 { 0,	PSEUDOOP_END,	0,		"end"   },
 
-
 { 0,	PSEUDOOP_ZERO,	1,		"ds"    },	 /* define storage */
 { 0,	PSEUDOOP_DATA,	1,		"db"    },
 { 0,	PSEUDOOP_DATA,	2,		"dw"    },
 { 0,	PSEUDOOP_DATA,	4,		"dl"    },
+{ 0,	DEFCONST,	0,		"dc"    },
 
 { 0,	MOVE,		0,		"movea"	},
 #endif
+
+{ 0,	MODEL,		0,		".68000"	},
+{ 0,	MODEL,		1,		".68010"	},
 
 { 0,	SIZE,		SIZE_B,		".b"	},
 { 0,	SIZE,		SIZE_W,		".w"	},
@@ -78,9 +81,6 @@
 { 0,	AREG,		07,		"sp"	},
 
 { 0,	PC,		8,		"pc"	},
-
-{ 0,	MODEL,		0,		".68000"	},
-{ 0,	MODEL,		1,		".68010"	},
 
 { 0,	CREG,		04001,		"vbr"	},
 { 0,	CREG,		0,		"sfc"	},

@@ -40,6 +40,12 @@
 operation
 	: { curr_instr = curr_token; }
 		_operation
+	| cdata datalist
+	;
+
+cdata
+	: DEFCONST SIZE
+			{	$$ = (1 << ($2 >> 6)); }
 	;
 
 _operation

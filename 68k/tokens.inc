@@ -89,6 +89,9 @@
 %token <y_word> FSIZE
 %token <y_word> CP
 
+%token <y_word> DEFCONST
+
+%type <y_word> cdata
 %type <y_word> bcdx op_ea regs rrange 
 %type <y_word> reg sizedef sizenon creg
 %type <y_word> fsize fregs fcregs frlist frrange
