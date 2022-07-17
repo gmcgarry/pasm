@@ -249,6 +249,8 @@ typedef	struct sect sect_t;
 #define	INIT(x)		/* empty */
 #endif
 
+extern int	curr_token;	/* accessed by target-specific backend */
+
 extern short	pass INIT(PASS_1);
 				/* PASS 1, 2 or 3 */
 extern short	peekc;		/* push back symbol (PASS_1) */
@@ -388,6 +390,12 @@ void outfinish();
 #define RELBR   0x4000		/* High order byte lowest address. */
 #define RELWR   0x8000		/* High order word lowest address. */
 
+#ifdef RELOCATIONS
+#define RELOMOVE(a,b)	{ a = b; b = 0; }
+#else
+#define RELOMOVE(a,b)	/* empty */
+#endif
+
 #include "elf.h"
 
 #ifndef ELFM
@@ -422,7 +430,7 @@ typedef Elf32_Sym Elf_Sym;
 
 #include "mach.h"
 
-#if YYDEBUG
+#if YYDEBUG && 0
 #define DPRINTF(x)	do { printf("line %ld: ", lineno); printf x; } while(0)
 #else
 #define DPRINTF(x)	/* nothing */

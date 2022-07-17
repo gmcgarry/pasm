@@ -86,7 +86,7 @@ extern int nsymb;
 #define OUTPUT_FORMAT "hex"
 #endif
 
-#if defined(mach_6800)
+#if defined(mach_6800) || defined(mach_6809) || defined(mach_68k)
 #define OUTPUT_FORMAT "srec2"
 #endif
 

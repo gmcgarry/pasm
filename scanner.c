@@ -62,7 +62,6 @@ short    hashindex;      /* see item_search() */
 int hash(const char* p);
 
 static int maxstring;
-static int curr_token;
 
 void
 lexinit()
