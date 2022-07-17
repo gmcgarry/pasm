@@ -18,6 +18,7 @@
 { 0,	PSEUDOOP_ORG,	0,		"org"	},
 { 0,	PSEUDOOP_END,	0,		"end"	},
 { 0,	PSEUDOOP_DATA,	1,		"db"	},
+{ 0,	PSEUDOOP_DATA,	2,		"dw"	},
 { 0,	SHIFTFUNC,	0,		"low"	},
 { 0,	SHIFTFUNC,	8,		"high"	},
 
@@ -71,7 +72,7 @@
 #if 0
 { 0,	NOARG,		0x30|0x08,	"nbr"	},	/* NBR - branch never */
 #endif
-{ 0,	NOARG,		0x30|0x08,	"skp"	},	/* SKP - skip next */
+{ 0,	NOARG,		0x30|0x08,	"skp"	},	/* SKP - skip next byte */
 { 0,	BRANCH,		0x31|0x08,	"bnq"	},	/* BNQ nn - branch if not q flag */
 { 0,	BRANCH,		0x32|0x08,	"bnz"	},	/* BNZ nn - branch if nogt zero flag */
 { 0,	BRANCH,		0x33|0x08,	"bnf"	},	/* BNF nn - branch if not data flag (carry) */
@@ -95,7 +96,7 @@
 #if 0
 { 0,	NOARG,		0xC0|0x08,	"nlbr"	},	/* NLBR - never branch */
 #endif
-{ 0,	NOARG,		0xC0|0x08,	"lskp"	},	/* LSKP - never branch */
+{ 0,	NOARG,		0xC0|0x08,	"lskp"	},	/* LSKP - skip next word */
 { 0,	BRANCH,		0xC1|0x08,	"lbnq"	},	/* LBNQ hhll - branch if q flag */
 { 0,	BRANCH,		0xC2|0x08,	"lbnz"	},	/* LBNZ hhll - branch if zero flag */
 { 0,	BRANCH,		0xC3|0x08,	"lbnf"	},	/* LBNF hhll - branch if data flag (carry) */
@@ -112,7 +113,7 @@
 { 0,	NOARG,		0x74,		"adc"	},	/* ADC - add memory Rx with D and carry */
 { 0,	NOARG,		0xF5,		"sd"	},	/* SD - subtract D from memory Rx */
 { 0,	NOARG,		0x75,		"sdb"	},	/* SDB - subtract D from memory Rx with borrow */
-{ 0,	NOARG,		0xF7,		"sdm"	},	/* SDM - subtract memory Rx from D */
+{ 0,	NOARG,		0xF7,		"sm"	},	/* SM - subtract memory Rx from D */
 { 0,	NOARG,		0x77,		"smb"	},	/* SMB - subtract memory Rx from D wth borrow */
 
 { 0,	IOP,		0xF9,		"ori"	},	/* ORI nn - or immediate wiht */
@@ -136,8 +137,8 @@
 { 0,	NOARG,		0x00,		"idl"	},	/* IDL - wait for interrupt */
 { 0,	NOARG,		0x70,		"ret"	},	/* RET - X,P = M(Rx), post-increment Rx, IE=1 */
 { 0,	NOARG,		0x71,		"dis"	},	/* DIS - X,P = M(Rx), post-increment Rx, IE=0 */
-{ 0,	NOARG,		0x79,		"mark"	},	/* MARK - T=X,P, M(Rx)=X,P, X=P, post-decrement Rx */
 { 0,	NOARG,		0x78,		"sav"	},	/* SAV - M(Rx)=T */
+{ 0,	NOARG,		0x79,		"mark"	},	/* MARK - T=X,P, M(Rx)=X,P, X=P, post-decrement Rx */
 { 0,	NOARG,		0x7A,		"req"	},	/* REQ - reset Q */
 { 0,	NOARG,		0x7B,		"seq"	},	/* SEQ - set Q */
 { 0,	XOP,		0xD0,		"sep"	},	/* SEP n - P=n */
@@ -146,7 +147,20 @@
 /* input/output */
 { 0,	IO,		0x60,		"out"	},	/* OUT n - bus=M(Rx), post-increment Rx */
 { 0,	IO,		0x68,		"in"	},	/* IN n - M(Rx)=bus */
-{ 0,	IO,		0x68,		"inp"	},	/* IN n - M(Rx)=bus */
 
+/* AVOCET XASM18 compatibility */
+#ifdef COMPAT_XASM18
+#if 0
+{ 0,	PSEU,		0xD4,		"CALL"	},	/* SEP R4, DW ADDR */
+{ 0,	NOARG,		0xD5,		"EXIT"	},	/* SEP R5 */
+#endif
+{ 0,	IO,		0x68,		"INP"	},	/* IN n - M(Rx)=bus */
+{ 0,	NOARG,		0x60,		"IRX"	},	/* INX */
+{ 0,	NOARG,		0x72,		"POP"	},	/* LDXA */
+{ 0,	NOARG,		0x73,		"PUSH"	},	/* STXD */
+{ 0,	NOARG,		0xF7,		"SDM"	},	/* SM */
+#endif
 
-{ 0,	NOARG,		0x60,		"IRX"	},	/* XXX??? */
+#ifdef COMPAT_A18
+{ 0,	PSEU,		0xD4,		"LOAD"	},	/* LDI LOW($2); PLO $3; LDI HIGH($2); PHI $3 */
+#endif

@@ -24,6 +24,7 @@ operation
 	| XOP reg		{ fit(fitx($2.val,4)); emit1($1|$2.val); }
 	| IO expr		{ fit(fitx($2.val,3)); emit1($1|$2.val); }
 	| BRANCH expr		{ branch($1,$2); }
+	| PSEU expr		{ emit1($1); emit2($2.val); }
 	;
 
 expr

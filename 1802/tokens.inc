@@ -17,6 +17,6 @@
 %token <y_word> REG
 
 %token <y_word> NOARG BRANCH XOP IOP IO
-%token <y_word> SHIFTFUNC
+%token <y_word> SHIFTFUNC PSEU
 
 %type <y_expr> reg

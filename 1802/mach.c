@@ -73,7 +73,7 @@ branch(int opc, expr_t exp)
 */
 	emit1(opc);
 	if ((opc & 0xC0) == 0xC0) { 
-		fit(fitx(exp.val,16));
+		/* fit(fitx(exp.val,16)); */
 		emit2(exp.val);
 	} else {
 		int v = exp.val - (DOTVAL & ~255);
