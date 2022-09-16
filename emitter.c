@@ -549,12 +549,12 @@ void srec_finishline(void)
 		fprintf(fout, "S1%02X%04lX", srec_index + 3, srec_address & 0xFFFF);
 		break;
 	case 3:
-		fprintf(fout, "S2%02X%06lX", srec_index + 5, srec_address & 0xFFFFFF);
-		srec_check += ((srec_address>>16) & 0xff) + 2;
+		fprintf(fout, "S2%02X%06lX", srec_index + 4, srec_address & 0xFFFFFF);
+		srec_check += ((srec_address>>16) & 0xff) + 1;
 		break;
 	case 4:
-		fprintf(fout, "S3%02X%08lX", srec_index + 7, srec_address);
-		srec_check += ((srec_address>>16) & 0xff) + ((srec_address>>24) & 0xff) + 4;
+		fprintf(fout, "S3%02X%08lX", srec_index + 5, srec_address & 0xFFFFFFFF);
+		srec_check += ((srec_address>>16) & 0xff) + ((srec_address>>24) & 0xff) + 2;
 		break;
 	}
 
