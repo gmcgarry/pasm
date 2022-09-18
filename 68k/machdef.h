@@ -37,6 +37,8 @@
  * Motorola 68000/68010 options
  */
 
+#define COMPAT
+
 #define	THREE_PASS		/* branch and offset optimization */
 #define	BYTES_REVERSED		/* high order byte has lowest address */
 #define	WORDS_REVERSED		/* high order word has lowest address */
@@ -63,7 +65,7 @@
 #define HEXPREFIX	'$'
 #define BINPREFIX	'%'
 
-#define NO_CC
+//#define NO_CC
 
 /* Some character constants for scanner */
 #define ASC_COMMENT	';'

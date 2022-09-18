@@ -40,12 +40,24 @@
 operation
 	: { curr_instr = curr_token; }
 		_operation
-	| cdata datalist
+	| optlabel cdatalist
+	;
+
+optlabel
+	: /* empty */
+	| IDENT		{	newident($1, DOTSCT); newlabel($1); }
+	;
+
+cdatalist
+	: cdata datalist
+	| DEFZERO sizedef absexp
+			{ int n = (1 << ($2 >> 6)); int i; for (i = 0; i < $3; i++) emitx(0x00,n); }
+	| DEFBLOCK sizedef absexp ',' absexp
+			{ int n = (1 << ($2 >> 6)); int i; for (i = 0; i < $3; i++) emitx($5,n); }
 	;
 
 cdata
-	: DEFCONST SIZE
-			{	$$ = (1 << ($2 >> 6)); }
+	: DEFCONST SIZE	{	$$ = (1 << ($2 >> 6)); } 
 	;
 
 _operation
@@ -70,8 +82,13 @@ _operation
 #endif
 				emit2(loww($4.val));
 			}
+#ifdef COMPAT
+	| BITOP sizedef ea_ea
+			{	bitop($1); }
+#else
 	| BITOP ea_ea
 			{	bitop($1); }
+#endif
 	| OP_EA_D sizedef ea ',' DREG
 			{	if ($2 != SIZE_W) {
 					serror("illegal size");
@@ -100,7 +117,7 @@ _operation
 	| MOVEM sizedef notimmreg ',' regs
 			{	movem(1, $2, $5); }
 	| MOVES sizedef ea_ea
-			{	test68010();
+			{	testmodel(MODEL_68010);
 				if (mrg_1 <= 017) {
 					emit2(007000 | $2 | mrg_2);
 					emit2(mrg_1 << 12 | 04000);
@@ -113,11 +130,11 @@ _operation
 					badoperand();
 			}
 	| MOVEC creg ',' reg
-			{	test68010();
+			{	testmodel(MODEL_68010);
 				emit2(047172); emit2($2 | $4<<12);
 			}
 	| MOVEC reg ',' creg
-			{	test68010();
+			{	testmodel(MODEL_68010);
 				emit2(047173); emit2($4 | $2<<12);
 			}
 	| EXG reg ',' reg
@@ -135,7 +152,14 @@ _operation
 					);
 			}
 	| OP_EXT sizedef DREG
-			{	checksize($2, 2|4); emit2(044000 | ($2+0100) | $3); }
+			{
+				if ($1 == 1) {
+					testmodel(MODEL_68020);
+					checksize($2, 4); emit2(044700 | $3);
+				} else {
+					checksize($2, 2|4); emit2(044000 | ($2+0100) | $3);
+				}
+			}
 	| SWAP DREG
 			{	emit2(044100 | $2); }
 	| STOP imm
@@ -147,7 +171,7 @@ _operation
 	| TRAP '#' absexp
 			{	fit(fit4($3)); emit2(047100|low4($3)); }
 	| RTD imm
-			{	test68010();
+			{	testmodel(MODEL_68010);
 				emit2(047164);
 				ea_2(SIZE_W, 0);
 			}
@@ -169,6 +193,7 @@ op_ea	: OP_EA
 regs	: rrange
 	| regs '/' rrange
 			{	$$ = $1 | $3; }
+	| '#' absexp	{	$$ = $2; }
 	;
 rrange	: reg
 			{	$$ = 1<<$1; }
@@ -208,10 +233,22 @@ notimmreg
 			{	exp_2 = $1; ea6x($3, $5, $6);
 				RELOMOVE(rel_2, relonami);
 			}
+#ifdef COMPAT
+	| '(' AREG ',' reg sizedef ')'
+			{	exp_2.val = 0; exp_2.typ = S_ABS; ea6x($2, $4, $5);
+				RELOMOVE(rel_2, relonami);
+			}
+#endif
 	| expr '(' PC ')'
 			{	exp_2 = $1; ea72();
 				RELOMOVE(rel_2, relonami);
 			}
+#ifdef COMPAT
+	| '(' expr ',' PC ')'
+			{	exp_2 = $2; ea72();
+				RELOMOVE(rel_2, relonami);
+			}
+#endif
 	| expr '(' PC ',' reg sizedef ')'
 			{	exp_2 = $1; ea73($5, $6);
 				RELOMOVE(rel_2, relonami);

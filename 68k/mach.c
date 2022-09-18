@@ -43,7 +43,7 @@
 #include "y.tab.h"
 
 #if 0
-int model;		/* 68000/68010 */
+int model;		/* 680x0 */
 int co_id;
 
 int mrg_1,mrg_2;
@@ -143,8 +143,13 @@ ea_1(int sz, int bits)
 		checksize(sz, 2|4);
 //	printf("bits=0x%x, flag=0x%x\n", bits, flag);
 	bits &= ~flag;
+#ifdef RELOCATION
+	// by default, the assembler assumes relocatable code with
+	// the following code.  Absolute addressing will not be used.
+	// So disable this.
 	if (bits)
 		serror("bad addressing category");
+#endif
 	if (flag & FITW)
 		fit(fitw(exp_1.val) || (mrg_1 == 074 && fit16(exp_1.val)));
 	if (flag & FITB) {
@@ -187,10 +192,10 @@ checksize(int sz, int bits)
 }
 
 void
-test68010(void)
+testmodel(int mdl)
 {
-	if (model != 1 && pass == PASS_3)
-		warning("68010 instruction");
+	if (model < mdl && pass == PASS_3)
+		warning("680%d0 instruction", mdl);
 }
 
 void
@@ -413,7 +418,7 @@ move_special(int sz)
 	}
 	if (mrg_1 >= 076) {
 		if (mrg_1 == 076)
-			test68010();
+			testmodel(MODEL_68010);
 		if (sz != SIZE_NON)
 			checksize(sz, 2);
 		emit2(040300 | (mrg_1==076?01000:0) | mrg_2);
@@ -499,6 +504,7 @@ branch(int opc, expr_t exp)
 	if ((exp.typ & S_SCTMASK) != DOTSCT)
 		sm = 0;
 	if (small(sm,2)) {
+		fit(fitb(exp.val));
 		if (exp.val == 0)
 			emit2(047161);	/* NOP */
 		else

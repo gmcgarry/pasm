@@ -89,7 +89,7 @@
 %token <y_word> FSIZE
 %token <y_word> CP
 
-%token <y_word> DEFCONST
+%token <y_word> DEFCONST DEFBLOCK DEFZERO
 
 %type <y_word> cdata
 %type <y_word> bcdx op_ea regs rrange 

@@ -34,8 +34,14 @@
  */
 
 /*
- * Motorola 68000/68010 dependent C declarations
+ * Motorola 680x0 dependent C declarations
  */
+
+#define MODEL_68000	0
+#define MODEL_68010	1
+#define MODEL_68020	2
+#define MODEL_68030	3
+#define MODEL_68040	4
 
 #define	low3(z)		((short)(z) & 07)
 #define	low4(z)		((short)(z) & 017)
@@ -60,6 +66,10 @@
 #define	SIZE_NON	0300
 #define	SIZE_DEF	SIZE_W
 
+#define OSIZE_S		00
+#define OSIZE_L		01
+#define OSIZE_DEF	OSIZE_L
+
 #define FSIZE_L		00
 #define FSIZE_S		01
 #define FSIZE_X		02
@@ -76,7 +86,7 @@ extern expr_t	exp_1,exp_2;
 #ifndef ASLD
 extern VALUE_T	rel_1,rel_2;
 #endif
-extern int 	model;		/* 68000/68010 */
+extern int 	model;		/* 680x0 */
 extern int	curr_instr;
 
 /* addressing mode bits */
@@ -98,7 +108,7 @@ void ea_1(int sz, int bits);
 void ea_2(int sz, int bits);
 void indexmode(int hibyte);
 void checksize(int sz, int bits);
-void test68010(void);
+void testmodel(int model);
 void badoperand(void);
 void shift_op(int opc, int sz);
 void bitop(int opc);
