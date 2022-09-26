@@ -270,7 +270,7 @@ align(int bytes, int padding, int maxpadding)
 		if ((gap = DOTVAL % bytes) != 0)
 			gap = bytes - gap;
 #ifdef THREE_PASS
-		if (pass == PASS_2) {
+		if (PASS_RELO) {
 			/*
 			 * keep track of gain with respect to PASS_1
 			 */
