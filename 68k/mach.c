@@ -37,15 +37,17 @@
  * Motorola 68000/68010 auxiliary functions
  */
 
+#include <strings.h>	/* strncasecmp */
+
 #include "as.h"
 #include "error.h"
 
 #include "y.tab.h"
 
-#if 0
 int model;		/* 680x0 */
-int co_id;
 
+#if 0
+int co_id;
 int mrg_1,mrg_2;
 expr_t exp_1, exp_2;
 #ifndef ASLD
@@ -56,8 +58,8 @@ int curr_instr;
 
 
 unsigned short eamode[] = {
-/* 00A */	DTA        |ALT,
-/* 01A */	            ALT,
+/* 00A */	DTA	|ALT,
+/* 01A */		    ALT,
 /* 02A */	DTA|MEM|CTR|ALT,
 /* 03A */	DTA|MEM    |ALT,
 /* 04A */	DTA|MEM    |ALT,
@@ -68,15 +70,15 @@ unsigned short eamode[] = {
 /* 071 */	DTA|MEM|CTR|ALT     |PUTL | (RELO4      )<<8,
 #if 0 	/* until relocations are fixed */
 /* 072 */	DTA|MEM|CTR    |FITW|PUTW | (RELO2|RELPC)<<8,
-/* 073 */	DTA|MEM|CTR         |PUTW | (RELO1|RELPC)<<8,
+/* 073 */	DTA|MEM|CTR	 |PUTW | (RELO1|RELPC)<<8,
 #else
 /* 072 */	DTA|MEM|CTR    |FITW|PUTW | (RELO2)<<8,	
-/* 073 */	DTA|MEM|CTR         |PUTW | (RELO1)<<8,
+/* 073 */	DTA|MEM|CTR	 |PUTW | (RELO1)<<8,
 #endif
 /* 074x */	0,
-/* 074B */	DTA|MEM        |FITB|PUTW | (RELO1      )<<8,
-/* 074W */	DTA|MEM        |FITW|PUTW | (RELO2      )<<8,
-/* 074L */	DTA|MEM             |PUTL | (RELO4      )<<8,
+/* 074B */	DTA|MEM	|FITB|PUTW | (RELO1      )<<8,
+/* 074W */	DTA|MEM	|FITW|PUTW | (RELO2      )<<8,
+/* 074L */	DTA|MEM	     |PUTL | (RELO4      )<<8,
 };
 
 extern sect_t sect[];
@@ -87,6 +89,24 @@ static item_t cseg = { 0, S_UND, 0, ".text" };
 void
 mflag(const char* flag)
 {
+	static const struct { const char *name; int id; } Models[] = {
+		{ "m68000", MODEL_68000 },
+		{ "m68008", MODEL_68000 },
+		{ "m68010", MODEL_68010 },
+		{ "m68020", MODEL_68020 },
+		{ "m68030", MODEL_68030 },
+		{ "m68040", MODEL_68040 },
+	};
+#define NMODELS	(int)(sizeof(Models)/sizeof(Models[0]))
+
+	if (strncasecmp(flag, "cpu=", 4) == 0) {
+		int i;
+		for (i = 0; i < NMODELS; i++)
+			if (strcasecmp(Models[i].name, &flag[4]) == 0)
+				model = Models[i].id;
+		if (i == NMODELS)
+			fatal("unsupported model \"%s\"\n", &flag[4]);
+	}
 }
 
 void
@@ -189,6 +209,12 @@ checksize(int sz, int bits)
 {
 	if ((bits & (1 << (sz>>6))) == 0)
 		serror("bad size");
+}
+
+void
+setmodel(int mdl)
+{
+	model = mdl;
 }
 
 void

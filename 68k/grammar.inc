@@ -152,8 +152,7 @@ _operation
 					);
 			}
 	| OP_EXT sizedef DREG
-			{
-				if ($1 == 1) {
+			{	if ($1 == 1) {
 					testmodel(MODEL_68020);
 					checksize($2, 4); emit2(044700 | $3);
 				} else {
@@ -164,8 +163,11 @@ _operation
 			{	emit2(044100 | $2); }
 	| STOP imm
 			{	emit2($1); ea_2(SIZE_W, 0); }
-	| LINK AREG ',' imm
-			{	emit2(047120 | $2); ea_2(SIZE_W, 0); }
+	| LINK sizedef AREG ',' imm
+			{	if ($2 != SIZE_W)
+					serror("illegal size");
+				emit2(047120 | $3); ea_2(SIZE_W, 0);
+			}
 	| UNLK AREG
 			{	emit2(047130 | $2); }
 	| TRAP '#' absexp
@@ -176,7 +178,7 @@ _operation
 				ea_2(SIZE_W, 0);
 			}
 	| MODEL
-			{	model = $1; }
+			{	setmodel($1); }
 	| fp_op
 	;
 bcdx	: ABCD

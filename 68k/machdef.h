@@ -38,6 +38,8 @@
  */
 
 #define COMPAT
+#define COMPAT_GAS		/* for PCC */
+#define COMPAT_ELF		/* for PCC */
 
 #define	THREE_PASS		/* branch and offset optimization */
 #define	BYTES_REVERSED		/* high order byte has lowest address */
@@ -66,11 +68,16 @@
 #define BINPREFIX	'%'
 
 //#define NO_CC
+#define ELFM		"@"
 
 /* Some character constants for scanner */
 #define ASC_COMMENT	';'
 #define CTRL(x)		((x) & 037)
+#ifdef COMPAT_GAS
+#define ISALPHA(c)	(isalpha(c) || (c) == '_' || (c) == '.' || (c) == '%' || (c) == '@')
+#else
 #define ISALPHA(c)	(isalpha(c) || (c) == '_' || (c) == '.')
+#endif
 #define ISALNUM(c)	(isalnum(c) || (c) == '_')
 
 #define DEFAULT_SECTION	(1)

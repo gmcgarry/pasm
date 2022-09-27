@@ -47,18 +47,17 @@
 #define	low4(z)		((short)(z) & 017)
 #define	low7(z)		((short)(z) & 0177)
 
-#define	fit3(z)		((((z)-1) & ~((int)07)) == 0)
-#define	fit4(z)		(((z) & ~((int)017)) == 0)
-#define	fit7(z)		(((z) & ~((int)0177)) == 0)
+#define	fit3(z)		((((ADDR_T)(z)-1) & ~((int)07)) == 0)
+#define	fit4(z)		(((ADDR_T)(z) & ~((int)017)) == 0)
+#define	fit7(z)		(((ADDR_T)(z) & ~((int)0177)) == 0)
 #define sfit7(z)	(fit7((z)+64))
-#define	fit8(z)		(((z) & ~((int)0xFF)) == 0)
-#define	fit16(z)	(((z) & ~(0xFFFFL)) == 0)
+#define	fit8(z)		(((ADDR_T)(z) & ~((int)0xFF)) == 0)
+#define	fit16(z)	(((ADDR_T)(z) & ~(0xFFFFL)) == 0)
 
-#define fitw(x)		fitx((x)+0x7FFFL,16)
-#define fitb(x)		fitx((x)+0x7F,8)
-#define loww(x)		((x) & 0xFFFFL)
-#define lowb(x)		((x) & 0x00FFL)
-
+#define fitw(x)		fitx((ADDR_T)(x)+0x7FFFL,16)
+#define fitb(x)		fitx((ADDR_T)(x)+0x7F,8)
+#define loww(x)		((ADDR_T)(x) & 0xFFFFL)
+#define lowb(x)		((ADDR_T)(x) & 0x00FFL)
 
 #define	SIZE_B		0000
 #define	SIZE_W		0100
@@ -86,7 +85,6 @@ extern expr_t	exp_1,exp_2;
 #ifndef ASLD
 extern VALUE_T	rel_1,rel_2;
 #endif
-extern int 	model;		/* 680x0 */
 extern int	curr_instr;
 
 /* addressing mode bits */
@@ -109,6 +107,7 @@ void ea_2(int sz, int bits);
 void indexmode(int hibyte);
 void checksize(int sz, int bits);
 void testmodel(int model);
+void setmodel(int model);
 void badoperand(void);
 void shift_op(int opc, int sz);
 void bitop(int opc);
