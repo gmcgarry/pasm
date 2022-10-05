@@ -42,5 +42,4 @@
 %type <y_word> memref
 %type <y_expr> optexpr immediate
 
-%token PSEUDOOP_BOOT PSEUDOOP_ENDB
 %token <y_word> PSEUDOOP_SEG

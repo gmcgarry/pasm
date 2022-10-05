@@ -49,8 +49,6 @@ pseudoop
 	: PSEUDOOP_ZERO absexp			{ int i; for (i = 0; i < $2; i++) emit1(0); }
 	| PSEUDOOP_ASCII STRING			{ emitstr($1); }
 	| PSEUDOOP_DATA datalist 
-	| PSEUDOOP_ENDB IDENT			{ }
-	| PSEUDOOP_BOOT				{ }
 #ifdef COMPAT_AS68
 	| PSEUDOOP_SEG				{
 							extern item_t cseg;
