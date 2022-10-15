@@ -60,6 +60,7 @@ item_t	keytab[] = {
 	{ 0,	PSEUDOOP_ALIGN,		0,		".p2align" },
 	{ 0,	PSEUDOOP_ALIGN,		1,		".balign" },
 #endif
+	{ 0,	PSEUDOOP_RADIX,		0,		".radix" },
 	{ 0,	PSEUDOOP_ASSERT,	0,		".assert" },
 	{ 0,	PSEUDOOP_SPACE,		0,		".space" },
 	{ 0,	PSEUDOOP_SEEK,		0,		".seek" },

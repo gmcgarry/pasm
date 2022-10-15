@@ -135,6 +135,10 @@
 #define QUADSIZE	8
 #endif
 
+#ifndef DEFAULT_RADIX
+#define DEFAULT_RADIX	10
+#endif
+
 /* ========== type declarations ========== */
 
 struct expr {

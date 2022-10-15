@@ -94,6 +94,7 @@ static item_t	*last_it;
 %token PSEUDOOP_MODULE
 %token PSEUDOOP_SECTION
 %token PSEUDOOP_END
+%token PSEUDOOP_RADIX
 %token <y_word> PSEUDOOP_GLOBAL
 %token PSEUDOOP_TYPE
 %token PSEUDOOP_SIZE
@@ -175,13 +176,18 @@ operation: /* empty */
 #endif
 	| PSEUDOOP_MESSAGE STRING		{ puts(stringbuf); }
 	| PSEUDOOP_SECTION IDENT		{ newsect($2, 0, NULL); }
+#ifdef COMPAT_ELF
 	| PSEUDOOP_SECTION IDENT ',' STRING optelfshtype	{ newsect($2, $<y_word>5, stringbuf); }
+#endif
 	| PSEUDOOP_END				{ }
+	| PSEUDOOP_RADIX NUMBER8		{ extern int default_radix; default_radix = $2; }
 	| PSEUDOOP_GLOBAL IDENT			{ if ($1) $2->i_type |= S_EXTERN; else $2->i_type &= ~S_EXTERN; }
 	| PSEUDOOP_WEAK IDENT			{ }
 	| PSEUDOOP_SIZE IDENT ',' expr		{ /* if (PASS_SYMB) $2->i_size = $4.valu; */ }
+#ifdef COMPAT_ELF
 	| PSEUDOOP_TYPE IDENT ',' ELF_SYMTYPE	{ if (PASS_SYMB) $2->i_type |= $4; }
-	| PSEUDOOP_IDENT STRING			{ }
+#endif
+	| PSEUDOOP_IDENT datalist		{ }
 	| PSEUDOOP_COMMON IDENT ',' absexp optsize 	{ newcomm($2, $4);}
 	| PSEUDOOP_BASE absexp			{ if (pass == PASS_1) newbase($2); }
 	| PSEUDOOP_ORG absexp			{
@@ -247,13 +253,32 @@ operation: /* empty */
 							store($2, $4.val);
 						}
 	| PSEUDOOP_EXTERN externlist
-	| PSEUDOOP_ALIGN optabs				{ if ($1) align($2, 0, 0); else align(1<<$2, 0, 0); }
-	| PSEUDOOP_ALIGN absexp ',' optabs optsize	{ if ($1) align($2, $4, $5); else align(1<<$2, $4, $5); }
-	| PSEUDOOP_SPACE absexp				{ if (DOTSCT == S_UND) nosect(); DOTVAL += $2; sect[DOTSCT].s_zero += $2; }
-	| PSEUDOOP_SEEK absexp			{
+	| PSEUDOOP_ALIGN optabs
+						{
+							if ($1)
+								align($2, 0, 0);
+							else
+								align(1<<$2, 0, 0);
+						}
+	| PSEUDOOP_ALIGN absexp ',' optabs optsize
+						{
+							if ($1)
+								align($2, $4, $5);
+							else
+								align(1<<$2, $4, $5);
+						}
+	| PSEUDOOP_SPACE absexp
+						{
 							if (DOTSCT == S_UND)
 								nosect();
-							if ($2 < DOTVAL)
+							DOTVAL += $2;
+							sect[DOTSCT].s_zero += $2;
+						}
+	| PSEUDOOP_SEEK absexp
+						{
+							if (DOTSCT == S_UND)
+								nosect();
+							if (pass == PASS_2 && $2 < DOTVAL)
 								serror("cannot move location counter backwards");
 							if (pass == PASS_1)
 								sect[DOTSCT].s_flag |= SOUGHT;

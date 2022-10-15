@@ -61,6 +61,8 @@ item_t   *hashtab[H_TOTAL];
 short    hashindex;      /* see item_search() */
 int hash(const char* p);
 
+int default_radix = DEFAULT_RADIX;
+
 static int maxstring;
 
 void
@@ -466,7 +468,7 @@ innumber(int c)
 {
 	VALUE_T v;
 	char* p;
-	int radix = 10;
+	int radix = default_radix;
 	int nleft;
 	static char num[40 + 1];
 
@@ -487,12 +489,11 @@ innumber(int c)
 	peekc = c;
 	*p = '\0';
 	c = *--p;
-	radix = 10;
 	if (c == 'h' || c == 'H') {
 		*p = '\0';
 		p = num;
 		radix = 16;
-	} else if ((p - num) == 8 && (c == 'b' || c == 'B')) {
+	} else if ((p - num) == 9 && (c == 'b' || c == 'B')) {
 		*p = '\0';
 		p = num;
 		radix = 2;
@@ -506,6 +507,9 @@ innumber(int c)
 				p++;
 			} else if (*p == 'b') {
 				radix = 2;
+				p++;
+			} else if (*p == 't') {
+				radix = 10;
 				p++;
 			}
 #ifdef HEXPREFIX
