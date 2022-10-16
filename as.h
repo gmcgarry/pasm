@@ -96,7 +96,9 @@
 #define VALUE_T		long		/* type for local math */
 #endif
 
+#ifndef VALWIDTH
 #define VALWIDTH	2*sizeof(ADDR_T)
+#endif
 
 /*
  * NOTE: word_t is introduced to reduce the tokenfile size for machines

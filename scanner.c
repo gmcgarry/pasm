@@ -524,7 +524,7 @@ innumber(int c)
 #endif
 		}
 	}
-	if (radix == 10 && (c == 'f' || c == 'b'))
+	if (radix == DEFAULT_RADIX && (c == 'f' || c == 'b'))
 		return infbsym(num);
 	v = 0;
 	while ((c = *p++)) {

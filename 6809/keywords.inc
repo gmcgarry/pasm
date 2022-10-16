@@ -41,8 +41,8 @@
 #ifdef COMPAT
 { 0,	'=',		0,		"equ"	},
 { 0,	PSEUDOOP_ORG,	0,		"org"	},
-
 { 0,	PSEUDOOP_END,	0,		"end"	},
+
 { 0,	PSEUDOOP_DATA,  1,		"fcb"	},	/* form constant byte */
 { 0,	PSEUDOOP_DATA,  2,		"fdb"	},	/* form double byte */
 { 0,	PSEUDOOP_DATA,  1,		"fcc"	},	/* form constant character */

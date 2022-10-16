@@ -74,7 +74,7 @@
 #endif
 { 0,	NOARG,		0x30|0x08,	"skp"	},	/* SKP - skip next byte */
 { 0,	BRANCH,		0x31|0x08,	"bnq"	},	/* BNQ nn - branch if not q flag */
-{ 0,	BRANCH,		0x32|0x08,	"bnz"	},	/* BNZ nn - branch if nogt zero flag */
+{ 0,	BRANCH,		0x32|0x08,	"bnz"	},	/* BNZ nn - branch if not zero flag */
 { 0,	BRANCH,		0x33|0x08,	"bnf"	},	/* BNF nn - branch if not data flag (carry) */
 { 0,	BRANCH,		0x33|0x08,	"bm"	},	/* BM nn - branch if minus */
 { 0,	BRANCH,		0x33|0x08,	"bl"	},	/* BL nn - branch if less than */
@@ -153,8 +153,8 @@
 #if 0
 { 0,	PSEU,		0xD4,		"CALL"	},	/* SEP R4, DW ADDR */
 { 0,	NOARG,		0xD5,		"EXIT"	},	/* SEP R5 */
-#endif
 { 0,	IO,		0x68,		"INP"	},	/* IN n - M(Rx)=bus */
+#endif
 { 0,	NOARG,		0x60,		"IRX"	},	/* INX */
 { 0,	NOARG,		0x72,		"POP"	},	/* LDXA */
 { 0,	NOARG,		0x73,		"PUSH"	},	/* STXD */
