@@ -58,22 +58,14 @@
 { 0,	PSEUDOOP_ASCII,	0,		"fcs"	},	/* form constant character */
 { 0,	PSEUDOOP_ZERO,	1,		"rmb"	},	/* reserve memory byte */
 
-{ 0,	MOVE,		0,		"movea"	},
-{ 0,	MOVE,		0,		"moveq"	},
+{ 0,	MOVE,		0,		"movea"	},	/* alias */
+{ 0,	MOVE,		0,		"moveq"	},	/* alias */
 
-{ 0,	MODEL,		0,		".68000"	},
-#ifdef MODEL_68010
-{ 0,	MODEL,		1,		".68010"	},
-#endif
-#ifdef MODEL_68020
-{ 0,	MODEL,		2,		".68020"	},
-#endif
-#ifdef MODEL_68030
-{ 0,	MODEL,		3,		".68030"	},
-#endif
-#ifdef MODEL_68040
-{ 0,	MODEL,		4,		".68040"	},
-#endif
+{ 0,	MODEL,		MODEL_68000,	".68000"	},
+{ 0,	MODEL,		MODEL_68010,	".68010"	},
+{ 0,	MODEL,		MODEL_68020,	".68020"	},
+{ 0,	MODEL,		MODEL_68030,	".68030"	},
+{ 0,	MODEL,		MODEL_68040,	".68040"	},
 
 { 0,	SIZE,		SIZE_B,		".b"	},
 { 0,	SIZE,		SIZE_W,		".w"	},
@@ -197,6 +189,13 @@
 { 0,	OP_EA,		047300|CTR,	"jmp"	},
 { 0,	OP_EA,		044100|CTR,	"pea"	},
 
+{ 0,	CALLM,		0003300,	"callm"	},		/* 68020 - #<data>,<ea> */
+{ 0,	RTM,		0,		"rtm"	},		/* 68020 - Rn */
+
+{ 0,	MOVE16,		0173000,	"move16"	},	/* 68040 */
+
+{ 0,	PMOVE,		0170000,	"pmove"	},		/* 68030 */
+
 { 0,	OP_EA,		050300,		"st"	},
 { 0,	OP_EA,		050700,		"sf"	},
 { 0,	OP_EA,		051300,		"shi"	},
@@ -222,11 +221,21 @@
 { 0,	OP_NOOP,	047167,		"rtr"	},
 { 0,	OP_NOOP,	045374,		"illegal"	},
 
+#if 0
 { 0,	OP_EA_D,	040600,		"chk"	},
 { 0,	OP_EA_D,	0100300,	"divu"	},
 { 0,	OP_EA_D,	0100700,	"divs"	},
 { 0,	OP_EA_D,	0140300,	"mulu"	},
 { 0,	OP_EA_D,	0140700,	"muls"	},
+#endif
+
+{ 0,	DIVMUL,		0100,		"divu"	},
+{ 0,	DIVMUL,		0101,		"divs"	},
+{ 0,	DIVMUL,		0000,		"mulu"	},
+{ 0,	DIVMUL,		0001,		"muls"	},
+
+{ 0,	DIVL,		046100,		"divul" },
+{ 0,	DIVL,		046101,		"divsl" },
 
 { 0,	BR,		060000,		"bra"	},
 { 0,	BR,		060400,		"bsr"	},
@@ -312,14 +321,43 @@
 { 0,	EXG,		0,		"exg"	},
 
 { 0,	OP_EXT,		0,		"ext"	},
-
-#ifdef MODEL_68020
 { 0,	OP_EXT,		1,		"extb"	},
-#endif
 
 { 0,	LEA,		0,		"lea"	},
 
 { 0,	RTD,		0,		"rtd"	},
+
+
+/* M68030 MMU registers */
+{ 0,	MREG,		0040000,	"tc" },
+{ 0,	MREG,		0044000,	"srp" },
+{ 0,	MREG,		0046000,	"crp" },
+{ 0,	MREG,		0060000,	"mmusr" },
+{ 0,	MREG,		0060000,	"psr" },
+{ 0,	MREG,		0004000,	"tt0" },
+{ 0,	MREG,		0006000,	"tt1" },
+
+#ifdef COMPAT_GAS
+{ 0,	MREG,		0040000,	"%tc" },
+{ 0,	MREG,		0044000,	"%srp" },
+{ 0,	MREG,		0046000,	"%crp" },
+{ 0,	MREG,		0060000,	"%mmusr" },
+{ 0,	MREG,		0060000,	"%psr" },
+{ 0,	MREG,		0004000,	"%tt0" },
+{ 0,	MREG,		0006000,	"%tt1" },
+
+#endif
+
+/* M68030 MMU instructions */
+
+{ 0,	PFLUSHA,	0022000,	"pflusha" },
+{ 0,	PFLUSH,		0020000,	"pflush" },
+{ 0,	PLOAD,		0021000,	"ploadr" },
+{ 0,	PLOAD,		0020000,	"ploadw" },
+{ 0,	PTEST,		0101000,	"ptestr" },
+{ 0,	PTEST,		0100000,	"ptestw" },
+{ 0,	PMOVE,		0000000,	"pmove" },
+{ 0,	PMOVE,		0000400,	"pmovefd" },
 
 /* floating point coprocessor ... */
 
@@ -340,6 +378,21 @@
 { 0,	FPCR,		1,		"fpiar"		},
 { 0,	FPCR,		2,		"fpsr"		},
 { 0,	FPCR,		4,		"fpcr"		},
+
+#ifdef COMPAT_GAS
+{ 0,	FPREG,		0,		"%fp0"	},
+{ 0,	FPREG,		1,		"%fp1"	},
+{ 0,	FPREG,		2,		"%fp2"	},
+{ 0,	FPREG,		3,		"%fp3"	},
+{ 0,	FPREG,		4,		"%fp4"	},
+{ 0,	FPREG,		5,		"%fp5"	},
+{ 0,	FPREG,		6,		"%fp6"	},
+{ 0,	FPREG,		7,		"%fp7"	},
+
+{ 0,	FPCR,		1,		"%fpiar"	},
+{ 0,	FPCR,		2,		"%fpsr"		},
+{ 0,	FPCR,		4,		"%fpcr"		},
+#endif
 
 { 0,	FMOVE,		0,		"fmove"		},
 { 0,	FMOVECR,	0,		"fmovecr"	},
@@ -416,6 +469,42 @@
 { 0,	FBCC,		037,		"fbst"		},
 { 0,	FBCC,		021,		"fbseq"		},
 { 0,	FBCC,		036,		"fbsne"		},
+
+
+#ifdef COMPAT_GAS
+{ 0,	FBCC,		001,		"fjeq"		},
+{ 0,	FBCC,		016,		"fjne"		},
+{ 0,	FBCC,		022,		"fjgt"		},
+{ 0,	FBCC,		035,		"fjngt"		},
+{ 0,	FBCC,		023,		"fjge"		},
+{ 0,	FBCC,		034,		"fjnge"		},
+{ 0,	FBCC,		024,		"fjlt"		},
+{ 0,	FBCC,		033,		"fjnlt"		},
+{ 0,	FBCC,		025,		"fjle"		},
+{ 0,	FBCC,		032,		"fjnle"		},
+{ 0,	FBCC,		026,		"fjgl"		},
+{ 0,	FBCC,		031,		"fjngl"		},
+{ 0,	FBCC,		027,		"fjgle"		},
+{ 0,	FBCC,		030,		"fjngle"	},
+{ 0,	FBCC,		002,		"fjogt"		},
+{ 0,	FBCC,		015,		"fjule"		},
+{ 0,	FBCC,		003,		"fjoge"		},
+{ 0,	FBCC,		014,		"fjult"		},
+{ 0,	FBCC,		004,		"fjolt"		},
+{ 0,	FBCC,		013,		"fjuge"		},
+{ 0,	FBCC,		005,		"fjole"		},
+{ 0,	FBCC,		012,		"fjugt"		},
+{ 0,	FBCC,		006,		"fjogl"		},
+{ 0,	FBCC,		011,		"fjueq"		},
+{ 0,	FBCC,		007,		"fjor"		},
+{ 0,	FBCC,		010,		"fjun"		},
+{ 0,	FBCC,		000,		"fjf"		},
+{ 0,	FBCC,		017,		"fjt"		},
+{ 0,	FBCC,		020,		"fjsf"		},
+{ 0,	FBCC,		037,		"fjst"		},
+{ 0,	FBCC,		021,		"fjseq"		},
+{ 0,	FBCC,		036,		"fjsne"		},
+#endif
 
 { 0,	FDBCC,		001,		"fdbeq"		},
 { 0,	FDBCC,		016,		"fdbne"		},

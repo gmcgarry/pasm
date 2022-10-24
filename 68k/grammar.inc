@@ -89,12 +89,55 @@ _operation
 	| BITOP ea_ea
 			{	bitop($1); }
 #endif
-	| OP_EA_D sizedef ea ',' DREG
-			{	if ($2 != SIZE_W) {
-					serror("illegal size");
+	| OP_EA_D sizedef ea ',' DREG		/* chk, divu, divs, mulu, muls */
+			{	checksize($2, 2|4);
+				if ($2 == SIZE_W) {
+					emit2($1 | mrg_2 | $5<<9);
+					ea_2($2, DTA);
+				} else {
+					extern int model;
+					if ($1 == 040600 ||model < MODEL_68020)
+						serror("illegal size");
+					emit2($1 | mrg_2 | $5<<9);
+					ea_2($2, DTA);
+// 4c 00 10 01 : 001 001 100 : 0114
+// 4c 00 24 01 : 
 				}
-				emit2($1 | mrg_2 | $5<<9);
-				ea_2(SIZE_W, DTA);
+			}
+
+	| DIVMUL sizedef ea ',' DREG
+			{	checksize($2, 2|4);
+				if ($2 == SIZE_W) {
+					emit2((0140300^($1<<8))|mrg_2|$5<<9);
+					ea_2(SIZE_W, DTA);
+				} else {  /* 32 bit dividend or product */
+					extern int model;
+					if ($1 == 040600 || model < MODEL_68020)
+						serror("illegal size");
+					emit2((046000 | ($1 & ~1)) | mrg_2);
+					emit2(($1&1)<<11 | $5<<12 | $5);
+					ea_2(SIZE_L, DTA);
+				}
+			}
+	| DIVMUL sizedef ea ',' DREG ':' DREG
+			{	/* 64 bit dividend or product */
+				extern int model;
+				if ($1 == 040600 || model < MODEL_68020)
+					serror("illegal size");
+				checksize($2, 4);
+				emit2((046000 | ($1 & ~1)) | mrg_2);
+				emit2(($1&1)<<11 | $7<<12 | $5 | 02000);
+				ea_2(SIZE_L, DTA);
+			}
+	| DIVL sizedef ea ',' DREG ':' DREG
+			{	/* 32 bit long division with remainder */
+				extern int model;
+				if ($1 == 040600 || model < MODEL_68020)
+					serror("illegal size");
+				checksize($2, 4);
+				emit2(($1 & ~1) | mrg_2);
+				emit2(($1 & 1)<<11 | $7<<12 | $5);
+				ea_2(SIZE_L, DTA);
 			}
 	| LEA ea ',' AREG
 			{	emit2(040700 | mrg_2 | $4<<9);
@@ -176,6 +219,57 @@ _operation
 			{	testmodel(MODEL_68010);
 				emit2(047164);
 				ea_2(SIZE_W, 0);
+			}
+	| CALLM	'#' absexp ',' ea
+			{
+				testmodel(MODEL_68020);
+				emit2(003300 | mrg_2);
+				emit2($3 & 0xFF);
+				ea_2(SIZE_W, 0);
+			}
+	| RTM reg
+			{	testmodel(MODEL_68020);
+				emit2(003300 | $2);
+			}
+
+	/* M68030 MMU instructions */
+	|	PFLUSHA
+			{	emit2(0170000);
+				emit2($1);
+			}
+	|	PFLUSH fcregs ',' mask
+			{	emit2(0170000);
+				emit2($1|010000|($4<<5)|$2);
+			}
+	|	PFLUSH fcregs ',' mask ',' ea
+			{	emit2(0170000|mrg_2);
+				emit2($1|014000|($4<<5)|$2);
+				ea_2(SIZE_L, DTA|CTR);
+			}
+	|	PTEST fcregs ',' ea ',' mask
+			{	emit2(0170000|mrg_2);
+				emit2($1|($6<<10)|$2);
+				ea_2(SIZE_L, DTA|CTR);
+			}
+	|	PTEST fcregs ',' ea ',' mask ',' AREG
+			{	emit2(0170000|mrg_2);
+				emit2($1|($6<<10)|$2|0400|($8<<5));
+				ea_2(SIZE_L, DTA|CTR);
+			}
+	|	PLOAD fcregs ',' ea
+			{	emit2(0170000|mrg_2);
+				emit2($1|$2);
+				ea_2(SIZE_L, DTA|CTR);
+			}
+	|	PMOVE MREG ',' ea
+			{	emit2(0170000|mrg_2);
+				emit2($1|$2|01000);
+				ea_2(SIZE_L, DTA|CTR);
+			}
+	|	PMOVE ea ',' MREG
+			{	emit2(0170000|mrg_2);
+				emit2($1|$4);
+				ea_2(SIZE_L, DTA|CTR);
 			}
 	| MODEL
 			{	setmodel($1); }
@@ -261,7 +355,6 @@ imm	: '#' expr
 				RELOMOVE(rel_2, relonami);
 			}
 	;
-
 reg	: DREG
 	| AREG
 			{	$$ = $1 | 010; }
@@ -483,6 +576,12 @@ frrange	: FPREG
 					badoperand();
 				for ($$ = 0; $1 <= $3; $1++)
 					$$ |= (1 << $1);
+			}
+	;
+
+mask	: '#' absexp
+			{	fit(fit3($2));
+				$$ = low3($2);
 			}
 	;
 

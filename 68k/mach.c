@@ -102,10 +102,14 @@ mflag(const char* flag)
 	if (strncasecmp(flag, "cpu=", 4) == 0) {
 		int i;
 		for (i = 0; i < NMODELS; i++)
-			if (strcasecmp(Models[i].name, &flag[4]) == 0)
+			if (strcasecmp(Models[i].name, &flag[4]) == 0) {
 				model = Models[i].id;
+				break;
+			}
 		if (i == NMODELS)
-			fatal("unsupported model \"%s\"\n", &flag[4]);
+			fatal("unsupported model \"%s\"", &flag[4]);
+	} else {
+		fatal("unrecognised option \"-m%s\"", flag);
 	}
 }
 
@@ -163,13 +167,8 @@ ea_1(int sz, int bits)
 		checksize(sz, 2|4);
 //	printf("bits=0x%x, flag=0x%x\n", bits, flag);
 	bits &= ~flag;
-#ifdef RELOCATION
-	// by default, the assembler assumes relocatable code with
-	// the following code.  Absolute addressing will not be used.
-	// So disable this.
 	if (bits)
 		serror("bad addressing category");
-#endif
 	if (flag & FITW)
 		fit(fitw(exp_1.val) || (mrg_1 == 074 && fit16(exp_1.val)));
 	if (flag & FITB) {

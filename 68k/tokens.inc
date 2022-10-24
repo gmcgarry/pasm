@@ -40,6 +40,7 @@
 %token <y_word> SIZE
 %token <y_word> DREG
 %token <y_word> AREG
+%token <y_word> MREG
 %token <y_word> PC
 %token <y_word> CREG
 %token <y_word> SPEC
@@ -62,6 +63,8 @@
 %token <y_word> MOVEM
 %token <y_word> MOVEC
 %token <y_word> MOVES
+%token <y_word> MOVE16
+%token <y_word> PMOVE
 %token <y_word> SWAP
 %token <y_word> LINK
 %token <y_word> UNLK
@@ -88,10 +91,13 @@
 %token <y_word> FTRAPCC
 %token <y_word> FSIZE
 %token <y_word> CP
+%token <y_word> DIVMUL DIVL
+%token <y_word> CALLM RTM
+%token <y_word> PFLUSH PFLUSHA PTEST PLOAD
 
 %token <y_word> DEFCONST DEFBLOCK DEFZERO
 
 %type <y_word> cdata
 %type <y_word> bcdx op_ea regs rrange 
 %type <y_word> reg sizedef sizenon creg
-%type <y_word> fsize fregs fcregs frlist frrange
+%type <y_word> fsize fregs fcregs frlist frrange mask
