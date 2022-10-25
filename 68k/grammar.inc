@@ -442,7 +442,7 @@ fp_op1	: FMOVE fsize ea ',' FPCR
 				emit2(0170000|co_id);
 				emit2(056000|($6<<7)|low7($4));
 			} 
-	| FMOVEM FSIZE fregs ',' notimmreg
+	| FMOVEM fsize fregs ',' notimmreg
 			{	check_fsize($2, FSIZE_X);
 				if ((mrg_2&070) == 030)
 					serror("bad addressing category");
@@ -450,7 +450,7 @@ fp_op1	: FMOVE fsize ea ',' FPCR
 				emit2(0160000 | (((mrg_2&070)==040 || ($3&04000)) ?  $3 : (010000|reverse($3,8))));
 				ea_2(SIZE_L, MEM|ALT);
 			}
-	| FMOVEM FSIZE notimmreg ',' fregs
+	| FMOVEM fsize notimmreg ',' fregs
 			{	check_fsize($2, FSIZE_X);
 				if ((mrg_2&070) == 040)
 					serror("bad addressing category");
@@ -568,6 +568,7 @@ fp_op1	: FMOVE fsize ea ',' FPCR
 fregs	: DREG
 			{	$$ = 04000 | $1 << 4; }
 	| frlist
+	| '#' absexp	{	$$ = $2; }
 	;
 
 frlist	: frrange
@@ -595,6 +596,7 @@ fcregs	: FPCR
 			{	$$ = $1 << 10; }
 	| fcregs '/' FPCR
 			{	$$ = $1 | ($3 << 10); }
+	| '#' absexp	{	$$ = $2; }
 	;
 
 fsize	: /*	empty */
