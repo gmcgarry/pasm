@@ -474,8 +474,10 @@ innumber(int c)
 
 	p = num;
 	nleft = 40;
+#ifdef USE_FLOAT
 	if (c == '.')
 		goto floatconstant;
+#endif
 	do {
 		if (--nleft < 0)
 			fatal("number too long");
@@ -483,8 +485,10 @@ innumber(int c)
 			c += ('a' - 'A');
 		*p++ = c;
 		c = nextchar();
+#if USE_FLOAT
 		if (c == '.')
 			goto floatconstant;
+#endif
 	} while (isalnum(c));
 	peekc = c;
 	*p = '\0';
@@ -538,6 +542,7 @@ innumber(int c)
 	yylval.y_valu = v;
 	return NUMBER8;
 
+#ifdef USE_FLOAT
 floatconstant:
 	do {
 		if (--nleft < 0)
@@ -556,6 +561,7 @@ floatconstant:
 	strcpy(stringbuf, num);
 
 	return NUMBERF;
+#endif
 }
 
 static int
@@ -779,8 +785,7 @@ item_alloc(int typ)
 	static int nleft = 0;
 	static item_t* next;
 
-	if (--nleft < 0)
-	{
+	if (--nleft < 0) {
 		next = (item_t*)malloc(MEMINCR);
 		if (next == 0)
 			fatal("out of memory");
