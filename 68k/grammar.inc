@@ -325,6 +325,12 @@ notimmreg
 			{	exp_2 = $1; ea5x73($3, $4);
 				RELOMOVE(rel_2, relonami);
 			}
+#ifdef COMPAT
+	| '(' expr ',' reg sizenon ')'
+			{	exp_2 = $2; ea5x73($4, $5);
+				RELOMOVE(rel_2, relonami);
+			}
+#endif
 	| expr '(' AREG ',' reg sizedef ')'
 			{	exp_2 = $1; ea6x($3, $5, $6);
 				RELOMOVE(rel_2, relonami);
