@@ -106,8 +106,8 @@ static item_t	*last_it;
 %token PSEUDOOP_MESSAGE
 %token <y_word> PSEUDOOP_ALIGN
 %token PSEUDOOP_ASSERT
-%token PSEUDOOP_ZERO
-%token PSEUDOOP_FILL
+%token <y_word> PSEUDOOP_ZERO
+%token <y_word> PSEUDOOP_FILL
 %token PSEUDOOP_SPACE
 %token PSEUDOOP_SEEK
 %token PSEUDOOP_CFI_IGNORE
@@ -117,7 +117,7 @@ static item_t	*last_it;
 %token <y_word> PSEUDOOP_LIST
 %token <y_word> ELF_SHTYPE
 %token <y_word> ELF_SYMTYPE
-%token <y_wrod> PLT
+%token <y_word> PLT
 
 %left OP_OO
 %left OP_AA
@@ -290,8 +290,8 @@ operation: /* empty */
 #ifdef USE_FLOAT
 	| PSEUDOOP_DATAF dataflist
 #endif
-	| PSEUDOOP_ZERO absexp			{ int i; for (i = 0; i < $2; i++) emit1(0); }
-	| PSEUDOOP_FILL absexp ',' absexp	{ int i; for (i = 0; i < $2; i++) emit1($4); }
+	| PSEUDOOP_ZERO absexp			{ int i; for (i = 0; i < $2; i++) emitx(0x00,$1); }
+	| PSEUDOOP_FILL absexp ',' absexp	{ int i; for (i = 0; i < $2; i++) emitx($4,$1); }
 	| PSEUDOOP_FILL absexp ',' absexp ',' absexp	{ int i; for (i = 0; i < $2; i++) emitx($6,$4); }
 	| PSEUDOOP_ASCII STRING			{ emitstr($1); }
 	| PSEUDOOP_CFI_IGNORE optabs		{ }
