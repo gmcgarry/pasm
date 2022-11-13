@@ -180,7 +180,7 @@ jump(int opc,int opr)
 #endif
 	emit2(opc | opr);
 	op1(opr);
-    return(0);
+	return(0);
 }
 
 VALUE_T

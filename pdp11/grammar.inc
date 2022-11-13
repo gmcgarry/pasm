@@ -88,6 +88,12 @@ operation
 		{ emit2($1 | ($2 << 6) | $4); op1($4); }
 	| FOP_FR_FSO fregister ',' fopr1
 		{ emit2($1 | ($2 << 6) | $4); op1($4); }
+	| IDENT '=' REG
+		{
+			$1->i_type = REG; $1->i_valu = $3;
+ 			item_remove($1);
+			item_insert($1, H_KEY+hash($1->i_name));
+		}
 	;
 clcc
 	: CLEARCC
