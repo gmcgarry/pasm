@@ -607,10 +607,15 @@ instring(int termc)
 	if (termc == '\'' && VALIDCC) {
 		VALUE_T v = 0;
 		p = stringbuf;
+#ifdef BYTES_REVERSED
 		while (*p) {
 			v <<= 8;
 			v |= *p++;
 		}
+#else
+		for (int i = 0; *p; i += 8)
+			v |= (*p++ << i);
+#endif
 		yylval.y_valu = v;
 		return NUMBER8;
 	}
@@ -744,6 +749,10 @@ item_search(const char* p)
 	}
 done:
 	hashindex = h;
+
+	if (ip)
+		DPRINTF(("found %s (type=%d,value=%ld)\n", ip->i_name, ip->i_type, ip->i_valu));
+
 	return ip;
 }
 

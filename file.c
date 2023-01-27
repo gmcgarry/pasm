@@ -40,6 +40,7 @@
 
 #include "file.h"
 
+//#define  _DEBUG
 #ifdef _DEBUG
 #define DPRINTF(x)	printf x
 #else
@@ -95,25 +96,21 @@ wr_putc(int partno, int ch)
 /*
  * Open the output file according to the chosen strategy.
  */
-int
+void
 wr_open(const char *filename, int n)
 {
 	int i;
 
 	DPRINTF(("wr_open(\"%s\")\n", filename));
 
-	if (n >= MAX_PARTS) {
-		DPRINTF(("too many parts: %d>%d\n", n, MAX_PARTS));
-		return -1;
-	}
+	if (n >= MAX_PARTS)
+		fatal("too many parts: %d>%d\n", n, MAX_PARTS);
 
 	fclose(fopen(filename,"wb"));
 	for (i = 0; i < n; i++) {
 		if ((__parts[i] = fopen(filename, "wb+")) == NULL)
-			return -1;
+			fatal("cannot open filename");
 	}
-
-	return 0;
 }
 
 void

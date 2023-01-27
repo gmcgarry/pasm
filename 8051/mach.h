@@ -15,9 +15,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-extern item_t cseg;
-extern item_t dseg;
-
 struct mode {
         unsigned char mode;             /* value to index with */
         unsigned char size;             /* # of bytes used */

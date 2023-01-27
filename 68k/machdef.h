@@ -69,7 +69,6 @@
 #define HEXPREFIX	'$'
 #define BINPREFIX	'%'
 
-//#define NO_CC
 #define ELFM		"@"
 
 /* Some character constants for scanner */

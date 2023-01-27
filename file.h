@@ -33,7 +33,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-int wr_open(const char *filename, int n);
+void wr_open(const char *filename, int n);
 void wr_close(void);
 
 void wr_seek(int sectno, long offset);

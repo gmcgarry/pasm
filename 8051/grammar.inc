@@ -102,7 +102,7 @@ operation	: NOP			{ emit1($1); }
 		| PSEUDOOP_AREA IDENT optflags	{ newsect($2, 0, NULL); }
 #endif
 #ifdef COMPAT_ASM51
-		| PSEUDOOP_SEG			{ newsect($1 == 0 ? &dseg : &cseg, 0, NULL); }
+		| PSEUDOOP_SEG			{ extern item_t cseg; extern item_t dseg; newsect($1 == 0 ? &dseg : &cseg, 0, NULL); }
 #endif
 		;
 

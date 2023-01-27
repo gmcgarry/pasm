@@ -18,7 +18,7 @@ newrelo(int s, int typ)
 #endif
 	int iscomm;
 
-	if (PASS_RELO == 0) {
+	if (!PASS_RELO) {
 		DPRINTF(("newrelo: wrong pass, ignoring relocation\n"));
 		return;
 	}

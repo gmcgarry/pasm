@@ -35,6 +35,7 @@
 
 #include "as.h"
 #include "mach.h"
+#include "error.h"
 
 extern sect_t sect[];
 extern int hash(const char *);
@@ -72,30 +73,34 @@ machfinish(int pass)
 void
 branch(int opc, expr_t exp)
 {
-	int sm, dist;
-	int saving;
+	int dist;
+#ifdef AUTOCONVERT_LONG_BRANCHES
+	int sm, saving
+#endif
 
 	dist = exp.val - (DOTVAL + 2);
-        if (pass == PASS_2 && dist > 0 && !(exp.typ & S_DOT))
-                dist -= sect[DOTSCT].s_gain;
+	if (PASS_RELO && dist > 0 && !(exp.typ & S_DOT))
+		dist -= sect[DOTSCT].s_gain;
+#ifdef AUTOCONVERT_LONG_BRANCHES
 	sm = fitj(dist);
-        if ((exp.typ & S_SCTMASK) != DOTSCT)
+//	printf("PASS %d, dist %u, sm %u\n", pass+1, dist, sm);
+	if ((exp.typ & S_SCTMASK) != DOTSCT)
 		sm = 0;
-	if (opc == 0x8D || opc == 0x20)
+	if (opc == 0x8D || (opc & 0xF0) == 0x20)
 		saving = 1;
 	else
 		saving = 3;
 	if (small(sm,saving)) {
+//		printf("emit short offset\n");
 		emit1(opc);
 		emit1(dist);
 	} else {
+//		printf("emit long offset\n");
 		if (opc == 0x8D)		/* bsr */
 			emit1(0xBD);		/* jsr */
 		else {
 			if (opc != 0x20) {	/* bra */
-
-					/* reverse condition : */
-
+				/* reverse condition : */
 				emit1(opc ^ 1);
 				emit1(3);
 			}
@@ -106,4 +111,14 @@ branch(int opc, expr_t exp)
 #endif
 		emit2(exp.val);
 	}
+#else
+	/* ----- */
+	/* XXXGJM: This is forcing BRA/BSR to be short, */
+	/* since short forward short jumps are incorrected extended */
+	/* some monitor code needs to build with known opcode sizes */
+	/* ----- */
+	fit(fitj(dist));
+	emit1(opc);
+	emit1(dist);
+#endif
 }

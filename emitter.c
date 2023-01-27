@@ -1,3 +1,5 @@
+#define OCTAL
+
 /* ----------------------------------------------------------------------
  * FILE: emitter.c
  * PACKAGE: as31 - 8031/8051 Assembler.
@@ -64,6 +66,14 @@ static void close_ti(void);
 static void addr_ti(unsigned long a);
 static void byte_ti(unsigned char b);
 
+#ifdef OCTAL
+static int open_octal(const char *file, const char *ftype, const char *arg);
+static void close_octal(void);
+static void addr_octal(unsigned long a);
+static void byte_octal(unsigned char b);
+#endif
+
+
 /* ----------------------------------------------------------------------
  * ADD an entry to this table to register your
  * output format routines. Give your object format
@@ -91,7 +101,10 @@ static struct {
 	{ "ti",    "hex",  "TI-TXT (.hex)", open_ti,  close_ti,  addr_ti,  byte_ti },
 	{ "srec2", "srec", "S Record, 16 bit Address (.srec)", open_srec, close_srec, addr_srec, byte_srec },
 	{ "srec3", "srec", "S Record, 24 bit Address (.srec)", open_srec, close_srec, addr_srec, byte_srec },
-	{ "srec4", "srec", "S Record, 32 bit Address (.srec)", open_srec, close_srec, addr_srec, byte_srec }
+	{ "srec4", "srec", "S Record, 32 bit Address (.srec)", open_srec, close_srec, addr_srec, byte_srec },
+#ifdef OCTAL
+	{ "oct",  "oct", "DEC binary format", open_octal, close_octal, addr_octal, byte_octal },
+#endif
 };
 
 #define FORMTABSIZE	(sizeof(formtab)/sizeof(formtab[0]))
@@ -696,3 +709,50 @@ static void byte_ti(unsigned char b)
 	pos += 1;
 	if (pos == 16) ti_hexdump();
 }
+
+
+#ifdef OCTAL
+
+static int
+open_octal(const char *file, const char *ftype, const char *arg)
+{
+	if (file == NULL) fout = stdout;
+	else fout = fopen(file, "w");
+
+	if (fout == NULL) {
+		fatal("Cannot open %s for writing.\n", file);
+		return -1;
+	}
+	fprintf(fout, ":%06lo\n", addr);
+	pos = 0;
+	return 0;
+}
+
+static void
+close_octal(void)
+{
+	if (fout == NULL) return;
+	fclose(fout);
+}
+
+static void
+addr_octal(unsigned long a)
+{
+	addr = a;
+	fprintf(fout, ":%06lo\n", addr);
+}
+
+static void
+byte_octal(unsigned char b)
+{
+	bytes[pos] = b;
+	addr++;
+	pos++;
+	if (pos == 2) {
+		unsigned short x = (bytes[1] << 8) | bytes[0];	/* little endian */
+		fprintf(fout, "%06o\n", x);
+		pos = 0;
+	}
+}
+
+#endif

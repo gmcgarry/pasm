@@ -16,7 +16,7 @@
  */
 
 /*
- * Mostly taken for symbol.c:
+ * Mostly taken from symbol.c:
  *
  * as31 - 8031/8051 Assembler
  *

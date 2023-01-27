@@ -327,7 +327,6 @@
 
 { 0,	RTD,		0,		"rtd"	},
 
-
 /* M68030 MMU registers */
 { 0,	MREG,		0040000,	"tc" },
 { 0,	MREG,		0044000,	"srp" },
@@ -375,9 +374,9 @@
 { 0,	FPREG,		6,		"fp6"	},
 { 0,	FPREG,		7,		"fp7"	},
 
-{ 0,	FPCR,		1,		"fpiar"		},
-{ 0,	FPCR,		2,		"fpsr"		},
-{ 0,	FPCR,		4,		"fpcr"		},
+{ 0,	FPCR,		1,		"fpiar"	},
+{ 0,	FPCR,		2,		"fpsr"	},
+{ 0,	FPCR,		4,		"fpcr"	},
 
 #ifdef COMPAT_GAS
 { 0,	FPREG,		0,		"%fp0"	},
@@ -469,7 +468,6 @@
 { 0,	FBCC,		037,		"fbst"		},
 { 0,	FBCC,		021,		"fbseq"		},
 { 0,	FBCC,		036,		"fbsne"		},
-
 
 #ifdef COMPAT_GAS
 { 0,	FBCC,		001,		"fjeq"		},
