@@ -39,6 +39,7 @@
 
 { 0,	PSEUDOOP_ZERO,	2,		".blkb" },
 { 0,	PSEUDOOP_ZERO,	2,		".blkw" },
+{ 0, 	PSEUDOOP_EVEN,	0,		".even" },
 
 { 0,	REG,		00,		"r0" },
 { 0,	REG,		01,		"r1" },

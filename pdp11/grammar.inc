@@ -94,6 +94,8 @@ operation
  			item_remove($1);
 			item_insert($1, H_KEY+hash($1->i_name));
 		}
+	| PSEUDOOP_EVEN
+		{ align(2,0,0); }
 	;
 clcc
 	: CLEARCC
