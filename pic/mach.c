@@ -26,7 +26,7 @@ extern int hash(const char *);
 
 static item_t cseg = { 0, S_UND, 0, ".cseg" };
 
-static int config_addr = 0x400E;
+static int config_addr = 0x2007;	/* word address */
 static int config_word = 0x3fff;
 
 static const struct { const char* name; int config_address; } devices[] = {
@@ -38,6 +38,8 @@ static const struct { const char* name; int config_address; } devices[] = {
 	{ "p16f628a", 0x2007 },
 	{ "p16f630", 0x2007 },
 	{ "p16f676", 0x2007 },
+	{ "p16f887", 0x2007 },
+	{ "p16f887a", 0x2007 },
 };
 
 #ifndef __TABLE_SIZE
